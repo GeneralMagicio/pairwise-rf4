@@ -9,7 +9,7 @@ import { ReactNode } from "react";
 const ThirdWeb = ({ children }: { children: ReactNode }) => {
   return (
     <ThirdwebProvider
-      activeChain="ethereum"
+      activeChain="mumbai"
       clientId="ab996cc033833508e203e80eecca234f"
       supportedWallets={[
         smartWallet(embeddedWallet(), {
