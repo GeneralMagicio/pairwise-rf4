@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
 import TanstackProvider from "../../providers/TanstackProvider";
+import ThirdWeb from "../../providers/ThirdWeb";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -19,7 +20,9 @@ export default function RootLayout({
     <html lang="en">
       <body className={inter.className}>
         <TanstackProvider>
-          <div>{children}</div>
+          <ThirdWeb>
+            <div>{children}</div>
+          </ThirdWeb>
         </TanstackProvider>
       </body>
     </html>
