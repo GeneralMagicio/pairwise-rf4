@@ -18,6 +18,7 @@
 		"react": "^18",
 		"react-dom": "^18",
 		"tailwind-merge": "^2.2.2",
+		"thirdweb": "^5.3.1",
 		"viem": "2.x",
 		"wagmi": "^2.5.19"
 	},
