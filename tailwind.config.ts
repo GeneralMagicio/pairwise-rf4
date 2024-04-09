@@ -7,9 +7,6 @@ const config: Config = {
     "./src/app/**/*.{js,ts,jsx,tsx,mdx}",
   ],
   theme: {
-    colors: {
-      primary: "#FF0420",
-    },
     extend: {
       backgroundImage: {
         "gradient-radial": "radial-gradient(var(--tw-gradient-stops))",
@@ -18,6 +15,9 @@ const config: Config = {
       },
       maxWidth: {
         mobile: "400px", // Adding the custom size variable 'mobile'
+      },
+      colors: {
+        primary: "#FF0420",
       },
     },
   },
