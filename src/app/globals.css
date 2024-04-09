@@ -16,4 +16,10 @@ body {
   .text-balance {
     text-wrap: balance;
   }
+
+  @layer components {
+    .centered-mobile-max-width {
+      @apply max-w-mobile mx-auto;
+    }
+  }
 }
