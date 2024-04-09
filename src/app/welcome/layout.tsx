@@ -5,6 +5,7 @@ const WelcomeLayout = ({ children }: { children: ReactNode }) => {
     <div className="centered-mobile-max-width">
       <div>Navbar</div>
       {children}
+      <button className="bg-primary w-full">Button</button>
     </div>
   );
 };
