@@ -1,9 +1,9 @@
 "use client";
 import { createThirdwebClient } from "thirdweb";
 import { ConnectButton } from "thirdweb/react";
-import { createWallet, embeddedWallet } from "thirdweb/wallets";
+import { createWallet, inAppWallet } from "thirdweb/wallets";
 
-const wallets = [embeddedWallet(), createWallet("io.metamask")];
+const wallets = [inAppWallet(), createWallet("io.metamask")];
 
 const TestPage = () => {
   const clientId = "ab996cc033833508e203e80eecca234f";
