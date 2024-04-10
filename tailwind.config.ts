@@ -18,6 +18,7 @@ const config: Config = {
       },
       colors: {
         primary: "#FF0420",
+        ph: "#636779",
       },
     },
   },
