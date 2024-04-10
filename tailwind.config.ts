@@ -14,7 +14,7 @@ const config: Config = {
           "conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))",
       },
       maxWidth: {
-        mobile: "400px", // Adding the custom size variable 'mobile'
+        mobile: "500px", // Adding the custom size variable 'mobile'
       },
       colors: {
         primary: "#FF0420",
