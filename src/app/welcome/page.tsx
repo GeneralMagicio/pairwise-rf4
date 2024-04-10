@@ -3,7 +3,6 @@ import React from "react";
 
 const WelcomePage = () => {
   return (
-    // Flex container to center content vertically and take at least the full viewport height
     <div className="flex flex-col justify-center items-center">
       <Image
         src="/images/characters/welcome-character.png"
