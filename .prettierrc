@@ -6,5 +6,6 @@
 	"jsxSingleQuote": true,
 	"trailingComma": "all",
 	"arrowParens": "avoid",
-	"endOfLine": "auto"
+	"endOfLine": "auto",
+	"plugins": ["prettier-plugin-tailwindcss"]
 }

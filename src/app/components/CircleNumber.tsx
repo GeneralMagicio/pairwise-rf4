@@ -1,13 +1,13 @@
 interface CircleNumberProps {
-  number: number;
+	number: number;
 }
 
 const CircleNumber: React.FC<CircleNumberProps> = ({ number }) => {
-  return (
-    <div className="flex items-center justify-center border-2 border-orange-500 text-orange-500 rounded-full h-12 w-12 font-bold">
-      {number}
-    </div>
-  );
+	return (
+		<div className='flex h-12 w-12 items-center justify-center rounded-full border-2 border-orange-500 font-bold text-orange-500'>
+			{number}
+		</div>
+	);
 };
 
 export default CircleNumber;

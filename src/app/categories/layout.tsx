@@ -1,13 +1,20 @@
-import React, { ReactNode } from "react";
-import Header from "../components/Header"; // Adjust the path as necessary
+'use client';
+
+import React, { ReactNode } from 'react';
+import Header from '../components/Header'; // Adjust the path as necessary
+import { useParams, useRouter } from 'next/navigation';
+import Link from 'next/link';
 
 const CategoriesLayout = ({ children }: { children: ReactNode }) => {
-  return (
-    <div className="centered-mobile-max-width">
-      <Header />
-      {children}
-    </div>
-  );
+	const params = useParams();
+	console.log('params', params);
+
+	return (
+		<div className='centered-mobile-max-width'>
+			{!params.categoryId && <Header />}
+			{children}
+		</div>
+	);
 };
 
 export default CategoriesLayout;
