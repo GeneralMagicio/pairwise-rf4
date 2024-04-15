@@ -1,12 +1,7 @@
 import React, { ReactNode } from 'react';
 
-const CategoryLayouy = ({ children }: { children: ReactNode }) => {
-	return (
-		<div>
-			<div>Layout</div>
-			{children}
-		</div>
-	);
+const CategoryLayout = ({ children }: { children: ReactNode }) => {
+	return <div>{children}</div>;
 };
 
-export default CategoryLayouy;
+export default CategoryLayout;
