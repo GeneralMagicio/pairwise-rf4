@@ -1,4 +1,4 @@
-export interface Category {
+export interface ICategory {
 	id: number;
 	name: string;
 	poll_id: number;
@@ -13,7 +13,7 @@ export interface Category {
 	type: string;
 }
 
-export interface Project {
+export interface IProject {
 	id: number;
 	name: string;
 	poll_id: number;

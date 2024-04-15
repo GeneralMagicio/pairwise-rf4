@@ -1,6 +1,6 @@
-import { Category, Project } from './types';
+import { ICategory, IProject } from './types';
 
-export const Categories: Category[] = [
+export const Categories: ICategory[] = [
 	{
 		id: 34,
 		name: 'NFTs',
@@ -45,7 +45,7 @@ export const Categories: Category[] = [
 	},
 ];
 
-export const projects: Project[] = [
+export const projects: IProject[] = [
 	{
 		id: 45,
 		name: 'Hats Protocol',
