@@ -57,7 +57,7 @@ export const projects: IProject[] = [
 			'Hats is the onchain roles protocol, providing programmable, revocable, and legible roles for decentralized work. Hats empowers groups to get things done by delegating responsibilities to the right contributors, giving them the hard and soft authorities they need to do their work, and installing the automated granting and revocation of permissions and real-time accountability mechanisms to ensure people follow through.',
 		RPGF3Id:
 			'0xe481da7dcea63794d734fbbd156f0327a4b6905852d6865a5437b722c80871ab',
-		parentId: 12,
+		parentId: 34,
 		image: 'https://content.optimism.io/profile/v0/profile-image/10/0x03f7a3FD58B090Abe577651fb92Fb4789826191e.png',
 		metadataUrl:
 			'https://content.optimism.io/rpgf3Application/v0/metadata/10/0x03f7a3FD58B090Abe577651fb92Fb4789826191e.json',
@@ -75,7 +75,7 @@ export const projects: IProject[] = [
 			'The zengoDAO contracts enable the addition of a decentralized budget for cities, empowering citizens to participate in urban governance with proposals to address community needs in public spaces.\n\nModerators allocate the decentralized budget through an iterative verification process with local, regional, and national government instances. Then, they vote to distribute the funds among the verified submissions with a plural voting round.\n\nZengo results from R&D around urban governance and retroactive funding carried out by zenbit.eth. This process started with the Cities Protocol in 2021 followed by CiudadesDAO in 2022. In the same year, We started to test Optimism, deploying RegensDAO, and Eneagon, and now, in 2023, we are integrating these solutions with Zengo in the OP Goerli testnet.',
 		RPGF3Id:
 			'0xa0e0d386a862f8f1ee625bf5837bfb8ef5a8201d70c459efbe9172602ff3d831',
-		parentId: 10,
+		parentId: 35,
 		image: 'https://content.optimism.io/profile/v0/profile-image/10/0x04cc6b487566B1C821bEa04d7ac0d23CEDe05cC9.png',
 		metadataUrl:
 			'https://content.optimism.io/rpgf3Application/v0/metadata/10/0x04cc6b487566B1C821bEa04d7ac0d23CEDe05cC9.json',
@@ -93,7 +93,7 @@ export const projects: IProject[] = [
 			'We deployed Pods natively on Optimism in late September. \n\nSince then, we’ve released 12+ episodes onchain across multiple creators during our private beta, including:\n\nOP Radio\nInvest in Music\nSeed Club\n\nThese episodes have culminated nearly 700 mints across 250 unique collector since our release ~1 month ago .  ',
 		RPGF3Id:
 			'0xd61045d17bdd1312b455d49bcaf58eab5f8eca9825d145aabc848507cd692d82',
-		parentId: 24,
+		parentId: 35,
 		image: 'https://content.optimism.io/profile/v0/profile-image/10/0x050549F8c196Bf1bcC293172746c847fD4D77d9d.png',
 		metadataUrl:
 			'https://content.optimism.io/rpgf3Application/v0/metadata/10/0x050549F8c196Bf1bcC293172746c847fD4D77d9d.json',
@@ -111,7 +111,7 @@ export const projects: IProject[] = [
 			"Many talented people don’t trust that their contributions will be equitably rewarded in web3. So they contribute less value, or don’t contribute at all, because their talents are more dependably incentivized elsewhere. \n\nFor 'Thank Optimism', ThriveCoin built trust-less, open, incentive infrastructure that makes it possible to reward contributors proportionate to the value they create. \n\nOP Ambassadors used our tech to create content that helps our Optimism community better understand the value of rPGF grants. Quality content can’t be auto-validated via traditional quests, so it required custom human validations capability to function. \n\nWe far exceeded all impact expectations - attracting significantly more Ambassadors, more quality content, and more engagement than expected.",
 		RPGF3Id:
 			'0x271a5f83a4a79b1e0e65dedef46a10e22fe6ec6b8c5a9828546182026d4c6067',
-		parentId: 21,
+		parentId: 34,
 		image: 'https://content.optimism.io/profile/v0/profile-image/10/0x055D602C940b3cd7A158df0FD600C75744C9690e.png',
 		metadataUrl:
 			'https://content.optimism.io/rpgf3Application/v0/metadata/10/0x055D602C940b3cd7A158df0FD600C75744C9690e.json',
