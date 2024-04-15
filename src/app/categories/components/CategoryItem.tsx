@@ -4,6 +4,7 @@ import Image from 'next/image'; // Make sure to install 'next/image'
 import { ICategory } from '../types';
 import { useRouter } from 'next/navigation';
 import { Routes } from '@/app/constants/Routes';
+import CategoryBadge from './CategoryBadge';
 
 interface ICategoryProps {
 	category: ICategory;
@@ -27,9 +28,7 @@ const CategoryItem = ({ category }: ICategoryProps) => {
 				<p className='font-bold'>{category.name}</p>
 				<p className='text-ph'>{category.impactDescription}</p>
 			</div>
-			<div className='whitespace-nowrap rounded-full bg-gray-300 px-2 py-1'>
-				Not ranked
-			</div>
+			<CategoryBadge />
 		</div>
 	);
 };
