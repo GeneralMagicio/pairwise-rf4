@@ -1,5 +1,6 @@
 import Image from 'next/image';
 import { IProject } from '../types';
+import IconAlertCircle from 'public/images/icons/IconAlertCircle';
 
 interface ICategoryProjectRankingCardProps {
 	project: IProject;
@@ -21,7 +22,12 @@ const CategoryProjectRankingCard = ({
 					height={300}
 				/>
 			</div>
-			<p className='mb-4 font-bold'>{project.name}</p>
+			<div className='flex justify-between'>
+				<p className='mb-4 font-bold'>{project.name}</p>
+				<div className='cursor-pointer'>
+					<IconAlertCircle />
+				</div>
+			</div>
 			<p className='text-ph'>{truncate(project.impactDescription)}</p>
 		</div>
 	);
