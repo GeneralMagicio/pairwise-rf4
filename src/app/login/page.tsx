@@ -14,10 +14,12 @@ import { inAppWallet, preAuthenticate } from 'thirdweb/wallets/in-app';
 // import { SignInEmail } from "./components/SignInEmail";
 import { SignInEmail2 } from './components/SignInEmail2';
 import { useState } from 'react';
+import { BackHeader } from './components/BackHeader';
+import { OtpInput } from './components/OtpInput';
 // import { SignInEmail } from './components/SignInEmail';
 
 export default function Home() {
-	const [step, setStep] = useState<0 | 1>(0);
+	const [step, setStep] = useState<0 | 1 | 2>(0);
 	const disconnectWallet = useDisconnect();
 	const { connect } = useConnect();
 
@@ -56,13 +58,30 @@ export default function Home() {
 	};
 
 	// if (step === 1) return <SignInEmail/>
-	if (step === 1) return <SignInEmail2 />;
+	if (step === 2)
+		return (
+			<div className='flex min-h-screen flex-col items-center py-2'>
+				<BackHeader />
+				<div className='mt-32 w-full'>
+					<SignInEmail2 />
+				</div>
+			</div>
+		);
+
+	if (step === 1)
+		return (
+			<div className='flex min-h-screen flex-col items-center py-2'>
+				<BackHeader />
+				<div className='mt-32 w-[90%] mx-auto'>
+					<OtpInput />
+				</div>
+			</div>
+		);
 
 	return (
 		<div className='flex min-h-screen flex-col items-center justify-center py-2'>
 			<Head>
 				<title>Login Page</title>
-				<link rel='icon' href='/favicon.ico' />
 			</Head>
 
 			<main className='flex w-full flex-1 flex-col items-center justify-center px-20 text-center'>

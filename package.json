@@ -17,6 +17,7 @@
 		"next": "14.1.4",
 		"react": "^18",
 		"react-dom": "^18",
+		"react-otp-input": "^3.1.1",
 		"tailwind-merge": "^2.2.2",
 		"thirdweb": "^5.3.1",
 		"viem": "2.x",
