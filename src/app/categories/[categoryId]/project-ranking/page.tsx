@@ -5,6 +5,10 @@ import { useParams } from 'next/navigation';
 import { Categories, projects } from '../../mockData';
 import { Routes } from '@/app/constants/Routes';
 import CategoryProjectRankingCard from '../../components/CategoryProjectRankingCard';
+import Button from '@/app/components/Button';
+import IconTrash from 'public/images/icons/IconTrash';
+import IconCheck from 'public/images/icons/IconCheck';
+import IconRefresh from 'public/images/icons/IconRefresh';
 
 const ProjectRankingPage = () => {
 	const { categoryId } = useParams();
@@ -19,14 +23,29 @@ const ProjectRankingPage = () => {
 	);
 	return (
 		<div>
-			<div className='border-b border-b-gray-300 pb-7 pt-9'>
-				<div className='mx-4 flex justify-between gap-6'>
-					<p>{selectedCategory?.name}</p>
-					<Link href={`${Routes.Categories}/${categoryId}`}>✕</Link>
+			<div className='flex min-h-screen flex-col  justify-between'>
+				<div className='border-b border-b-gray-300 pb-7 pt-9'>
+					<div className='mx-4 flex justify-between gap-6'>
+						<p>{selectedCategory?.name}</p>
+						<Link href={`${Routes.Categories}/${categoryId}`}>
+							✕
+						</Link>
+					</div>
 				</div>
-			</div>
-			<div className='mt-7 flex justify-center'>
-				<CategoryProjectRankingCard project={categoryProjects[0]} />
+				<div className='mt-7 flex justify-center'>
+					<CategoryProjectRankingCard project={categoryProjects[0]} />
+				</div>
+				<div className='mb-3 flex justify-center gap-14 px-6 py-6'>
+					<Button className='rounded-full bg-red-500 p-4'>
+						<IconTrash />
+					</Button>
+					<Button className='rounded-full p-4'>
+						<IconRefresh />
+					</Button>
+					<Button className='rounded-full bg-green-600 p-4'>
+						<IconCheck />
+					</Button>
+				</div>
 			</div>
 		</div>
 	);
