@@ -4,9 +4,9 @@ import Link from 'next/link';
 import { useParams } from 'next/navigation';
 import { Categories, projects } from '../../mockData';
 import { Routes } from '@/app/constants/Routes';
-import CategoryPairwiseCard from '../../components/CategoryPairwiseCard';
+import CategoryProjectRankingCard from '../../components/CategoryProjectRankingCard';
 
-const PariwisePage = () => {
+const ProjectRankingPage = () => {
 	const { categoryId } = useParams();
 	console.log('categoryId', categoryId);
 	const selectedCategoryId =
@@ -26,10 +26,10 @@ const PariwisePage = () => {
 				</div>
 			</div>
 			<div className='mt-7 flex justify-center'>
-				<CategoryPairwiseCard project={categoryProjects[0]} />
+				<CategoryProjectRankingCard project={categoryProjects[0]} />
 			</div>
 		</div>
 	);
 };
 
-export default PariwisePage;
+export default ProjectRankingPage;

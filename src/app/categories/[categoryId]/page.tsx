@@ -61,7 +61,7 @@ const CategoryPage = () => {
 					className='w-full bg-primary'
 					onClick={() =>
 						router.push(
-							`${Routes.Categories}/${categoryId}/pairwise`,
+							`${Routes.Categories}/${categoryId}/project-ranking`,
 						)
 					}
 				>

@@ -1,11 +1,13 @@
 import Image from 'next/image';
 import { IProject } from '../types';
 
-interface ICategoryPairwiseCardProps {
+interface ICategoryProjectRankingCardProps {
 	project: IProject;
 }
 
-const CategoryPairwiseCard = ({ project }: ICategoryPairwiseCardProps) => {
+const CategoryProjectRankingCard = ({
+	project,
+}: ICategoryProjectRankingCardProps) => {
 	const truncate = (input: string) =>
 		input.length > 90 ? `${input.substring(0, 90)}...` : input;
 
@@ -25,4 +27,4 @@ const CategoryPairwiseCard = ({ project }: ICategoryPairwiseCardProps) => {
 	);
 };
 
-export default CategoryPairwiseCard;
+export default CategoryProjectRankingCard;
