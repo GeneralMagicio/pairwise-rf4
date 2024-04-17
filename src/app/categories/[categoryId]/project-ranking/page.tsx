@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import { useParams } from 'next/navigation';
+import { useParams, useRouter } from 'next/navigation';
 import { Categories, projects } from '../../mockData';
 import { Routes } from '@/app/constants/Routes';
 import CategoryProjectRankingCard from '../../components/CategoryProjectRankingCard';
@@ -11,6 +11,7 @@ import IconCheck from 'public/images/icons/IconCheck';
 import IconRefresh from 'public/images/icons/IconRefresh';
 
 const ProjectRankingPage = () => {
+	const router = useRouter();
 	const { categoryId } = useParams();
 	console.log('categoryId', categoryId);
 	const selectedCategoryId =
@@ -42,7 +43,12 @@ const ProjectRankingPage = () => {
 					<Button className='rounded-full p-4'>
 						<IconRefresh />
 					</Button>
-					<Button className='rounded-full bg-green-600 p-4'>
+					<Button
+						className='rounded-full bg-green-600 p-4'
+						onClick={() =>
+							router.push(`${window.location.pathname}/done`)
+						}
+					>
 						<IconCheck />
 					</Button>
 				</div>
