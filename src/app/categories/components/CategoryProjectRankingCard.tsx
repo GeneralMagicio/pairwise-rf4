@@ -20,6 +20,7 @@ const CategoryProjectRankingCard = ({
 					alt={project.name}
 					width={300}
 					height={300}
+					className='rounded-2xl'
 				/>
 			</div>
 			<div className='flex justify-between'>
