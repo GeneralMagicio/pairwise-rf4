@@ -1,6 +1,7 @@
 import Image from 'next/image';
 import { IProject } from '../types';
 import IconAlertCircle from 'public/images/icons/IconAlertCircle';
+import { truncate } from '@/app/helpers/text-helpers';
 
 interface ICategoryProjectRankingCardProps {
 	project: IProject;
@@ -9,9 +10,6 @@ interface ICategoryProjectRankingCardProps {
 const CategoryProjectRankingCard = ({
 	project,
 }: ICategoryProjectRankingCardProps) => {
-	const truncate = (input: string) =>
-		input.length > 90 ? `${input.substring(0, 90)}...` : input;
-
 	return (
 		<div className='w-[324px] rounded-2xl px-3 pb-5 shadow-lg'>
 			<div className='mb-4'>
@@ -29,7 +27,7 @@ const CategoryProjectRankingCard = ({
 					<IconAlertCircle />
 				</div>
 			</div>
-			<p className='text-ph'>{truncate(project.impactDescription)}</p>
+			<p className='text-ph'>{truncate(project.impactDescription, 90)}</p>
 		</div>
 	);
 };
