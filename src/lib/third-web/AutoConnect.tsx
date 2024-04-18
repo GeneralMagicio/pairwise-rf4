@@ -1,13 +1,30 @@
 'use client';
 
 import { client, smartWalletConfig } from './provider';
-import { useEffect, useState } from 'react';
+import React, { ReactNode, useContext, useEffect, useState } from 'react';
 import { WalletId, createWallet } from 'thirdweb/wallets';
 import { useConnect } from 'thirdweb/react';
 import { LAST_CONNECT_PERSONAL_WALLET_ID } from './constants';
 
+const AutoConnectContext = React.createContext<{
+	isAutoConnecting: boolean | null;
+	setIsAutoConnecting: Function;
+}>({ isAutoConnecting: null, setIsAutoConnecting: () => {} });
+
+export const AutoConnectProvider = ({ children } : {children: ReactNode}) => {
+	const [isAutoConnecting, setIsAutoConnecting] = useState(null);
+
+	return (
+		<AutoConnectContext.Provider
+			value={{ isAutoConnecting, setIsAutoConnecting }}
+		>
+			{children}
+		</AutoConnectContext.Provider>
+	);
+};
+
 export const useIsAutoConnecting = () => {
-	const [isAutoConnecting, setIsAutoConnecting] = useState<boolean>();
+	const {isAutoConnecting, setIsAutoConnecting} = useContext(AutoConnectContext);
 
 	return { isAutoConnecting, setIsAutoConnecting };
 };
@@ -18,12 +35,12 @@ export const ThirdwebAutoConnect = () => {
 
 	useEffect(() => {
 		const main = async () => {
-			setIsAutoConnecting(true);
 			try {
 				const personalWalletId = localStorage.getItem(
 					LAST_CONNECT_PERSONAL_WALLET_ID,
 				);
 				if (!personalWalletId) return;
+				setIsAutoConnecting(true);
 				const personalWallet = createWallet(
 					personalWalletId as WalletId,
 				);
