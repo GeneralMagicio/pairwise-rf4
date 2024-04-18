@@ -11,7 +11,7 @@ const AutoConnectContext = React.createContext<{
 	setIsAutoConnecting: Function;
 }>({ isAutoConnecting: null, setIsAutoConnecting: () => {} });
 
-export const AutoConnectProvider = ({ children } : {children: ReactNode}) => {
+export const AutoConnectProvider = ({ children }: { children: ReactNode }) => {
 	const [isAutoConnecting, setIsAutoConnecting] = useState(null);
 
 	return (
@@ -24,7 +24,8 @@ export const AutoConnectProvider = ({ children } : {children: ReactNode}) => {
 };
 
 export const useIsAutoConnecting = () => {
-	const {isAutoConnecting, setIsAutoConnecting} = useContext(AutoConnectContext);
+	const { isAutoConnecting, setIsAutoConnecting } =
+		useContext(AutoConnectContext);
 
 	return { isAutoConnecting, setIsAutoConnecting };
 };

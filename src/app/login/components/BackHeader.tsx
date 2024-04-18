@@ -1,13 +1,9 @@
-import IconArrowLeft from "public/images/icons/IconArrowLeft"
-
-
+import IconArrowLeft from 'public/images/icons/IconArrowLeft';
 
 export const BackHeader = () => {
-
-
-  return (
-    <header className="w-full flex justify-start items-center p-8 border-b-2">
-      <IconArrowLeft/>
-    </header>
-  )
-}
+	return (
+		<header className='flex w-full items-center justify-start border-b-2 p-8'>
+			<IconArrowLeft />
+		</header>
+	);
+};

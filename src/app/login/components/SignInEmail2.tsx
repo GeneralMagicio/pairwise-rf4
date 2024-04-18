@@ -14,9 +14,12 @@ export const isEmailValid = (email: string) => {
 	return regex.test(email);
 };
 
-
-export const SignInEmail2: FC<SignInForm> = ({onSubmit, email, setEmail, emailError}) => {
-
+export const SignInEmail2: FC<SignInForm> = ({
+	onSubmit,
+	email,
+	setEmail,
+	emailError,
+}) => {
 	const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
 		setEmail(event.target.value);
 	};
@@ -45,11 +48,16 @@ export const SignInEmail2: FC<SignInForm> = ({onSubmit, email, setEmail, emailEr
 					required
 				/>
 			</form>
-			{emailError && <div className='mx-auto my-[-5px]'> <ErrorBox message='Please enter a valid email'/> </div>}
+			{emailError && (
+				<div className='mx-auto my-[-5px]'>
+					{' '}
+					<ErrorBox message='Please enter a valid email' />{' '}
+				</div>
+			)}
 			<button
 				onClick={onSubmit}
 				type='submit'
-				className='disabled disabled:bg-bg_disabled disabled:text-fg_disabled mt-2 w-full cursor-pointer rounded-md bg-primary px-3 py-2 font-medium text-white'
+				className='disabled mt-2 w-full cursor-pointer rounded-md bg-primary px-3 py-2 font-medium text-white disabled:bg-bg_disabled disabled:text-fg_disabled'
 				disabled={!isEmailValid(email)}
 			>
 				Sign in

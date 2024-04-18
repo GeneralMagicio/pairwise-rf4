@@ -1,22 +1,38 @@
-import { inAppWallet, smartWallet } from 'thirdweb/wallets';
+import { Account, inAppWallet, smartWallet } from 'thirdweb/wallets';
 import { LAST_CONNECT_PERSONAL_WALLET_ID } from './constants';
 import { client, smartWalletConfig } from './provider';
 
-export const createSmartWallet = async (strategy: 'google' | 'apple') => {
+export const createEmailEoa = async (
+	email: string,
+	verificationCode: string,
+) => {
+	const wallet = inAppWallet();
+	await wallet.connect({
+		client,
+		strategy: 'email',
+		email,
+		verificationCode,
+	});
+	localStorage.setItem(LAST_CONNECT_PERSONAL_WALLET_ID, wallet.id);
+	return wallet;
+};
+
+export const createSocialEoa = async (strategy: 'google' | 'apple') => {
 	const socialEOA = inAppWallet();
 	await socialEOA.connect({
 		client,
 		strategy,
 	});
-	console.log('eoa wallet:', socialEOA.getAccount());
 	localStorage.setItem(LAST_CONNECT_PERSONAL_WALLET_ID, socialEOA.id);
+	return socialEOA;
+};
+
+export const createSmartWalletFromEOA = async (eoa: Account) => {
 	const wallet = smartWallet(smartWalletConfig);
-	const EoaAccount = socialEOA.getAccount();
 	await wallet.connect({
-		personalAccount: EoaAccount!,
+		personalAccount: eoa,
 		client,
 	});
-	console.log('smart wallet:', wallet.getAccount());
 
 	return wallet;
 };

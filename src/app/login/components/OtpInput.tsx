@@ -1,5 +1,5 @@
 import { cn } from '@/app/helpers/cn';
-import React, { FC, useState } from 'react';
+import React, { FC } from 'react';
 import OTPInput from 'react-otp-input';
 import { ErrorBox } from './ErrorBox';
 import { DotsLoader } from './bouncing-dots/DotsLoader';
@@ -14,6 +14,7 @@ export enum OtpState {
 interface Props {
 	onSubmit: () => void;
 	otp: string;
+	email: string;
 	setOtp: (otp: string) => void;
 	state: OtpState;
 	setState: (state: OtpState) => void;
@@ -26,6 +27,7 @@ export const OtpInput: FC<Props> = ({
 	otp,
 	setOtp,
 	state,
+	email,
 	setState,
 	onSubmit,
 	error,
@@ -41,9 +43,9 @@ export const OtpInput: FC<Props> = ({
 			<div className='mb-4 text-3xl font-bold'>Verify Email</div>
 			<div className='text-center text-gray-500'>
 				Please enter the 4 digit secure code sent to your email
-				<span className='font-bold'> useremail@gmail.com </span>
+				<span className='font-bold'> {email} </span>
 			</div>
-			<div className='flex flex-col gap-8 h-28 items-center'>
+			<div className='flex h-28 flex-col items-center gap-8'>
 				<OTPInput
 					inputStyle={cn(
 						`!w-12 h-12 mx-2 text-2xl rounded-lg border-2 border-gray-300`,

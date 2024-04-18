@@ -1,16 +1,14 @@
-import { WarningBoxIcon } from "public/images/icons/WarningBoxIcon";
-import { FC } from "react";
+import { WarningBoxIcon } from 'public/images/icons/WarningBoxIcon';
+import { FC } from 'react';
 
 interface Props {
-  message: string;
+	message: string;
 }
 
-export const InfoBox : FC<Props> = ({message}) => {
-
-
-  return (
-    <div className="flex w-fit items-center gap-2 bg-[#FFFAEB] border rounded-2xl text-[#B54708] text-xs border-[#FEC84B] py pl-2 pr-3">
-     <WarningBoxIcon/> {message}
-    </div>
-  )
-}
+export const InfoBox: FC<Props> = ({ message }) => {
+	return (
+		<div className='py flex w-fit items-center gap-2 rounded-2xl border border-[#FEC84B] bg-[#FFFAEB] pl-2 pr-3 text-xs text-[#B54708]'>
+			<WarningBoxIcon /> {message}
+		</div>
+	);
+};
