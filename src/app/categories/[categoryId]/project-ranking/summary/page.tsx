@@ -5,12 +5,11 @@ import { Categories, projects } from '@/app/categories/mockData';
 import Button from '@/app/components/Button';
 import TopNavigation from '@/app/components/TopNavigation';
 import { Routes } from '@/app/constants/Routes';
-import { useParams } from 'next/navigation';
+import { useParams, useRouter } from 'next/navigation';
 
 const ProjectRankingSummaryPage = () => {
 	const { categoryId } = useParams();
-	console.log('categoryId', categoryId);
-
+	const router = useRouter();
 	const selectedCategoryId =
 		typeof categoryId === 'string' ? categoryId : categoryId[0];
 
@@ -48,7 +47,16 @@ const ProjectRankingSummaryPage = () => {
 				</div>
 			</div>
 			<div className='sticky bottom-0 border-t border-b-gray-200 bg-white px-6 py-6'>
-				<Button className='w-full bg-primary'>Start ranking</Button>
+				<Button
+					onClick={() =>
+						router.push(
+							`${Routes.Categories}/${selectedCategory?.id}/pairwise-ranking`,
+						)
+					}
+					className='w-full bg-primary'
+				>
+					Start ranking
+				</Button>
 			</div>
 		</div>
 	);
