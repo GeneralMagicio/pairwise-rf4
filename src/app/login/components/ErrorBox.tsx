@@ -10,7 +10,7 @@ export const ErrorBox : FC<Props> = ({message}) => {
 
 
   return (
-    <div className="flex w-fit items-center gap-2 bg-pink-100 border rounded-2xl text-primary text-sm border-primary p-1">
+    <div className="flex w-fit items-center gap-2 bg-[#FFD1D5] border rounded-2xl text-primary text-xs border-primary py pl-2 pr-3">
       <ErrorBoxX/> {message}
     </div>
   )
