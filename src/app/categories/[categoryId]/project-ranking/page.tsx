@@ -46,7 +46,9 @@ const ProjectRankingPage = () => {
 					<Button
 						className='rounded-full bg-green-600 p-4'
 						onClick={() =>
-							router.push(`${window.location.pathname}/done`)
+							router.push(
+								`${Routes.Categories}/${categoryId}/project-ranking/done`,
+							)
 						}
 					>
 						<IconCheck />
