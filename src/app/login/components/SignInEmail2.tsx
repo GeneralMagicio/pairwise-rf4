@@ -1,35 +1,24 @@
 // signin.tsx
-import { useState } from 'react';
+import { FC, useState } from 'react';
+import { ErrorBox } from './ErrorBox';
 
 interface SignInForm {
 	email: string;
+	onSubmit: () => void;
+	setEmail: (email: string) => void;
+	emailError: boolean;
 }
 
-export const SignInEmail2 = () => {
-	// const [formData, setFormData] = useState<SignInForm>({
-	// 	email: '',
-	// });
-	const [email, setEmail] = useState<string>('');
+export const isEmailValid = (email: string) => {
+	const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+	return regex.test(email);
+};
+
+
+export const SignInEmail2: FC<SignInForm> = ({onSubmit, email, setEmail, emailError}) => {
 
 	const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
 		setEmail(event.target.value);
-	};
-
-	const isEmailValid = (email: string) => {
-		const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-		return regex.test(email);
-	};
-
-	const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
-		event.preventDefault();
-
-		if (!isEmailValid(email)) {
-			alert('Please enter a valid email address');
-			return;
-		}
-
-		// Handle form submission logic here (e.g., send login request to backend)
-		console.log('Sign in successful!', email);
 	};
 
 	return (
@@ -37,7 +26,7 @@ export const SignInEmail2 = () => {
 			<h2 className='mb-2 text-center text-3xl font-bold'>
 				Sign in with Email
 			</h2>
-			<form onSubmit={handleSubmit}>
+			<form>
 				<label
 					htmlFor='email'
 					className='mb-2 block text-sm font-medium text-gray-700'
@@ -56,7 +45,9 @@ export const SignInEmail2 = () => {
 					required
 				/>
 			</form>
+			{emailError && <div className='mx-auto my-[-5px]'> <ErrorBox message='Please enter a valid email'/> </div>}
 			<button
+				onClick={onSubmit}
 				type='submit'
 				className='disabled disabled:bg-bg_disabled disabled:text-fg_disabled mt-2 w-full cursor-pointer rounded-md bg-primary px-3 py-2 font-medium text-white'
 				disabled={!isEmailValid(email)}
