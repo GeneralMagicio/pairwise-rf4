@@ -1,7 +1,13 @@
+'use client';
+
 import Button from '@/app/components/Button';
+import { Routes } from '@/app/constants/Routes';
 import Image from 'next/image';
+import { useParams, useRouter } from 'next/navigation';
 
 const ProjectRankingDonePage = () => {
+	const router = useRouter();
+	const { categoryId } = useParams();
 	return (
 		<div className='flex min-h-screen flex-col justify-between'>
 			<div className='mx-auto flex h-[80vh] flex-col items-center justify-center gap-4'>
@@ -15,7 +21,16 @@ const ProjectRankingDonePage = () => {
 				<p className='mx-auto text-ph'>Now they battle to the DEATH!</p>
 			</div>
 			<div className='border-t border-t-gray-300 px-6 py-6'>
-				<Button className='w-full bg-primary'>View summary</Button>
+				<Button
+					onClick={() =>
+						router.push(
+							`${Routes.Categories}/${categoryId}/project-ranking/summary`,
+						)
+					}
+					className='w-full bg-primary'
+				>
+					View summary
+				</Button>
 			</div>
 		</div>
 	);
