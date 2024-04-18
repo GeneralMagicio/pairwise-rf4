@@ -1,0 +1,3 @@
+interface IIconProps {
+	color?: string;
+}
