@@ -116,7 +116,7 @@ export default function Home() {
 	if (step === Step.EnterEmail)
 		return (
 			<div className='flex min-h-screen flex-col items-center py-2'>
-				<BackHeader />
+				<BackHeader onClick={() => setStep(Step.Main)} />
 				<div className='mt-32 w-full'>
 					<SignInEmail2
 						emailError={emailError}
@@ -131,7 +131,7 @@ export default function Home() {
 	if (step === Step.Otp)
 		return (
 			<div className='flex min-h-screen flex-col items-center py-2'>
-				<BackHeader />
+				<BackHeader onClick={() => setStep(Step.EnterEmail)} />
 				<div className='mx-auto mt-32 w-[90%]'>
 					<OtpInput
 						resend={preLogin(email)}
