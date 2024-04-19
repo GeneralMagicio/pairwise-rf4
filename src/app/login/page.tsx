@@ -134,6 +134,7 @@ export default function Home() {
 				<BackHeader />
 				<div className='mx-auto mt-32 w-[90%]'>
 					<OtpInput
+						resend={preLogin(email)}
 						error={otpError}
 						onSubmit={handleEmailLogin(email, otp)}
 						otp={otp}

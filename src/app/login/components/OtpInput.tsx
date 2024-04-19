@@ -1,5 +1,5 @@
 import { cn } from '@/app/helpers/cn';
-import React, { FC } from 'react';
+import React, { FC, useEffect, useState } from 'react';
 import OTPInput from 'react-otp-input';
 import { ErrorBox } from './ErrorBox';
 import { DotsLoader } from './bouncing-dots/DotsLoader';
@@ -13,6 +13,7 @@ export enum OtpState {
 }
 interface Props {
 	onSubmit: () => void;
+	resend: () => void;
 	otp: string;
 	email: string;
 	setOtp: (otp: string) => void;
@@ -22,6 +23,7 @@ interface Props {
 }
 
 const OtpLength = 6;
+const ResendTime = 60
 
 export const OtpInput: FC<Props> = ({
 	otp,
@@ -31,7 +33,23 @@ export const OtpInput: FC<Props> = ({
 	setState,
 	onSubmit,
 	error,
+	resend,
 }) => {
+	const [resendTimer, setResendTimer] = useState(ResendTime)
+
+	const handleResend = () => {
+		setResendTimer(ResendTime)
+		resend()
+	}
+
+
+	useEffect(() => {
+		setTimeout(() => {
+			// if (resendTimer === 0) setResendTimer(60)
+			setResendTimer(Math.max(0, resendTimer - 1))
+		}, 1000)
+	}, [resendTimer, setResendTimer])
+
 	const handleOTPChange = (otp: string) => {
 		if (otp.length === OtpLength) setState(OtpState.Ready);
 		else setState(OtpState.InProgress);
@@ -76,14 +94,22 @@ export const OtpInput: FC<Props> = ({
 				</span>
 			</button>
 			<div className='text-center text-gray-500'>
-				Didnt receive the code?{' '}
+				Didnt receive the code?
 				<div>
-					<a
-						href='#'
-						className='font-bold text-primary hover:underline'
+					{
+					resendTimer === 0 ?
+					<div
+						// href='#'
+						onClick={handleResend}
+						className='font-bold text-primary'
 					>
 						Resend Code
-					</a>
+					</div> : 
+					<div>
+						{`Resend code in`}
+						<span className='font-bold text-primary'> {`${resendTimer}s`} </span>
+					</div>
+					}
 				</div>
 			</div>
 		</div>
