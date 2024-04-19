@@ -3,6 +3,9 @@ import { Inter } from 'next/font/google';
 import './globals.css';
 import TanstackProvider from './providers/TanstackProvider';
 import WagmiAppProvider from './providers/WagmiAppProvider';
+import './globals.css';
+import './globals.css';
+import { Thirdweb5Provider } from '@/lib/third-web/provider';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -21,7 +24,9 @@ export default function RootLayout({
 			<body className={inter.className}>
 				<WagmiAppProvider>
 					<TanstackProvider>
-						<div>{children}</div>
+						<Thirdweb5Provider>
+							<div>{children}</div>
+						</Thirdweb5Provider>
 					</TanstackProvider>
 				</WagmiAppProvider>
 			</body>

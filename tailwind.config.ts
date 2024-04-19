@@ -19,6 +19,9 @@ const config: Config = {
 			colors: {
 				primary: '#FF0420',
 				ph: '#636779',
+				fg_disabled: '#98A2B3',
+				bg_disabled: '#F2F4F7',
+				success: '#75E0A7',
 			},
 		},
 	},
