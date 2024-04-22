@@ -15,7 +15,7 @@ const CategoryItem = ({ category }: ICategoryProps) => {
 
 	return (
 		<div
-			className='flex cursor-pointer items-center justify-between gap-2 border-b border-b-gray-400 py-3'
+			className='flex cursor-pointer items-center justify-between gap-2 border-b border-b-gray-300 py-3'
 			onClick={() => router.push(`${Routes.Categories}/${category.id}`)}
 		>
 			<Image
