@@ -1,14 +1,28 @@
 import IconAlertCircle from 'public/images/icons/IconAlertCircle';
 import { IProject } from '../types';
 import { truncate } from '@/app/helpers/text-helpers';
+import { useParams, useRouter } from 'next/navigation';
+import { Routes } from '@/app/constants/Routes';
 
 interface ICategoryPairwiseCardProps {
 	project: IProject;
 }
 
 const CategoryPairwiseCard = ({ project }: ICategoryPairwiseCardProps) => {
+	const router = useRouter();
+	const { categoryId } = useParams();
+	const selectedCategoryId =
+		typeof categoryId === 'string' ? categoryId : categoryId[0];
+
 	return (
-		<div className=' rounded-2xl border border-t-gray-300 p-2'>
+		<div
+			onClick={() =>
+				router.push(
+					`${Routes.Categories}/${selectedCategoryId}/pairwise-ranking/ranking-list`,
+				)
+			}
+			className=' cursor-pointer rounded-2xl border border-t-gray-300 p-2'
+		>
 			<div className='relative overflow-hidden rounded-2xl'>
 				<div
 					className='h-[300px] w-[300px] rounded-2xl'
