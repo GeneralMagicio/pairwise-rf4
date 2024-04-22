@@ -60,7 +60,7 @@ const CategoryRankingListPage = () => {
 					</Reorder.Group>
 				</div>
 			</div>
-			<div className='absolute bottom-0 w-full border-t border-gray-200 bg-white px-6 py-6'>
+			<div className='sticky bottom-0 w-full border-t border-gray-200 bg-white px-6 py-6'>
 				<Button
 					onClick={() =>
 						router.push(
@@ -69,7 +69,7 @@ const CategoryRankingListPage = () => {
 					}
 					className='w-full bg-primary'
 				>
-					Start ranking
+					Submit Vote
 				</Button>
 			</div>
 		</div>
