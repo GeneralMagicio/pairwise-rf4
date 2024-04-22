@@ -47,7 +47,6 @@ export const OtpInput: FC<Props> = ({
 
 	useEffect(() => {
 		setTimeout(() => {
-			// if (resendTimer === 0) setResendTimer(60)
 			setResendTimer(Math.max(0, resendTimer - 1));
 		}, 1000);
 	}, [resendTimer, setResendTimer]);
@@ -64,13 +63,8 @@ export const OtpInput: FC<Props> = ({
 			<p className='text-center text-gray-500'>
 				Please enter the 4 digit secure code sent to your email
 				<span className='font-bold'> {email} </span>
-				<span
-					className={
-						/* 'absolute bottom-1 right-0' */ 'ml-1 inline-block'
-					}
-				>
-					{' '}
-					<Edit2 />{' '}
+				<span className='ml-1 inline-block'>
+					<Edit2 />
 				</span>
 			</p>
 			<div className='flex h-24 flex-col items-center gap-8'>
@@ -108,7 +102,6 @@ export const OtpInput: FC<Props> = ({
 				<div>
 					{resendTimer === 0 ? (
 						<div
-							// href='#'
 							onClick={handleResend}
 							className='font-bold text-primary'
 						>
