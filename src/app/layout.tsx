@@ -28,6 +28,7 @@ export default function RootLayout({
 							<div>{children}</div>
 						</Thirdweb5Provider>
 					</TanstackProvider>
+					<div id='modal-root'></div>
 				</WagmiAppProvider>
 			</body>
 		</html>
