@@ -47,7 +47,7 @@ const CategoryRankingComment = () => {
 				<Button
 					onClick={() =>
 						router.push(
-							`${Routes.Categories}/${selectedCategory?.id}/pairwise-ranking/comment`,
+							`${Routes.Categories}/${selectedCategory?.id}/pairwise-ranking/done`,
 						)
 					}
 					className='w-full bg-primary'
