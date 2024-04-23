@@ -22,12 +22,16 @@ import {
 } from '@/lib/third-web/methods';
 import { InfoBox } from './components/InfoBox';
 import { useIsAutoConnecting } from '@/lib/third-web/AutoConnect';
+import { SignupSuccess } from './components/success-screens/SignupSuccess';
+import { SigninSuccess } from './components/success-screens/SigninSuccess';
 
 enum Step {
 	Main,
 	EnterEmail,
 	Loading,
 	Otp,
+	SuccessSignIn,
+	SuccessSignUp,
 	Welcome,
 }
 
@@ -80,12 +84,19 @@ export default function Home() {
 		if (error) {
 			setOtpState(OtpState.Invalid);
 			setOtpError('An error occurred! Try again.');
-		} else if (wallet) {
-			console.log('wallet:', wallet);
-			console.log('acc:', wallet.getAccount());
-			router.push('/welcome');
 		}
-	}, [error, wallet, router]);
+	}, [error]);
+
+	useEffect(() => {
+		if (!wallet) return;
+		console.log('wallet:', wallet);
+		console.log('acc:', wallet.getAccount());
+
+		// if (step === Step.Otp || step === Step.Main) {
+		setStep(Step.SuccessSignIn);
+		setTimeout(() => router.push('/welcome'), 500);
+		// }
+	}, [wallet, router]);
 
 	const handleEmailLogin =
 		(email: string, verificationCode: string) => async () => {
@@ -113,10 +124,26 @@ export default function Home() {
 		connect(() => createSmartWalletFromEOA(account));
 	};
 
+	if (step === Step.SuccessSignUp) {
+		return (
+			<div className='mt-48 w-[85%]'>
+				<SignupSuccess />
+			</div>
+		);
+	}
+
+	if (step === Step.SuccessSignIn) {
+		return (
+			<div className='mt-48 w-[85%]'>
+				<SigninSuccess />
+			</div>
+		);
+	}
+
 	if (step === Step.EnterEmail)
 		return (
-			<div className='flex min-h-screen flex-col items-center py-2'>
-				<BackHeader />
+			<>
+				<BackHeader onClick={() => setStep(Step.Main)} />
 				<div className='mt-32 w-full'>
 					<SignInEmail2
 						emailError={emailError}
@@ -125,15 +152,16 @@ export default function Home() {
 						onSubmit={preLogin(email)}
 					/>
 				</div>
-			</div>
+			</>
 		);
 
 	if (step === Step.Otp)
 		return (
-			<div className='flex min-h-screen flex-col items-center py-2'>
-				<BackHeader />
+			<>
+				<BackHeader onClick={() => setStep(Step.EnterEmail)} />
 				<div className='mx-auto mt-32 w-[90%]'>
 					<OtpInput
+						resend={preLogin(email)}
 						error={otpError}
 						onSubmit={handleEmailLogin(email, otp)}
 						otp={otp}
@@ -143,16 +171,12 @@ export default function Home() {
 						state={otpState}
 					/>
 				</div>
-			</div>
+			</>
 		);
 
 	if (step === Step.Main)
 		return (
-			<div className='relative flex min-h-screen flex-col items-center justify-center py-2'>
-				<Head>
-					<title>Login Page</title>
-				</Head>
-
+			<div className='relative my-auto'>
 				<div className='absolute top-8'>
 					{isAutoConnecting && (
 						<div className=''>
