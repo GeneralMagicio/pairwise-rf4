@@ -1,4 +1,4 @@
-const IconCheck = () => {
+const IconCheck = ({ color = 'white' }: IIconProps) => {
 	return (
 		<svg
 			width='24'
@@ -9,7 +9,7 @@ const IconCheck = () => {
 		>
 			<path
 				d='M20 6L9 17L4 12'
-				stroke='white'
+				stroke={color}
 				stroke-width='2'
 				stroke-linecap='round'
 				stroke-linejoin='round'
