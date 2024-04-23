@@ -9,6 +9,7 @@ import Button from '@/app/components/Button';
 import IconTrash from 'public/images/icons/IconTrash';
 import IconCheck from 'public/images/icons/IconCheck';
 import IconRefresh from 'public/images/icons/IconRefresh';
+import ProgressBar from '@/app/components/ProgressBar';
 
 const ProjectRankingPage = () => {
 	const router = useRouter();
@@ -32,6 +33,10 @@ const ProjectRankingPage = () => {
 							✕
 						</Link>
 					</div>
+				</div>
+				<div className='mx-8'>
+					<ProgressBar progress={20} />
+					<p className='mt-2 text-sm'>10 of 38 Projects Selected</p>
 				</div>
 				<div className='mt-7 flex justify-center'>
 					<CategoryProjectRankingCard project={categoryProjects[0]} />
