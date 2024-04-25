@@ -23,3 +23,14 @@ body {
 		@apply mx-auto max-w-mobile;
 	}
 }
+
+/* Hide scrollbar for Chrome, Safari and Opera */
+*::-webkit-scrollbar {
+	display: none;
+}
+
+/* Hide scrollbar for Internet Explorer, Edge, and Firefox */
+* {
+	-ms-overflow-style: none; /* IE and Edge */
+	scrollbar-width: none; /* Firefox */
+}
