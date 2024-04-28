@@ -2,7 +2,7 @@ import React from 'react';
 import CategoryItem from './components/CategoryItem';
 import { Categories } from './mockData';
 
-const page = () => {
+const CategoriesPage = () => {
 	return (
 		<div className='px-4'>
 			<h1 className='mt-6 text-2xl font-bold'>Categories</h1>
@@ -14,4 +14,4 @@ const page = () => {
 	);
 };
 
-export default page;
+export default CategoriesPage;
