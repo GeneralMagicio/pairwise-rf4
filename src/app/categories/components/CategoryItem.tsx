@@ -5,6 +5,7 @@ import { ICategory } from '../types';
 import { useRouter } from 'next/navigation';
 import { Routes } from '@/app/constants/Routes';
 import CategoryBadge from './CategoryBadge';
+import { truncate } from '@/app/helpers/text-helpers';
 
 interface ICategoryProps {
 	category: ICategory;
@@ -26,7 +27,9 @@ const CategoryItem = ({ category }: ICategoryProps) => {
 			/>
 			<div className='flex flex-1 flex-col'>
 				<p className='font-bold'>{category.name}</p>
-				<p className='text-ph'>{category.impactDescription}</p>
+				<p className='text-ph'>
+					{truncate(category.impactDescription, 70)}
+				</p>
 			</div>
 			<CategoryBadge />
 		</div>
