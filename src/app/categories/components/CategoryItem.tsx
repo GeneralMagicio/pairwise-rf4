@@ -20,7 +20,12 @@ const CategoryItem = ({ category }: ICategoryProps) => {
 			onClick={() => router.push(`${Routes.Categories}/${category.id}`)}
 		>
 			<Image
-				src='/images/characters/welcome-character.png'
+				className='rounded-full'
+				src={
+					category.image !== ''
+						? category.image
+						: '/images/characters/welcome-character.png'
+				}
 				alt='Logo'
 				width={40}
 				height={40}
