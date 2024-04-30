@@ -9,20 +9,28 @@ import CategoryBadge from '../components/CategoryBadge';
 import CategoryProjectItem from '../components/CategoryProjectItem';
 import Button from '@/app/components/Button';
 
+import { useProjectsByCategoryId } from '@/app/features/categories/getProjectsByCategoryId';
+import { useCategories } from '@/app/features/categories/getCategories';
+import LoadingSpinner from '@/app/components/LoadingSpinner';
+import { useCategoryById } from '@/app/features/categories/getCategoryById';
+
 const CategoryPage = () => {
 	const router = useRouter();
 	const { categoryId } = useParams();
 	const selectedCategoryId =
 		typeof categoryId === 'string' ? categoryId : categoryId[0];
-	console.log(categoryId);
-	const selectedCategory = Categories.find(
-		category => category.id === +selectedCategoryId,
-	);
-	console.log('selected', selectedCategory);
-	const categoryProjects = projects.filter(
-		project => project.parentId === +selectedCategoryId,
-	);
-	console.log('projects', categoryProjects);
+	const { data: projects, isLoading: isProjectsLoading } =
+		useProjectsByCategoryId(+selectedCategoryId);
+
+	const { data, isLoading: isCategoryLoading } =
+		useCategoryById(+selectedCategoryId);
+
+	const selectedCategory = data?.data?.collection;
+	console.log('Data', selectedCategory);
+
+	if (isProjectsLoading || isCategoryLoading) {
+		return <LoadingSpinner />;
+	}
 
 	return (
 		<div className='flex min-h-screen flex-col  justify-between'>
@@ -45,10 +53,10 @@ const CategoryPage = () => {
 					</div>
 				</div>
 				<p className='mx-4 font-bold text-gray-600'>
-					Projects ({categoryProjects.length})
+					Projects ({projects?.data?.length})
 				</p>
 				<div className='mt-2 '>
-					{categoryProjects.map(project => (
+					{projects?.data?.map(project => (
 						<CategoryProjectItem
 							project={project}
 							key={project.id}
