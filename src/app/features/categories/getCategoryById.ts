@@ -3,10 +3,14 @@ import { axios } from '@/lib/axios';
 import { useQuery } from '@tanstack/react-query';
 import { AxiosResponse } from 'axios';
 
+interface ICategoryResponse {
+	collection: ICategory;
+}
+
 export const getCategoryById = async (
 	id: number,
-): Promise<AxiosResponse<ICategory>> => {
-	return axios.get(`flow/collections?cid=${id}`);
+): Promise<AxiosResponse<ICategoryResponse>> => {
+	return axios.get(`collection/${id}`);
 };
 
 export const useCategoryById = (id: number) => {
