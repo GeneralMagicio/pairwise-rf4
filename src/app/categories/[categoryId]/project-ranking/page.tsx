@@ -15,6 +15,8 @@ import { useProjectsByCategoryId } from '@/app/features/categories/getProjectsBy
 import LoadingSpinner from '@/app/components/LoadingSpinner';
 import { InclusionState } from '../../types';
 import { useUpdateProjectInclusion } from '@/app/features/categories/updateProjectInclusion';
+import { AnimatePresence, motion } from 'framer-motion';
+import { useEffect } from 'react';
 
 const ProjectRankingPage = () => {
 	const router = useRouter();
@@ -49,7 +51,32 @@ const ProjectRankingPage = () => {
 		});
 	};
 
-	if (isCategoryLoading || isProjectsLoading) {
+	const animationVariants = {
+		hidden: { opacity: 0, x: -50 },
+		show: {
+			opacity: 1,
+			x: 0,
+			transition: {
+				duration: 0.5,
+			},
+		},
+		exit: {
+			opacity: 0,
+			x: 50,
+			transition: {
+				duration: 0.5,
+			},
+		},
+	};
+
+	useEffect(() => {
+		currentIndex === -1 &&
+			router.push(
+				`${Routes.Categories}/${categoryId}/project-ranking/done`,
+			);
+	}, [currentIndex]);
+
+	if (isCategoryLoading || isProjectsLoading || currentIndex === -1) {
 		return <LoadingSpinner />;
 	}
 	return (
@@ -71,11 +98,21 @@ const ProjectRankingPage = () => {
 						{currentIndex + 1} of {projectsCount} Projects Selected
 					</p>
 				</div>
-				<div className='mt-7 flex justify-center'>
-					<CategoryProjectRankingCard
-						project={projects?.data[currentIndex]!}
-					/>
-				</div>
+				<AnimatePresence mode='wait'>
+					<motion.div
+						key={currentIndex}
+						variants={animationVariants}
+						initial='hidden'
+						animate='show'
+						exit='exit'
+					>
+						<div className='mt-7 flex justify-center'>
+							<CategoryProjectRankingCard
+								project={projects?.data[currentIndex]!}
+							/>
+						</div>
+					</motion.div>
+				</AnimatePresence>
 				<div className='mb-3 flex justify-center gap-14 px-6 py-6'>
 					<Button
 						onClick={() =>
