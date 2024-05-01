@@ -19,7 +19,11 @@ const CategoryProjectRankingCard = ({
 		<div className='w-[324px] rounded-2xl px-3 pb-5 shadow-lg'>
 			<div className='mb-4'>
 				<Image
-					src={project.image ? project.image : ''}
+					src={
+						project.image
+							? project.image
+							: '/images/characters/welcome-character.png'
+					}
 					alt={project.name}
 					width={300}
 					height={300}
