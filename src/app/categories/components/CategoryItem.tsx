@@ -36,7 +36,7 @@ const CategoryItem = ({ category }: ICategoryProps) => {
 					{truncate(category.impactDescription, 70)}
 				</p>
 			</div>
-			<CategoryBadge />
+			{/* <CategoryBadge /> */}
 		</div>
 	);
 };
