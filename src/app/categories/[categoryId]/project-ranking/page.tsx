@@ -99,7 +99,7 @@ const ProjectRankingPage = () => {
 	}
 	return (
 		<div>
-			<div className='flex min-h-screen flex-col  justify-between'>
+			<div className='flex min-h-[calc(100dvh)] flex-col  justify-between'>
 				<div className='border-b border-b-gray-300 pb-7 pt-9'>
 					<div className='mx-4 flex justify-between gap-6'>
 						<p>{selectedCategory?.name}</p>

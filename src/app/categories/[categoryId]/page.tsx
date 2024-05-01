@@ -30,7 +30,7 @@ const CategoryPage = () => {
 	}
 
 	return (
-		<div className='flex min-h-screen flex-col  justify-between'>
+		<div className='flex min-h-[calc(100dvh)] flex-col  justify-between'>
 			<div>
 				<TopNavigation
 					link={Routes.Categories}

@@ -23,7 +23,7 @@ const CategoryRankingComment = () => {
 	);
 
 	return (
-		<div className='relative flex min-h-screen flex-col '>
+		<div className='relative flex min-h-[calc(100dvh)] flex-col '>
 			<div className='flex flex-grow flex-col'>
 				<TopRouteIndicator name={selectedCategory?.name} />
 				<div className='pb-8 pt-6'>

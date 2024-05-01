@@ -27,7 +27,7 @@ const CategoryRankingListPage = () => {
 	console.log('projects', listProjects);
 
 	return (
-		<div className='relative flex min-h-screen flex-col '>
+		<div className='relative flex min-h-[calc(100dvh)] flex-col '>
 			<div className='flex flex-grow flex-col'>
 				<TopRouteIndicator name={selectedCategory?.name} />
 				<div className='mx-4'>

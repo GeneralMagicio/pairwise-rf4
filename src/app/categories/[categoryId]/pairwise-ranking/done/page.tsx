@@ -12,7 +12,7 @@ const CategoryRankingDone = () => {
 	const { categoryId } = useParams();
 
 	return (
-		<div className='flex min-h-screen flex-col justify-between'>
+		<div className='flex min-h-[calc(100dvh)] flex-col justify-between'>
 			<div className='mx-auto flex h-[80vh] flex-col items-center justify-center gap-4'>
 				<div className='inline-flex items-center justify-center rounded-full border-2 border-red-500 bg-red-200 p-2'>
 					<IconCheck color='red' />

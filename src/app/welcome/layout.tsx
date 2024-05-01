@@ -8,7 +8,7 @@ import { Routes } from '../constants/Routes';
 const WelcomeLayout = ({ children }: { children: ReactNode }) => {
 	const router = useRouter();
 	return (
-		<div className='centered-mobile-max-width flex min-h-screen flex-col'>
+		<div className='centered-mobile-max-width flex min-h-[calc(100dvh)] flex-col'>
 			<div className='flex flex-grow flex-col justify-center px-6'>
 				{children}
 			</div>
