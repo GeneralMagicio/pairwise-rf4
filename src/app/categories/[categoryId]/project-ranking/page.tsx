@@ -10,19 +10,34 @@ import IconTrash from 'public/images/icons/IconTrash';
 import IconCheck from 'public/images/icons/IconCheck';
 import IconRefresh from 'public/images/icons/IconRefresh';
 import ProgressBar from '@/app/components/ProgressBar';
+import { useCategoryById } from '@/app/features/categories/getCategoryById';
+import { useProjectsByCategoryId } from '@/app/features/categories/getProjectsByCategoryId';
+import LoadingSpinner from '@/app/components/LoadingSpinner';
+import { InclusionState } from '../../types';
 
 const ProjectRankingPage = () => {
 	const router = useRouter();
 	const { categoryId } = useParams();
-	console.log('categoryId', categoryId);
+
 	const selectedCategoryId =
 		typeof categoryId === 'string' ? categoryId : categoryId[0];
-	const selectedCategory = Categories.find(
-		category => category.id === +selectedCategoryId,
-	);
-	const categoryProjects = projects.filter(
-		project => project.parentId === +selectedCategoryId,
-	);
+
+	const { data: projects, isLoading: isProjectsLoading } =
+		useProjectsByCategoryId(+selectedCategoryId);
+
+	const { data, isLoading: isCategoryLoading } =
+		useCategoryById(+selectedCategoryId);
+	const selectedCategory = data?.data?.collection;
+
+	const projectsCount = projects?.data ? projects?.data.length + 1 : 0;
+	const currentIndex =
+		projects?.data.findIndex(
+			project => project.inclusionState === InclusionState.Pending,
+		) || 0;
+	console.log('currentIndex', currentIndex);
+	if (isCategoryLoading || isProjectsLoading) {
+		return <LoadingSpinner />;
+	}
 	return (
 		<div>
 			<div className='flex min-h-screen flex-col  justify-between'>
@@ -35,11 +50,17 @@ const ProjectRankingPage = () => {
 					</div>
 				</div>
 				<div className='mx-8'>
-					<ProgressBar progress={20} />
-					<p className='mt-2 text-sm'>10 of 38 Projects Selected</p>
+					<ProgressBar
+						progress={(currentIndex + 1 / projectsCount) * 100}
+					/>
+					<p className='mt-2 text-sm'>
+						{currentIndex + 1} of {projectsCount} Projects Selected
+					</p>
 				</div>
 				<div className='mt-7 flex justify-center'>
-					<CategoryProjectRankingCard project={categoryProjects[0]} />
+					<CategoryProjectRankingCard
+						project={projects?.data[currentIndex]!}
+					/>
 				</div>
 				<div className='mb-3 flex justify-center gap-14 px-6 py-6'>
 					<Button className='rounded-full bg-red-500 p-4'>
