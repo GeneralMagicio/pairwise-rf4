@@ -1,4 +1,4 @@
-import { ICategory, IProject } from './types';
+import { ICategory, InclusionState, IProject } from './types';
 
 export const Categories: ICategory[] = [
 	{
@@ -63,6 +63,7 @@ export const projects: IProject[] = [
 			'https://content.optimism.io/rpgf3Application/v0/metadata/10/0x03f7a3FD58B090Abe577651fb92Fb4789826191e.json',
 		created_at: '2023-11-22T13:24:57.576Z',
 		type: 'project',
+		inclusionState: InclusionState.Pending,
 	},
 	{
 		id: 46,
@@ -81,6 +82,7 @@ export const projects: IProject[] = [
 			'https://content.optimism.io/rpgf3Application/v0/metadata/10/0x04cc6b487566B1C821bEa04d7ac0d23CEDe05cC9.json',
 		created_at: '2023-11-22T13:24:58.444Z',
 		type: 'project',
+		inclusionState: InclusionState.Pending,
 	},
 	{
 		id: 47,
@@ -99,6 +101,7 @@ export const projects: IProject[] = [
 			'https://content.optimism.io/rpgf3Application/v0/metadata/10/0x050549F8c196Bf1bcC293172746c847fD4D77d9d.json',
 		created_at: '2023-11-22T13:24:59.294Z',
 		type: 'project',
+		inclusionState: InclusionState.Pending,
 	},
 	{
 		id: 48,
@@ -117,5 +120,6 @@ export const projects: IProject[] = [
 			'https://content.optimism.io/rpgf3Application/v0/metadata/10/0x055D602C940b3cd7A158df0FD600C75744C9690e.json',
 		created_at: '2023-11-22T13:25:00.117Z',
 		type: 'project',
+		inclusionState: InclusionState.Pending,
 	},
 ];
