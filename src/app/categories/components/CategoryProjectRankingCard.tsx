@@ -5,6 +5,7 @@ import { truncate } from '@/app/helpers/text-helpers';
 import { useState } from 'react';
 import Drawer from '@/app/components/Drawer';
 import CategoriesProjectDrawerContent from './CategoriesProjectDrawerContent';
+import { motion } from 'framer-motion';
 
 interface ICategoryProjectRankingCardProps {
 	project: IProject;
@@ -15,35 +16,60 @@ const CategoryProjectRankingCard = ({
 }: ICategoryProjectRankingCardProps) => {
 	const [isDrawerOpen, setIsDrawerOpen] = useState(false);
 
+	const variants = {
+		hidden: { opacity: 0 },
+		show: {
+			opacity: 1,
+			transition: {
+				duration: 0.5,
+			},
+		},
+		exit: {
+			opacity: 0,
+			transition: {
+				duration: 0.5,
+			},
+		},
+	};
+	console.log('project', project);
 	return (
-		<div className='w-[324px] rounded-2xl px-3 pb-5 shadow-lg'>
-			<div className='mb-4'>
-				<Image
-					src={
-						project.image
-							? project.image
-							: '/images/characters/welcome-character.png'
-					}
-					alt={project.name}
-					width={300}
-					height={300}
-					className='rounded-2xl'
-				/>
-			</div>
-			<div className='flex justify-between'>
-				<p className='mb-4 font-bold'>{project.name}</p>
-				<div
-					className='cursor-pointer'
-					onClick={() => setIsDrawerOpen(true)}
-				>
-					<IconAlertCircle />
+		<motion.div
+			initial='hidden'
+			animate='show'
+			exit='exit'
+			variants={variants}
+		>
+			<div className='w-[324px] rounded-2xl px-3 pb-5 shadow-lg'>
+				<div className='mb-4'>
+					<Image
+						src={
+							project?.image
+								? project?.image
+								: '/images/characters/welcome-character.png'
+						}
+						alt={project.name}
+						width={300}
+						height={300}
+						className='rounded-2xl'
+					/>
 				</div>
+				<div className='flex justify-between'>
+					<p className='mb-4 font-bold'>{project.name}</p>
+					<div
+						className='cursor-pointer'
+						onClick={() => setIsDrawerOpen(true)}
+					>
+						<IconAlertCircle />
+					</div>
+				</div>
+				<p className='text-ph'>
+					{truncate(project.impactDescription, 90)}
+				</p>
+				<Drawer isOpen={isDrawerOpen} setIsOpen={setIsDrawerOpen}>
+					<CategoriesProjectDrawerContent project={project} />
+				</Drawer>
 			</div>
-			<p className='text-ph'>{truncate(project.impactDescription, 90)}</p>
-			<Drawer isOpen={isDrawerOpen} setIsOpen={setIsDrawerOpen}>
-				<CategoriesProjectDrawerContent project={project} />
-			</Drawer>
-		</div>
+		</motion.div>
 	);
 };
 
