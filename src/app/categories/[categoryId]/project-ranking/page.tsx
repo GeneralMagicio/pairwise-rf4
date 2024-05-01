@@ -46,6 +46,10 @@ const ProjectRankingPage = () => {
 		projects?.data.findIndex(
 			project => project.inclusionState === InclusionState.Pending,
 		) || 0;
+
+	const updatingProject =
+		isProjectsFetching || updateProjectInclusion.isPending;
+
 	console.log('currentIndex', currentIndex);
 
 	const handleProjectInclusion = (state: InclusionState) => {
@@ -89,9 +93,6 @@ const ProjectRankingPage = () => {
 				`${Routes.Categories}/${categoryId}/project-ranking/done`,
 			);
 	}, [currentIndex]);
-
-	const updatingProject =
-		isProjectsFetching || updateProjectInclusion.isPending;
 
 	if (isCategoryLoading || isProjectsLoading || currentIndex === -1) {
 		return <LoadingSpinner />;
