@@ -16,9 +16,12 @@ import LoadingSpinner from '@/app/components/LoadingSpinner';
 import { InclusionState } from '../../types';
 import { useUpdateProjectInclusion } from '@/app/features/categories/updateProjectInclusion';
 import { AnimatePresence, motion } from 'framer-motion';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 
 const ProjectRankingPage = () => {
+	const [exitDirection, setExitDirection] = useState(0);
+	const [exitRotation, setExitRotation] = useState(0);
+
 	const router = useRouter();
 	const { categoryId } = useParams();
 	const updateProjectInclusion = useUpdateProjectInclusion({
@@ -28,8 +31,11 @@ const ProjectRankingPage = () => {
 	const selectedCategoryId =
 		typeof categoryId === 'string' ? categoryId : categoryId[0];
 
-	const { data: projects, isLoading: isProjectsLoading } =
-		useProjectsByCategoryId(+selectedCategoryId);
+	const {
+		data: projects,
+		isLoading: isProjectsLoading,
+		isFetching: isProjectsFetching,
+	} = useProjectsByCategoryId(+selectedCategoryId);
 
 	const { data, isLoading: isCategoryLoading } =
 		useCategoryById(+selectedCategoryId);
@@ -43,6 +49,13 @@ const ProjectRankingPage = () => {
 	console.log('currentIndex', currentIndex);
 
 	const handleProjectInclusion = (state: InclusionState) => {
+		if (state === InclusionState.Excluded) {
+			setExitDirection(-150);
+			setExitRotation(-20);
+		} else if (state === InclusionState.Included) {
+			setExitDirection(150);
+			setExitRotation(20);
+		}
 		updateProjectInclusion.mutate({
 			data: {
 				state,
@@ -62,7 +75,8 @@ const ProjectRankingPage = () => {
 		},
 		exit: {
 			opacity: 0,
-			x: 50,
+			x: exitDirection,
+			rotate: exitRotation,
 			transition: {
 				duration: 0.5,
 			},
@@ -75,6 +89,9 @@ const ProjectRankingPage = () => {
 				`${Routes.Categories}/${categoryId}/project-ranking/done`,
 			);
 	}, [currentIndex]);
+
+	const updatingProject =
+		isProjectsFetching || updateProjectInclusion.isPending;
 
 	if (isCategoryLoading || isProjectsLoading || currentIndex === -1) {
 		return <LoadingSpinner />;
@@ -115,26 +132,26 @@ const ProjectRankingPage = () => {
 				</AnimatePresence>
 				<div className='mb-3 flex justify-center gap-14 px-6 py-6'>
 					<Button
+						disabled={updatingProject}
 						onClick={() =>
 							handleProjectInclusion(InclusionState.Excluded)
 						}
-						className='rounded-full bg-red-500 p-4'
+						className={`rounded-full p-4 ${updatingProject ? 'cursor-not-allowed bg-red-200' : 'bg-red-500'}`}
 					>
 						<IconTrash />
 					</Button>
-					<Button className='rounded-full p-4'>
+					<Button
+						disabled={updatingProject}
+						className='rounded-full p-4'
+					>
 						<IconRefresh />
 					</Button>
 					<Button
-						className='rounded-full bg-green-600 p-4'
+						disabled={updatingProject}
+						className={`rounded-full p-4 ${updatingProject ? 'cursor-not-allowed bg-green-200' : 'bg-green-600'}`}
 						onClick={() =>
 							handleProjectInclusion(InclusionState.Included)
 						}
-						// onClick={() =>
-						// 	router.push(
-						// 		`${Routes.Categories}/${categoryId}/project-ranking/done`,
-						// 	)
-						// }
 					>
 						<IconCheck />
 					</Button>
