@@ -13,6 +13,12 @@ export interface ICategory {
 	type: string;
 }
 
+export enum InclusionState {
+	Included = 'included',
+	Excluded = 'excluded',
+	Pending = 'pending',
+}
+
 export interface IProject {
 	id: number;
 	name: string;
@@ -26,4 +32,14 @@ export interface IProject {
 	metadataUrl: string | null;
 	created_at: string;
 	type: 'collection' | 'project';
+	inclusionState: InclusionState;
 }
+
+export type CollectionProgressStatus =
+	| 'Attested'
+	| 'Finished'
+	| 'WIP - Threshold'
+	| 'WIP'
+	| 'Filtered'
+	| 'Filtering'
+	| 'Pending';
