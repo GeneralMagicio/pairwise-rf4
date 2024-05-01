@@ -14,10 +14,14 @@ import { useCategoryById } from '@/app/features/categories/getCategoryById';
 import { useProjectsByCategoryId } from '@/app/features/categories/getProjectsByCategoryId';
 import LoadingSpinner from '@/app/components/LoadingSpinner';
 import { InclusionState } from '../../types';
+import { useUpdateProjectInclusion } from '@/app/features/categories/updateProjectInclusion';
 
 const ProjectRankingPage = () => {
 	const router = useRouter();
 	const { categoryId } = useParams();
+	const updateProjectInclusion = useUpdateProjectInclusion({
+		categoryId: +categoryId,
+	});
 
 	const selectedCategoryId =
 		typeof categoryId === 'string' ? categoryId : categoryId[0];
@@ -35,6 +39,16 @@ const ProjectRankingPage = () => {
 			project => project.inclusionState === InclusionState.Pending,
 		) || 0;
 	console.log('currentIndex', currentIndex);
+
+	const handleProjectInclusion = (state: InclusionState) => {
+		updateProjectInclusion.mutate({
+			data: {
+				state,
+				id: projects?.data[currentIndex]?.id!,
+			},
+		});
+	};
+
 	if (isCategoryLoading || isProjectsLoading) {
 		return <LoadingSpinner />;
 	}
@@ -51,7 +65,7 @@ const ProjectRankingPage = () => {
 				</div>
 				<div className='mx-8'>
 					<ProgressBar
-						progress={(currentIndex + 1 / projectsCount) * 100}
+						progress={((currentIndex + 1) / projectsCount) * 100}
 					/>
 					<p className='mt-2 text-sm'>
 						{currentIndex + 1} of {projectsCount} Projects Selected
@@ -63,7 +77,12 @@ const ProjectRankingPage = () => {
 					/>
 				</div>
 				<div className='mb-3 flex justify-center gap-14 px-6 py-6'>
-					<Button className='rounded-full bg-red-500 p-4'>
+					<Button
+						onClick={() =>
+							handleProjectInclusion(InclusionState.Excluded)
+						}
+						className='rounded-full bg-red-500 p-4'
+					>
 						<IconTrash />
 					</Button>
 					<Button className='rounded-full p-4'>
@@ -72,10 +91,13 @@ const ProjectRankingPage = () => {
 					<Button
 						className='rounded-full bg-green-600 p-4'
 						onClick={() =>
-							router.push(
-								`${Routes.Categories}/${categoryId}/project-ranking/done`,
-							)
+							handleProjectInclusion(InclusionState.Included)
 						}
+						// onClick={() =>
+						// 	router.push(
+						// 		`${Routes.Categories}/${categoryId}/project-ranking/done`,
+						// 	)
+						// }
 					>
 						<IconCheck />
 					</Button>
