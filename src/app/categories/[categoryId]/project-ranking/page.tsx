@@ -19,6 +19,7 @@ import { AnimatePresence, motion } from 'framer-motion';
 import { useEffect, useState } from 'react';
 
 const ProjectRankingPage = () => {
+	//States for animation
 	const [exitDirection, setExitDirection] = useState(0);
 	const [exitRotation, setExitRotation] = useState(0);
 
@@ -49,6 +50,8 @@ const ProjectRankingPage = () => {
 
 	const updatingProject =
 		isProjectsFetching || updateProjectInclusion.isPending;
+
+	const isLastProjectInTheList = currentIndex === projectsCount - 1;
 
 	console.log('currentIndex', currentIndex);
 
