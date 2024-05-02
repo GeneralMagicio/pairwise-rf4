@@ -1,10 +1,11 @@
-import { ICategory } from '@/app/categories/types';
+import { CollectionProgressStatus, ICategory } from '@/app/categories/types';
 import { axios } from '@/lib/axios';
 import { useQuery } from '@tanstack/react-query';
 import { AxiosResponse } from 'axios';
 
 interface ICategoryResponse {
 	collection: ICategory;
+	progress: CollectionProgressStatus;
 }
 
 export const getCategoryById = async (

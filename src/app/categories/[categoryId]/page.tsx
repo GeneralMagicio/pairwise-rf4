@@ -24,6 +24,7 @@ const CategoryPage = () => {
 		useCategoryById(+selectedCategoryId);
 
 	const selectedCategory = data?.data?.collection;
+	const selectedCategoryProgress = data?.data.progress;
 
 	if (isProjectsLoading || isCategoryLoading) {
 		return <LoadingSpinner />;
@@ -41,7 +42,7 @@ const CategoryPage = () => {
 						<h1 className='text-xl font-bold'>
 							{selectedCategory?.name}
 						</h1>
-						<CategoryBadge />
+						<CategoryBadge progress={selectedCategoryProgress} />
 					</div>
 					<div className='mx-4 my-4'>
 						<p className='text-ph'>
