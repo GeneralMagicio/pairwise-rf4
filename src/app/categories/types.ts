@@ -11,6 +11,7 @@ export interface ICategory {
 	metadataUrl: null | string;
 	created_at: string;
 	type: string;
+	progress: CollectionProgressStatus;
 }
 
 export enum InclusionState {
