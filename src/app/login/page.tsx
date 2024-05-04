@@ -24,6 +24,8 @@ import { InfoBox } from './components/InfoBox';
 import { useIsAutoConnecting } from '@/lib/third-web/AutoConnect';
 import { SignupSuccess } from './components/success-screens/SignupSuccess';
 import { SigninSuccess } from './components/success-screens/SigninSuccess';
+import { loginToPwBackend } from '@/utils/auth';
+import { activeChain } from '@/lib/third-web/constants';
 
 enum Step {
 	Main,
@@ -46,6 +48,7 @@ export default function Home() {
 
 	const disconnectWallet = useDisconnect();
 	const { connect, error } = useConnect();
+	// const {signMessage} = useActiveAccount()
 	const [email, setEmail] = useState<string>('');
 
 	const handleEmail = (email: string) => {
@@ -89,12 +92,15 @@ export default function Home() {
 
 	useEffect(() => {
 		if (!wallet) return;
+		const account = wallet.getAccount()
+		if (!account) return
 		console.log('wallet:', wallet);
 		console.log('acc:', wallet.getAccount());
 
 		// if (step === Step.Otp || step === Step.Main) {
 		setStep(Step.SuccessSignIn);
-		setTimeout(() => router.push('/welcome'), 500);
+		loginToPwBackend(activeChain.id, account.address, account.signMessage)
+		setTimeout(() => router.push('/welcome'), 2000);
 		// }
 	}, [wallet, router]);
 
