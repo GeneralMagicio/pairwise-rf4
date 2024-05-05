@@ -17,6 +17,7 @@ import { InclusionState } from '../../types';
 import { useUpdateProjectInclusion } from '@/app/features/categories/updateProjectInclusion';
 import { AnimatePresence, motion } from 'framer-motion';
 import { useEffect, useState } from 'react';
+import { useUpdateCategoryMarkFiltered } from '@/app/features/categories/updateCategoryMarkFiltered';
 
 const ProjectRankingPage = () => {
 	//States for animation
@@ -26,6 +27,10 @@ const ProjectRankingPage = () => {
 	const router = useRouter();
 	const { categoryId } = useParams();
 	const updateProjectInclusion = useUpdateProjectInclusion({
+		categoryId: +categoryId,
+	});
+
+	const updateCategoryMarkFiltered = useUpdateCategoryMarkFiltered({
 		categoryId: +categoryId,
 	});
 
@@ -42,18 +47,22 @@ const ProjectRankingPage = () => {
 		useCategoryById(+selectedCategoryId);
 	const selectedCategory = data?.data?.collection;
 
-	const projectsCount = projects?.data ? projects?.data.length + 1 : 0;
-	const currentIndex =
+	const selectedCategoryProgress = data?.data.progress;
+
+	const projectsCount = projects?.data ? projects?.data.length : 0;
+
+	const backendCurrentIndex: number =
 		projects?.data.findIndex(
 			project => project.inclusionState === InclusionState.Pending,
 		) || 0;
+
+	const [currentIndex, setCurrentIndex] = useState(backendCurrentIndex);
 
 	const updatingProject =
 		isProjectsFetching || updateProjectInclusion.isPending;
 
 	const isLastProjectInTheList = currentIndex === projectsCount - 1;
-
-	console.log('currentIndex', currentIndex);
+	console.log('isLastProjectInTheList', isLastProjectInTheList);
 
 	const handleProjectInclusion = (state: InclusionState) => {
 		if (state === InclusionState.Excluded) {
@@ -63,13 +72,41 @@ const ProjectRankingPage = () => {
 			setExitDirection(150);
 			setExitRotation(20);
 		}
-		updateProjectInclusion.mutate({
-			data: {
-				state,
-				id: projects?.data[currentIndex]?.id!,
-			},
-		});
+
+		updateProjectInclusion
+			.mutateAsync({
+				data: {
+					state,
+					id: projects?.data[currentIndex]?.id!,
+				},
+			})
+			.then(() => {
+				if (!isLastProjectInTheList) {
+					setCurrentIndex(curr => curr + 1);
+				} else {
+					updateCategoryMarkFiltered
+						.mutateAsync({
+							data: {
+								cid: +categoryId!,
+							},
+						})
+						.then(() => {
+							router.push(
+								`${Routes.Categories}/${categoryId}/project-ranking/done`,
+							);
+						});
+				}
+			});
 	};
+
+	// Function to handle revisiting previous votes
+	const handleGoBack = () => {
+		if (currentIndex > 0) {
+			setCurrentIndex(curr => curr - 1);
+		}
+	};
+
+	const isRevertDisabled = updatingProject || currentIndex === 0;
 
 	const animationVariants = {
 		hidden: { opacity: 0, x: -50 },
@@ -91,13 +128,39 @@ const ProjectRankingPage = () => {
 	};
 
 	useEffect(() => {
-		currentIndex === -1 &&
+		if (selectedCategoryProgress === 'Filtered') {
 			router.push(
-				`${Routes.Categories}/${categoryId}/project-ranking/done`,
+				`${Routes.Categories}/${categoryId}/project-ranking/summary`,
 			);
-	}, [currentIndex]);
+		}
+		if (
+			backendCurrentIndex === -1 &&
+			selectedCategoryProgress === 'Filtering'
+		) {
+			updateCategoryMarkFiltered
+				.mutateAsync({
+					data: {
+						cid: +categoryId!,
+					},
+				})
+				.then(() => {
+					router.push(
+						`${Routes.Categories}/${categoryId}/project-ranking/done`,
+					);
+				});
+		}
+	}, [backendCurrentIndex]);
 
-	if (isCategoryLoading || isProjectsLoading || currentIndex === -1) {
+	useEffect(() => {
+		setCurrentIndex(backendCurrentIndex);
+	}, [backendCurrentIndex]);
+
+	if (
+		isCategoryLoading ||
+		isProjectsLoading ||
+		backendCurrentIndex === -1 ||
+		!projects?.data
+	) {
 		return <LoadingSpinner />;
 	}
 	return (
@@ -113,11 +176,17 @@ const ProjectRankingPage = () => {
 				</div>
 				<div className='mx-8'>
 					<ProgressBar
-						progress={((currentIndex + 1) / projectsCount) * 100}
+						progress={
+							((backendCurrentIndex + 1) / projectsCount) * 100
+						}
 					/>
 					<p className='mt-2 text-sm'>
-						{currentIndex + 1} of {projectsCount} Projects Selected
+						{backendCurrentIndex + 1} of {projectsCount} Projects
+						Selected
 					</p>
+					Backend Current Index: {backendCurrentIndex} ---- Current
+					Index: {currentIndex} ---- isLastOnTheList:{' '}
+					{isLastProjectInTheList ? 'Yes' : 'No'}
 				</div>
 				<AnimatePresence mode='wait'>
 					<motion.div
@@ -145,8 +214,9 @@ const ProjectRankingPage = () => {
 						<IconTrash />
 					</Button>
 					<Button
-						disabled={updatingProject}
-						className='rounded-full p-4'
+						disabled={isRevertDisabled}
+						className={`rounded-full p-4 ${isRevertDisabled && 'cursor-not-allowed '}`}
+						onClick={handleGoBack}
 					>
 						<IconRefresh />
 					</Button>
