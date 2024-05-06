@@ -42,7 +42,10 @@ const Drawer: React.FC<DrawerProps> = ({ isOpen, setIsOpen, children }) => {
 			{isOpen && (
 				<motion.div
 					className='fixed inset-0 z-40 bg-slate-700 bg-opacity-50 backdrop-blur-sm backdrop-filter'
-					onClick={() => setIsOpen(false)}
+					onClick={e => {
+						e.stopPropagation();
+						setIsOpen(false);
+					}}
 					initial='closed'
 					animate='open'
 					exit='closed'
