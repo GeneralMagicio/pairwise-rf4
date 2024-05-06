@@ -20,11 +20,13 @@ const CategoryItem = ({ category }: ICategoryProps) => {
 				router.push(
 					`${Routes.Categories}/${category.id}/project-ranking/summary`,
 				);
+				break;
 			case 'Finished':
 			case 'Attested':
 				router.push(
 					`${Routes.Categories}/${category.id}/project-ranking/summary`,
 				);
+				break;
 			default:
 				router.push(`${Routes.Categories}/${category.id}`);
 		}
