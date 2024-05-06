@@ -38,7 +38,7 @@ const CategoryPage = () => {
 					text={selectedCategory?.name}
 				/>
 				<div className='mt-6'>
-					<div className='mx-4 flex justify-between'>
+					<div className='mx-4 flex items-center justify-between'>
 						<h1 className='text-xl font-bold'>
 							{selectedCategory?.name}
 						</h1>
