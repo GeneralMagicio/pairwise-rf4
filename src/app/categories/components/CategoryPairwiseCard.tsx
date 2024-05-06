@@ -3,12 +3,16 @@ import { IProject } from '../types';
 import { truncate } from '@/app/helpers/text-helpers';
 import { useParams, useRouter } from 'next/navigation';
 import { Routes } from '@/app/constants/Routes';
+import Drawer from '@/app/components/Drawer';
+import CategoriesProjectDrawerContent from './CategoriesProjectDrawerContent';
+import { useState } from 'react';
 
 interface ICategoryPairwiseCardProps {
 	project: IProject;
 }
 
 const CategoryPairwiseCard = ({ project }: ICategoryPairwiseCardProps) => {
+	const [isDrawerOpen, setIsDrawerOpen] = useState(false);
 	const router = useRouter();
 	const { categoryId } = useParams();
 	const selectedCategoryId =
@@ -16,7 +20,7 @@ const CategoryPairwiseCard = ({ project }: ICategoryPairwiseCardProps) => {
 
 	return (
 		<div
-			onClick={() =>
+			onClick={e =>
 				router.push(
 					`${Routes.Categories}/${selectedCategoryId}/pairwise-ranking/ranking-list`,
 				)
@@ -37,12 +41,20 @@ const CategoryPairwiseCard = ({ project }: ICategoryPairwiseCardProps) => {
 						<p className=' font-bold '>
 							{truncate(project.name, 16)}
 						</p>
-						<div>
+						<div
+							onClick={e => {
+								e.stopPropagation();
+								setIsDrawerOpen(true);
+							}}
+						>
 							<IconAlertCircle color='#ffff' />
 						</div>
 					</div>
 				</div>
 			</div>
+			<Drawer isOpen={isDrawerOpen} setIsOpen={setIsDrawerOpen}>
+				<CategoriesProjectDrawerContent project={project} />
+			</Drawer>
 		</div>
 	);
 };
