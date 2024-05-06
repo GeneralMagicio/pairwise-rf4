@@ -14,10 +14,26 @@ interface ICategoryProps {
 const CategoryItem = ({ category }: ICategoryProps) => {
 	const router = useRouter();
 
+	const onCategoryClick = () => {
+		switch (category.progress) {
+			case 'Filtered':
+				router.push(
+					`${Routes.Categories}/${category.id}/project-ranking/summary`,
+				);
+			case 'Finished':
+			case 'Attested':
+				router.push(
+					`${Routes.Categories}/${category.id}/project-ranking/summary`,
+				);
+			default:
+				router.push(`${Routes.Categories}/${category.id}`);
+		}
+	};
+
 	return (
 		<div
 			className='flex cursor-pointer items-center justify-between gap-2 border-b border-b-gray-300 py-3'
-			onClick={() => router.push(`${Routes.Categories}/${category.id}`)}
+			onClick={onCategoryClick}
 		>
 			<Image
 				className='rounded-full'
