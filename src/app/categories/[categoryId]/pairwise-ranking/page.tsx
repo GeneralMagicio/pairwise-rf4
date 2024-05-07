@@ -9,6 +9,12 @@ import { useGetPairwisePairs } from '@/app/features/categories/getPairwisePairs'
 import LoadingSpinner from '@/app/components/LoadingSpinner';
 import { useCategoryById } from '@/app/features/categories/getCategoryById';
 import { useUpdateProjectVote } from '@/app/features/categories/updateProjectVote';
+import { AnimatePresence, motion } from 'framer-motion';
+
+const variants = {
+	hidden: { opacity: 0 },
+	visible: { opacity: 1 },
+};
 
 const CategoryPairwiseRankingPage = () => {
 	const { categoryId } = useParams();
@@ -65,12 +71,28 @@ const CategoryPairwiseRankingPage = () => {
 				{`Which project should receive more RetroPGF funding in ${categoryData?.data.collection.name}?`}
 			</p>
 			<div className='flex flex-col items-center justify-center gap-3'>
-				<div onClick={() => handleVote(firstProject.id)}>
-					<CategoryPairwiseCard project={firstProject} />
-				</div>
-				<div onClick={() => handleVote(secondProject.id)}>
-					<CategoryPairwiseCard project={secondProject} />
-				</div>
+				<AnimatePresence mode='wait'>
+					<motion.div
+						key={firstProject.id}
+						onClick={() => handleVote(firstProject.id)}
+						initial='hidden'
+						animate='visible'
+						exit='hidden'
+						variants={variants}
+					>
+						<CategoryPairwiseCard project={firstProject} />
+					</motion.div>
+					<motion.div
+						key={secondProject.id}
+						onClick={() => handleVote(secondProject.id)}
+						initial='hidden'
+						animate='visible'
+						exit='hidden'
+						variants={variants}
+					>
+						<CategoryPairwiseCard project={secondProject} />
+					</motion.div>
+				</AnimatePresence>
 			</div>
 		</div>
 	);
