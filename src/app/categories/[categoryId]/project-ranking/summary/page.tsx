@@ -64,7 +64,7 @@ const ProjectRankingSummaryPage = () => {
 					))}
 					<div className='mt-6'>
 						<p className='mb-2 text-lg font-semibold'>
-							Selected ({excludedProjects?.length || 0})
+							Not Selected ({excludedProjects?.length || 0})
 						</p>
 						{excludedProjects?.map(project => (
 							<div key={project.id} className='opacity-40'>
