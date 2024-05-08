@@ -6,6 +6,7 @@ import WagmiAppProvider from './providers/WagmiAppProvider';
 import './globals.css';
 import './globals.css';
 import { Thirdweb5Provider } from '@/lib/third-web/provider';
+import { AuthGuard } from '@/utils/AuthGuard';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -25,7 +26,9 @@ export default function RootLayout({
 				<WagmiAppProvider>
 					<TanstackProvider>
 						<Thirdweb5Provider>
-							<div>{children}</div>
+							<AuthGuard>
+								<div>{children}</div>
+							</AuthGuard>
 						</Thirdweb5Provider>
 					</TanstackProvider>
 					<div id='modal-root'></div>

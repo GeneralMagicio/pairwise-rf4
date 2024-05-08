@@ -11,14 +11,17 @@ import { useRouter } from 'next/navigation';
 const AutoConnectContext = React.createContext<{
 	isAutoConnecting: boolean | null;
 	setIsAutoConnecting: Function;
-}>({ isAutoConnecting: null, setIsAutoConnecting: () => {} });
+	loggedToPw: number;
+	setLoggedToPw: Function;
+}>({ isAutoConnecting: null, setIsAutoConnecting: () => {}, loggedToPw: 12345, setLoggedToPw: () => {} });
 
 export const AutoConnectProvider = ({ children }: { children: ReactNode }) => {
 	const [isAutoConnecting, setIsAutoConnecting] = useState(null);
+	const [loggedToPw, setLoggedToPw] = useState<number>(Date.now())
 
 	return (
 		<AutoConnectContext.Provider
-			value={{ isAutoConnecting, setIsAutoConnecting }}
+			value={{ isAutoConnecting, setIsAutoConnecting, loggedToPw, setLoggedToPw }}
 		>
 			{children}
 		</AutoConnectContext.Provider>
@@ -26,16 +29,16 @@ export const AutoConnectProvider = ({ children }: { children: ReactNode }) => {
 };
 
 export const useIsAutoConnecting = () => {
-	const { isAutoConnecting, setIsAutoConnecting } =
+	const { isAutoConnecting, setIsAutoConnecting, loggedToPw, setLoggedToPw } =
 		useContext(AutoConnectContext);
 
-	return { isAutoConnecting, setIsAutoConnecting };
+	return { isAutoConnecting, setIsAutoConnecting, loggedToPw, setLoggedToPw  };
 };
 
 export const ThirdwebAutoConnect = () => {
 	const { connect } = useConnect();
 	const { replace, refresh } = useRouter();
-	const { isAutoConnecting, setIsAutoConnecting } = useIsAutoConnecting();
+	const { isAutoConnecting, setIsAutoConnecting, setLoggedToPw } = useIsAutoConnecting();
 	const account = useActiveAccount();
 	const wallet = useActiveWallet()
 
@@ -77,6 +80,7 @@ export const ThirdwebAutoConnect = () => {
 					account.address,
 					account.signMessage,
 				);
+				setLoggedToPw(Date.now())
 				refresh();
 			}
 		}

@@ -1,8 +1,8 @@
-import { axiosInstance } from './axiosInstance'
+import { axios } from '@/lib/axios'
 import { User } from './types'
 import { Account } from 'thirdweb/wallets'
 
-axiosInstance.interceptors.response.use(
+axios.interceptors.response.use(
   function (response) {
     return response
   },
@@ -15,8 +15,9 @@ axiosInstance.interceptors.response.use(
 )
 
 export const isLoggedIn = async () => {
+  if (localStorage.getItem("auth")) return false
   try {
-    const { data } = await axiosInstance.get<User>('/auth/isloggedin')
+    const { data } = await axios.get<User>('/auth/isloggedin')
     return data
   } catch (err) {
     return false
@@ -25,7 +26,7 @@ export const isLoggedIn = async () => {
 
 // const fetchNonce = async () => {
 //   try {
-//     const { data } = await axiosInstance.get<string>('/auth/nonce')
+//     const { data } = await axios.get<string>('/auth/nonce')
 //     return data
 //   } catch (err) {
 //     console.error(err)
@@ -56,13 +57,13 @@ export const loginToPwBackend = async (
   })
 
   // Verify signature
-  const verifyRes = await axiosInstance.post('/auth/login', {
+  const verifyRes = await axios.post('/auth/login', {
     ...{ message, signature: `${signature}`, address, chainId },
   })
 
   window.localStorage.setItem('auth', verifyRes.data)
   window.localStorage.setItem('loggedInAddress', address)
-  axiosInstance.defaults.headers.common['auth'] = verifyRes.data
+  axios.defaults.headers.common['auth'] = verifyRes.data
   return verifyRes
 }
 
@@ -70,10 +71,10 @@ export const logoutFromPwBackend = async () => {
   try {
     window.localStorage.removeItem('auth')
     window.localStorage.removeItem('loggedInAddress')
-    if (axiosInstance.defaults.headers.common['auth']) {
-      delete axiosInstance.defaults.headers.common['auth']
+    if (axios.defaults.headers.common['auth']) {
+      delete axios.defaults.headers.common['auth']
     }
-    await axiosInstance.post('/auth/logout')
+    await axios.post('/auth/logout')
   } catch (err) {
     console.error(err)
   }
