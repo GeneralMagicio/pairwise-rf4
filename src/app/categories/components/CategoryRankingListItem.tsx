@@ -44,6 +44,7 @@ const CategoryRankingListItem = ({
 					</div>
 				</div>
 				<div
+					style={{ touchAction: 'none' }}
 					className='cursor-pointer'
 					onPointerDown={e => controls.start(e)}
 				>
