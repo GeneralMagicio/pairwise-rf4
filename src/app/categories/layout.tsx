@@ -2,8 +2,7 @@
 
 import React, { ReactNode } from 'react';
 import Header from '../components/Header'; // Adjust the path as necessary
-import { useParams, useRouter } from 'next/navigation';
-import Link from 'next/link';
+import { useParams } from 'next/navigation';
 
 const CategoriesLayout = ({ children }: { children: ReactNode }) => {
 	const params = useParams();

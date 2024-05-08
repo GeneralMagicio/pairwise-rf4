@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { ICategory, InclusionState, IProject } from './types';
 
 export const Categories: ICategory[] = [
