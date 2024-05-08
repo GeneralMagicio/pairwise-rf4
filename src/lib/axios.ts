@@ -4,6 +4,8 @@ import Axios, { InternalAxiosRequestConfig } from 'axios';
 function authRequestInterceptor(config: InternalAxiosRequestConfig) {
 	config.headers = config.headers || {};
 	config.headers.Accept = 'application/json';
+	const token = localStorage.getItem('auth')
+	if (token) config.headers.auth = token
 	return config;
 }
 
