@@ -57,7 +57,7 @@ export const loginToPwBackend = async (
 
   // Verify signature
   const verifyRes = await axiosInstance.post('/auth/login', {
-    ...{ message, signature: `${signature}6`, address, chainId },
+    ...{ message, signature: `${signature}`, address, chainId },
   })
 
   window.localStorage.setItem('auth', verifyRes.data)

@@ -93,15 +93,9 @@ export default function Home() {
 	useEffect(() => {
 		if (!wallet) return;
 		const account = wallet.getAccount()
-		if (!account) return
-		console.log('wallet:', wallet);
-		console.log('acc:', wallet.getAccount());
-
-		// if (step === Step.Otp || step === Step.Main) {
+		if (!account) return		
 		setStep(Step.SuccessSignIn);
-		loginToPwBackend(activeChain.id, account.address, account.signMessage)
 		setTimeout(() => router.push('/welcome'), 2000);
-		// }
 	}, [wallet, router]);
 
 	const handleEmailLogin =
