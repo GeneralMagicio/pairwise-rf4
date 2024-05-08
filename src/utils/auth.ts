@@ -42,11 +42,14 @@ export const isLoggedIn = async () => {
 //   return result;
 // }
 
+export let alreadyInProgress = false
+
 export const loginToPwBackend = async (
   chainId: number,
   address: string,
   signFunction: Account['signMessage']
 ) => {
+  alreadyInProgress = true
   // const nonce = await fetchNonce()
   // const nonce = generateRandomString(16
 
@@ -64,6 +67,8 @@ export const loginToPwBackend = async (
   window.localStorage.setItem('auth', verifyRes.data)
   window.localStorage.setItem('loggedInAddress', address)
   axios.defaults.headers.common['auth'] = verifyRes.data
+
+  alreadyInProgress = false
   return verifyRes
 }
 

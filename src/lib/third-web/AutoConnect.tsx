@@ -5,7 +5,7 @@ import React, { ReactNode, useCallback, useContext, useEffect, useState } from '
 import { WalletId, createWallet } from 'thirdweb/wallets';
 import { useActiveAccount, useActiveWallet, useConnect } from 'thirdweb/react';
 import { LAST_CONNECT_PERSONAL_WALLET_ID, activeChain } from './constants';
-import { isLoggedIn, loginToPwBackend } from '@/utils/auth';
+import { alreadyInProgress, isLoggedIn, loginToPwBackend } from '@/utils/auth';
 import { useRouter } from 'next/navigation';
 
 const AutoConnectContext = React.createContext<{
@@ -74,7 +74,7 @@ export const ThirdwebAutoConnect = () => {
 			replace('/login');
 		} else if (account && wallet) {
 			const validToken = await isLoggedIn();
-			if (!validToken) {	
+			if (!validToken && alreadyInProgress === false) {	
 				await loginToPwBackend(
 					activeChain.id,
 					account.address,
