@@ -3,33 +3,47 @@
 import { Categories, projects } from '@/app/categories/mockData';
 import { useParams, useRouter } from 'next/navigation';
 import { Reorder } from 'framer-motion';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import TopRouteIndicator from '@/app/components/TopRouteIndicator';
 import CategoryRankingListItem from '@/app/categories/components/CategoryRankingListItem';
 import Button from '@/app/components/Button';
 import { Routes } from '@/app/constants/Routes';
+import { useProjectsRankingByCategoryId } from '@/app/features/categories/getProjectsRankingByCategoryId';
+import { IProject } from '@/app/categories/types';
+import LoadingSpinner from '@/app/components/LoadingSpinner';
+import { useCategoryById } from '@/app/features/categories/getCategoryById';
 
 const CategoryRankingListPage = () => {
-	const [listProjects, setListProjects] = useState(projects);
 	const router = useRouter();
 	const { categoryId } = useParams();
+	const [listProjects, setListProjects] = useState<IProject[]>([]);
 
 	const selectedCategoryId =
 		typeof categoryId === 'string' ? categoryId : categoryId[0];
-	console.log(categoryId);
-	const selectedCategory = Categories.find(
-		category => category.id === +selectedCategoryId,
-	);
-	console.log('selected', selectedCategory);
-	const categoryProjects = projects.filter(
-		project => project.parentId === +selectedCategoryId,
-	);
-	console.log('projects', listProjects);
+
+	const listProjectsIds = listProjects.map(project => project.id);
+	console.log('listProjectsIds', listProjectsIds);
+
+	const { data: projectsRanking, isLoading: isProjectsRankingLoading } =
+		useProjectsRankingByCategoryId(+selectedCategoryId);
+
+	const { data: category, isLoading: isCategoryLoading } =
+		useCategoryById(+selectedCategoryId);
+
+	useEffect(() => {
+		if (projectsRanking?.data.ranking) {
+			setListProjects(projectsRanking?.data.ranking);
+		}
+	}, [projectsRanking?.data.ranking]);
+
+	if (isProjectsRankingLoading || isCategoryLoading) {
+		return <LoadingSpinner />;
+	}
 
 	return (
 		<div className='relative flex min-h-[calc(100dvh)] flex-col '>
 			<div className='flex flex-grow flex-col'>
-				<TopRouteIndicator name={selectedCategory?.name} />
+				<TopRouteIndicator name={category?.data?.collection.name} />
 				<div className='mx-4'>
 					<p className='mt-6 text-2xl font-bold'>Well done!</p>
 					<p className='mt-2 text-ph'>
@@ -64,7 +78,7 @@ const CategoryRankingListPage = () => {
 				<Button
 					onClick={() =>
 						router.push(
-							`${Routes.Categories}/${selectedCategory?.id}/pairwise-ranking/comment`,
+							`${Routes.Categories}/${category?.data?.collection?.id}/pairwise-ranking/comment`,
 						)
 					}
 					className='w-full bg-primary'
