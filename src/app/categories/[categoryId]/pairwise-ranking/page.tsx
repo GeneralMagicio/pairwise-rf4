@@ -10,6 +10,7 @@ import LoadingSpinner from '@/app/components/LoadingSpinner';
 import { useCategoryById } from '@/app/features/categories/getCategoryById';
 import { useUpdateProjectVote } from '@/app/features/categories/updateProjectVote';
 import { Routes } from '@/app/constants/Routes';
+import Button from '@/app/components/Button';
 
 const variants = {
 	hidden: { opacity: 0 },
@@ -42,6 +43,9 @@ const CategoryPairwiseRankingPage = () => {
 		((pairwisePairs?.data.votedPairs ?? 0) /
 			(pairwisePairs?.data.totalPairs ?? 1)) *
 		100;
+	const thresholdPercentage = pairwisePairs?.data.threshold
+		? +pairwisePairs?.data.threshold * 100
+		: 100;
 
 	const handleVote = async (pickedId: number) => {
 		mutate({
@@ -81,38 +85,59 @@ const CategoryPairwiseRankingPage = () => {
 	}
 
 	return (
-		<div>
-			<TopRouteIndicator name={categoryData?.data.collection.name} />
-			<div className='mb-10 mt-6 px-8'>
-				<ProgressBar progress={currentPercentage} />
-				<p className='mt-2 text-sm'>
-					{currentPercentage.toFixed(2)}% of 100% Projects ranked
-				</p>
-				<p>Voted {pairwisePairs?.data.votedPairs}</p>
+		<div className='flex min-h-[calc(100dvh)] flex-col justify-between'>
+			<div>
+				<TopRouteIndicator name={categoryData?.data.collection.name} />
+				<div className='mb-1 mt-6 px-8'>
+					<ProgressBar progress={currentPercentage} />
+					<p className='mt-2 text-sm'>
+						{currentPercentage.toFixed(2)}% of 100% Projects ranked
+					</p>
+					{/* <p>Voted {pairwisePairs?.data.votedPairs}</p>
 				<p>Total {pairwisePairs?.data.totalPairs}</p>
-			</div>
-			<p className='text-bold mb-4 mt-6 px-3 text-center text-base'>
-				{`Which project should receive more RetroPGF funding in ${categoryData?.data.collection.name}?`}
-			</p>
-			<div className='flex flex-col items-center justify-center gap-3'>
-				<div
-					key={firstProject.id}
-					onClick={() => {
-						console.log('Clicking on First', isLoading);
-						!isLoading && handleVote(firstProject.id);
-					}}
-					className={`${isLoading ? 'cursor-not-allowed opacity-50' : 'opacity-100'} cursor-pointer`}
-				>
-					<CategoryPairwiseCard project={firstProject} />
+				<p>Total {pairwisePairs?.data.threshold}</p> */}
 				</div>
-				<div
-					key={secondProject.id}
-					onClick={() => !isLoading && handleVote(secondProject.id)}
-					className={`${isLoading ? 'cursor-not-allowed opacity-50' : 'opacity-100'} cursor-pointer`}
-				>
-					<CategoryPairwiseCard project={secondProject} />
+				<p className='text-bold mb-4 mt-6 px-3 text-center text-base'>
+					{`Which project should receive more RetroPGF funding in ${categoryData?.data.collection.name}?`}
+				</p>
+				<div className='flex flex-col items-center justify-center gap-3'>
+					<div
+						key={firstProject.id}
+						onClick={() => {
+							console.log('Clicking on First', isLoading);
+							!isLoading && handleVote(firstProject.id);
+						}}
+						className={`${isLoading ? 'cursor-not-allowed opacity-50' : 'opacity-100'} cursor-pointer`}
+					>
+						<CategoryPairwiseCard project={firstProject} />
+					</div>
+					<div
+						key={secondProject.id}
+						onClick={() =>
+							!isLoading && handleVote(secondProject.id)
+						}
+						className={`${isLoading ? 'cursor-not-allowed opacity-50' : 'opacity-100'} cursor-pointer`}
+					>
+						<CategoryPairwiseCard project={secondProject} />
+					</div>
 				</div>
 			</div>
+			{currentPercentage > thresholdPercentage ? (
+				<div className='border-t border-t-gray-300 px-6 py-6'>
+					<Button
+						onClick={() => {
+							router.push(
+								`${Routes.Categories}/${selectedCategoryId}/pairwise-ranking/ranking-list`,
+							);
+						}}
+						className='w-full bg-primary'
+					>
+						Finish Ranking
+					</Button>
+				</div>
+			) : (
+				<div></div>
+			)}
 		</div>
 	);
 };
