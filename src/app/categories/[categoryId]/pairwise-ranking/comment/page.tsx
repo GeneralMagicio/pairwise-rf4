@@ -3,31 +3,31 @@
 import CategoryItem from '@/app/categories/components/CategoryItem';
 import { Categories, projects } from '@/app/categories/mockData';
 import Button from '@/app/components/Button';
+import LoadingSpinner from '@/app/components/LoadingSpinner';
 import TopRouteIndicator from '@/app/components/TopRouteIndicator';
 import { Routes } from '@/app/constants/Routes';
+import { useCategoryById } from '@/app/features/categories/getCategoryById';
 import { useParams, useRouter } from 'next/navigation';
 
 const CategoryRankingComment = () => {
 	const router = useRouter();
 	const { categoryId } = useParams();
-
 	const selectedCategoryId =
 		typeof categoryId === 'string' ? categoryId : categoryId[0];
-	console.log(categoryId);
-	const selectedCategory = Categories.find(
-		category => category.id === +selectedCategoryId,
-	);
-	console.log('selected', selectedCategory);
-	const categoryProjects = projects.filter(
-		project => project.parentId === +selectedCategoryId,
-	);
+
+	const { data: category, isLoading: isCategoryLoading } =
+		useCategoryById(+selectedCategoryId);
+
+	if (isCategoryLoading) {
+		return <LoadingSpinner />;
+	}
 
 	return (
 		<div className='relative flex min-h-[calc(100dvh)] flex-col '>
 			<div className='flex flex-grow flex-col'>
-				<TopRouteIndicator name={selectedCategory?.name} />
+				<TopRouteIndicator name={category?.data.collection?.name} />
 				<div className='pb-8 pt-6'>
-					<CategoryItem category={selectedCategory!} />
+					<CategoryItem category={category?.data.collection!} />
 				</div>
 				<div className='mx-4'>
 					<label className='block text-sm font-medium text-gray-700'>
@@ -47,7 +47,7 @@ const CategoryRankingComment = () => {
 				<Button
 					onClick={() =>
 						router.push(
-							`${Routes.Categories}/${selectedCategory?.id}/pairwise-ranking/done`,
+							`${Routes.Categories}/${category?.data.collection?.id}/pairwise-ranking/done`,
 						)
 					}
 					className='w-full bg-primary'
