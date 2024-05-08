@@ -27,6 +27,12 @@ const CategoryItem = ({ category }: ICategoryProps) => {
 					`${Routes.Categories}/${category.id}/project-ranking/summary`,
 				);
 				break;
+			case 'WIP':
+			case 'WIP - Threshold':
+				router.push(
+					`${Routes.Categories}/${category.id}/pairwise-ranking`,
+				);
+				break;
 			default:
 				router.push(`${Routes.Categories}/${category.id}`);
 		}
