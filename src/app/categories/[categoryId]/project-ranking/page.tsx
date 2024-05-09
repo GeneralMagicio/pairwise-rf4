@@ -184,9 +184,6 @@ const ProjectRankingPage = () => {
 						{backendCurrentIndex + 1} of {projectsCount} Projects
 						Selected
 					</p>
-					Backend Current Index: {backendCurrentIndex} ---- Current
-					Index: {currentIndex} ---- isLastOnTheList:{' '}
-					{isLastProjectInTheList ? 'Yes' : 'No'}
 				</div>
 				<AnimatePresence mode='wait'>
 					<motion.div
