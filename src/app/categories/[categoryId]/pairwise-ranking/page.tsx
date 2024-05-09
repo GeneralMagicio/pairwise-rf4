@@ -1,7 +1,7 @@
 'use client';
 
 import { useParams, useRouter } from 'next/navigation';
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import TopRouteIndicator from '@/app/components/TopRouteIndicator';
 import CategoryPairwiseCard from '../../components/CategoryPairwiseCard';
 import ProgressBar from '@/app/components/ProgressBar';
@@ -11,6 +11,12 @@ import { useCategoryById } from '@/app/features/categories/getCategoryById';
 import { useUpdateProjectVote } from '@/app/features/categories/updateProjectVote';
 import { Routes } from '@/app/constants/Routes';
 import Button from '@/app/components/Button';
+import Modal from '@/app/components/Modal';
+
+interface IUserSeenRankingFinishedModal {
+	value: string;
+	categoryId: string;
+}
 
 const variants = {
 	hidden: { opacity: 0 },
@@ -23,6 +29,8 @@ const CategoryPairwiseRankingPage = () => {
 
 	const selectedCategoryId =
 		typeof categoryId === 'string' ? categoryId : categoryId[0];
+
+	const [isModalOpen, setIsModalOpen] = useState(false);
 
 	const { mutate, isPending: isVotingPending } = useUpdateProjectVote({
 		categoryId: +selectedCategoryId,
@@ -57,7 +65,39 @@ const CategoryPairwiseRankingPage = () => {
 		});
 	};
 
+	const isLoading = isVotingPending || isFetchingPairwise;
+
+	const userSawModal = () => {
+		localStorage.setItem(
+			'hasUserSeenRankingFinishedModal',
+			JSON.stringify({
+				value: 'true',
+				categoryId: selectedCategoryId,
+			}),
+		);
+	};
+
 	useEffect(() => {
+		const hasUserSeenRankingFinishedModal = localStorage.getItem(
+			'hasUserSeenRankingFinishedModal',
+		);
+
+		const parsedData: IUserSeenRankingFinishedModal = JSON.parse(
+			hasUserSeenRankingFinishedModal || '{}',
+		);
+
+		if (
+			currentPercentage > thresholdPercentage &&
+			(!hasUserSeenRankingFinishedModal ||
+				parsedData.categoryId !== selectedCategoryId ||
+				parsedData.value !== 'true')
+		) {
+			setIsModalOpen(true);
+		}
+	}, [currentPercentage]);
+
+	useEffect(() => {
+		//If the user has voted all the pairs, redirect to the ranking list
 		if (
 			pairwisePairs?.data &&
 			pairwisePairs?.data.votedPairs === pairwisePairs?.data.totalPairs
@@ -73,8 +113,6 @@ const CategoryPairwiseRankingPage = () => {
 			);
 		}
 	}, [pairwisePairs?.data]);
-
-	const isLoading = isVotingPending || isFetchingPairwise;
 
 	if (
 		isCategoryLoading ||
@@ -138,6 +176,44 @@ const CategoryPairwiseRankingPage = () => {
 			) : (
 				<div></div>
 			)}
+			<Modal
+				isOpen={isModalOpen}
+				onClose={() => {
+					userSawModal();
+					setIsModalOpen(false);
+				}}
+			>
+				<div className='p-5'>
+					<p className='mb-4 text-center font-bold'>
+						You voted on the minimum amount of projects, but you can
+						continue for even better results!
+					</p>
+					<p className='mb-6 text-center text-ph'>
+						For best results continue voting on more projects. Some
+						projects may appear again, but that’s normal.
+					</p>
+					<Button
+						onClick={() => {
+							userSawModal();
+							setIsModalOpen(false);
+						}}
+						className='mb-3 w-full bg-primary'
+					>
+						Continue ranking
+					</Button>
+					<Button
+						onClick={() => {
+							userSawModal();
+							router.push(
+								`${Routes.Categories}/${selectedCategoryId}/pairwise-ranking/ranking-list`,
+							);
+						}}
+						className='w-full border border-gray-200 text-black shadow-md'
+					>
+						Finish Ranking
+					</Button>
+				</div>
+			</Modal>
 		</div>
 	);
 };
