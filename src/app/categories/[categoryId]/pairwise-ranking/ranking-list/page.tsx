@@ -12,12 +12,19 @@ import { useProjectsRankingByCategoryId } from '@/app/features/categories/getPro
 import { IProject } from '@/app/categories/types';
 import LoadingSpinner from '@/app/components/LoadingSpinner';
 import { useCategoryById } from '@/app/features/categories/getCategoryById';
+import { useUpdateSortingByCategoryId } from '@/app/features/categories/updateSortingByCategoryId';
+import { useUpdatePairwiseFinish } from '@/app/features/categories/updatePairwiseFinish';
 
 const CategoryRankingListPage = () => {
 	const router = useRouter();
 	const { categoryId } = useParams();
 	const [listProjects, setListProjects] = useState<IProject[]>([]);
-
+	const { mutateAsync: mutateAsyncUpdatePairwiseFinish } =
+		useUpdatePairwiseFinish({ categoryId: +categoryId });
+	const { mutateAsync: mutateAsyncUpdateSorting } =
+		useUpdateSortingByCategoryId({
+			categoryId: +categoryId,
+		});
 	const selectedCategoryId =
 		typeof categoryId === 'string' ? categoryId : categoryId[0];
 
@@ -29,6 +36,28 @@ const CategoryRankingListPage = () => {
 
 	const { data: category, isLoading: isCategoryLoading } =
 		useCategoryById(+selectedCategoryId);
+
+	const handleSubmitSortedProjects = async () => {
+		try {
+			await mutateAsyncUpdatePairwiseFinish({
+				data: {
+					cid: +selectedCategoryId,
+				},
+			});
+			await mutateAsyncUpdateSorting({
+				data: {
+					collectionId: +selectedCategoryId,
+					projectIds: listProjectsIds,
+				},
+			});
+
+			router.push(
+				`${Routes.Categories}/${category?.data?.collection?.id}/pairwise-ranking/comment`,
+			);
+		} catch (e) {
+			console.log('Error');
+		}
+	};
 
 	useEffect(() => {
 		if (projectsRanking?.data.ranking) {
@@ -76,11 +105,12 @@ const CategoryRankingListPage = () => {
 			</div>
 			<div className='sticky bottom-0 w-full border-t border-gray-200 bg-white px-6 py-6'>
 				<Button
-					onClick={() =>
-						router.push(
-							`${Routes.Categories}/${category?.data?.collection?.id}/pairwise-ranking/comment`,
-						)
-					}
+					// onClick={() =>
+					// 	router.push(
+					// 		`${Routes.Categories}/${category?.data?.collection?.id}/pairwise-ranking/comment`,
+					// 	)
+					// }
+					onClick={handleSubmitSortedProjects}
 					className='w-full bg-primary'
 				>
 					Submit Vote
