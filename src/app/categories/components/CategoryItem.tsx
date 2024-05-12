@@ -1,7 +1,7 @@
 'use client';
 
 import Image from 'next/image'; // Make sure to install 'next/image'
-import { ICategory } from '../types';
+import { CollectionProgressStatus, ICategory } from '../types';
 import { useRouter } from 'next/navigation';
 import { Routes } from '@/app/constants/Routes';
 import CategoryBadge from './CategoryBadge';
@@ -9,12 +9,14 @@ import { truncate } from '@/app/helpers/text-helpers';
 
 interface ICategoryProps {
 	category: ICategory;
+	progress?: CollectionProgressStatus;
 }
 
-const CategoryItem = ({ category }: ICategoryProps) => {
+const CategoryItem = ({ category, progress }: ICategoryProps) => {
 	const router = useRouter();
 
 	const onCategoryClick = () => {
+		if (progress) return null;
 		switch (category.progress) {
 			case 'Filtered':
 				router.push(
@@ -65,7 +67,7 @@ const CategoryItem = ({ category }: ICategoryProps) => {
 					{truncate(category.impactDescription, 70)}
 				</p>
 			</div>
-			<CategoryBadge progress={category.progress} />
+			<CategoryBadge progress={category.progress || progress} />
 		</div>
 	);
 };

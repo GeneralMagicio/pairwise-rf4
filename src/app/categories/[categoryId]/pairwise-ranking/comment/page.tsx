@@ -21,13 +21,16 @@ const CategoryRankingComment = () => {
 	if (isCategoryLoading) {
 		return <LoadingSpinner />;
 	}
-
+	
 	return (
 		<div className='relative flex min-h-[calc(100dvh)] flex-col '>
 			<div className='flex flex-grow flex-col'>
 				<TopRouteIndicator name={category?.data.collection?.name} />
 				<div className='pb-8 pt-6'>
-					<CategoryItem category={category?.data.collection!} />
+					<CategoryItem
+						category={category?.data.collection!}
+						progress={category?.data.progress}
+					/>
 				</div>
 				<div className='mx-4'>
 					<label className='block text-sm font-medium text-gray-700'>
