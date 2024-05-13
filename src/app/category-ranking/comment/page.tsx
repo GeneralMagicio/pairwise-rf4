@@ -1,6 +1,6 @@
 'use client';
 
-import CategoryItem2 from '@/app/categories/components/CategoryItem2';
+import CategoryRankingItem from '@/app/categories/components/CategoryRankingItem';
 import Button from '@/app/components/Button';
 import LoadingSpinner from '@/app/components/LoadingSpinner';
 import TopRouteIndicator from '@/app/components/TopRouteIndicator';
@@ -9,9 +9,6 @@ import { useRouter } from 'next/navigation';
 
 const CategoryRankingComment = () => {
 	const router = useRouter();
-	// const { categoryId } = useParams();
-	// const selectedCategoryId =
-	// 	typeof categoryId === 'string' ? categoryId : categoryId[0];
 
 	const { data, isLoading } = useCategoryRankings();
 
@@ -24,7 +21,7 @@ const CategoryRankingComment = () => {
 			<div className='flex flex-grow flex-col'>
 				<TopRouteIndicator name={'Category Voting'} />
 				<div className='pb-8 pt-6'>
-					{data?.ranking.map(cat => <CategoryItem2 key={cat.id} category={cat} />)}
+					{data?.ranking.map(cat => <CategoryRankingItem key={cat.id} category={cat} />)}
 				</div>
 				<div className='mx-4'>
 					<label className='block text-sm font-medium text-gray-700'>
