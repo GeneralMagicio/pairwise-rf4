@@ -6,13 +6,18 @@ import { useState } from 'react';
 import Drawer from '@/app/components/Drawer';
 import CategoriesProjectDrawerContent from './CategoriesProjectDrawerContent';
 import { motion } from 'framer-motion';
+import IconEye from 'public/images/icons/IconEye';
 
 interface ICategoryProjectRankingCardProps {
 	project: IProject;
+	hasSeenProjectDetails: boolean;
+	setHasSeenProjectDetails: (value: boolean) => void;
 }
 
 const CategoryProjectRankingCard = ({
 	project,
+	hasSeenProjectDetails,
+	setHasSeenProjectDetails,
 }: ICategoryProjectRankingCardProps) => {
 	const [isDrawerOpen, setIsDrawerOpen] = useState(false);
 
@@ -40,7 +45,7 @@ const CategoryProjectRankingCard = ({
 			variants={variants}
 		>
 			<div className='w-[324px] rounded-2xl px-3 pb-5 shadow-lg'>
-				<div className='mb-4'>
+				<div className='relative mb-4'>
 					<Image
 						src={
 							project?.image
@@ -52,15 +57,18 @@ const CategoryProjectRankingCard = ({
 						height={300}
 						className='rounded-2xl'
 					/>
+					<div
+						className='absolute bottom-[-20px] right-0 rounded-full bg-red-500 p-4'
+						onClick={() => {
+							setHasSeenProjectDetails(true);
+							setIsDrawerOpen(true);
+						}}
+					>
+						<IconEye />
+					</div>
 				</div>
 				<div className='flex justify-between'>
 					<p className='mb-4 font-bold'>{project.name}</p>
-					<div
-						className='cursor-pointer'
-						onClick={() => setIsDrawerOpen(true)}
-					>
-						<IconAlertCircle />
-					</div>
 				</div>
 				<p className='text-ph'>
 					{truncate(project.impactDescription, 90)}
