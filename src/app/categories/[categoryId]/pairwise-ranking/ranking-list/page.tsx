@@ -19,12 +19,16 @@ const CategoryRankingListPage = () => {
 	const router = useRouter();
 	const { categoryId } = useParams();
 	const [listProjects, setListProjects] = useState<IProject[]>([]);
-	const { mutateAsync: mutateAsyncUpdatePairwiseFinish } =
-		useUpdatePairwiseFinish({ categoryId: +categoryId });
-	const { mutateAsync: mutateAsyncUpdateSorting } =
-		useUpdateSortingByCategoryId({
-			categoryId: +categoryId,
-		});
+	const {
+		mutateAsync: mutateAsyncUpdatePairwiseFinish,
+		isPending: isFinishPending,
+	} = useUpdatePairwiseFinish({ categoryId: +categoryId });
+	const {
+		mutateAsync: mutateAsyncUpdateSorting,
+		isPending: isSortingPending,
+	} = useUpdateSortingByCategoryId({
+		categoryId: +categoryId,
+	});
 	const selectedCategoryId =
 		typeof categoryId === 'string' ? categoryId : categoryId[0];
 
@@ -36,6 +40,8 @@ const CategoryRankingListPage = () => {
 
 	const { data: category, isLoading: isCategoryLoading } =
 		useCategoryById(+selectedCategoryId);
+
+	const isPending = isFinishPending || isSortingPending;
 
 	const handleSubmitSortedProjects = async () => {
 		try {
@@ -111,7 +117,8 @@ const CategoryRankingListPage = () => {
 					// 	)
 					// }
 					onClick={handleSubmitSortedProjects}
-					className='w-full bg-primary'
+					className={`w-full bg-primary ${isPending ? 'opacity-50' : ''}`}
+					disabled={isPending}
 				>
 					Submit Vote
 				</Button>
