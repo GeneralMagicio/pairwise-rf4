@@ -7,7 +7,7 @@ import { axios } from '@/lib/axios';
 import { useQuery } from '@tanstack/react-query';
 import { AxiosResponse } from 'axios';
 
-interface IPairwisePairsResponse {
+export interface IPairwisePairsResponse {
 	pairs: IProject[][];
 	totalPairs: number;
 	votedPairs: number;

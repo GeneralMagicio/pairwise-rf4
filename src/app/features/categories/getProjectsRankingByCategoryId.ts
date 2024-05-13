@@ -7,7 +7,7 @@ import { axios } from '@/lib/axios';
 import { useQuery } from '@tanstack/react-query';
 import { AxiosResponse } from 'axios';
 
-interface IProjectsRankingResponse {
+export interface IProjectsRankingResponse {
 	ranking: IProject[];
 	hasRanking: boolean;
 	isFinished: boolean;

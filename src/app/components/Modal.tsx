@@ -26,7 +26,7 @@ const Modal: FC<ModalProps> = ({ isOpen, onClose, children }) => {
 	if (!isOpen || !modalNode) return null;
 
 	return ReactDOM.createPortal(
-		<div className='fixed inset-0 flex items-center justify-center bg-black bg-opacity-50'>
+		<div className='fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50'>
 			<div className='max-w-sm rounded-lg bg-white shadow-lg'>
 				{children}
 			</div>
