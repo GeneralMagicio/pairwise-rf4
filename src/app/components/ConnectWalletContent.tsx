@@ -4,12 +4,24 @@ import Image from 'next/image';
 import IconCopy from 'public/images/icons/IconCopy';
 import { useAccount, useConnect, useDisconnect } from 'wagmi';
 import Button from './Button';
+import { useEffect } from 'react';
 
-const ConnectWalletContent = () => {
-	const { connectors, connect } = useConnect();
-	const { address } = useAccount();
+interface IConnectWalletContentProps {
+	onConnect?: () => void;
+}
+
+const ConnectWalletContent = ({ onConnect }: IConnectWalletContentProps) => {
+	const { connectors, connectAsync } = useConnect();
+	const { address, isConnected } = useAccount();
 	const { disconnect } = useDisconnect();
 	console.log('Connectors', connectors);
+
+	useEffect(() => {
+		if (isConnected) {
+			onConnect?.();
+		}
+	}, [isConnected]);
+
 	return (
 		<div className='w-full'>
 			<p className='mb-4 border-b border-gray-200 py-4 text-center text-lg font-bold '>
@@ -24,7 +36,12 @@ const ConnectWalletContent = () => {
 							<div
 								className='flex w-full cursor-pointer items-center gap-2 rounded-xl bg-gray-100 p-2 transition-colors duration-200 ease-in-out'
 								key={connector.id}
-								onClick={() => connect({ connector })}
+								onClick={() =>
+									connectAsync({ connector }).then(() => {
+										console.log('Connected to wallet');
+										onConnect?.();
+									})
+								}
 							>
 								<div className='overflow-hidden rounded-full'>
 									{connector.icon &&
@@ -63,7 +80,10 @@ const ConnectWalletContent = () => {
 					</div>
 				</div>
 
-				<Button className='border border-gray-200 bg-white text-black shadow-md'>
+				<Button
+					onClick={onConnect}
+					className='border border-gray-200 bg-white text-black shadow-md'
+				>
 					Collect voting power
 				</Button>
 				<p className='text-ph'>

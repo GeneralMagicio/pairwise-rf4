@@ -3,9 +3,17 @@ import React, { useState } from 'react';
 import Image from 'next/image'; // Make sure to install 'next/image'
 import Drawer from './Drawer';
 import ConnectWalletContent from './ConnectWalletContent';
+import CollectVotingPowerContent from './CollectVotingPowerContent';
 
 const Header = () => {
 	const [isConnectDrawerOpen, setIsConnectDrawerOpen] = useState(false);
+	const [isClaimDrawerOpen, setIsClaimDrawerOpen] = useState(false);
+
+	const handleConnect = () => {
+		setIsConnectDrawerOpen(false);
+		setIsClaimDrawerOpen(true);
+	};
+
 	return (
 		<header className='sticky top-0 z-10 flex items-center justify-between border-b border-gray-300 bg-white p-4'>
 			<div className='flex items-center'>
@@ -26,7 +34,10 @@ const Header = () => {
 				setIsOpen={setIsConnectDrawerOpen}
 				isOpen={isConnectDrawerOpen}
 			>
-				<ConnectWalletContent />
+				<ConnectWalletContent onConnect={handleConnect} />
+			</Drawer>
+			<Drawer setIsOpen={setIsClaimDrawerOpen} isOpen={isClaimDrawerOpen}>
+				<CollectVotingPowerContent />
 			</Drawer>
 		</header>
 	);
