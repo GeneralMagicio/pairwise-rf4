@@ -6,7 +6,7 @@ import { usePathname } from 'next/navigation';
 import React, { PropsWithChildren, useEffect, useState } from 'react';
 import { useActiveWallet } from 'thirdweb/react';
 
-const PublicRoutes = ['/login', '/connect'];
+const PublicRoutes = ['/login', '/connect', '/connect/otp'];
 
 export const AuthGuard: React.FC<PropsWithChildren> = ({ children }) => {
 	const wallet = useActiveWallet();

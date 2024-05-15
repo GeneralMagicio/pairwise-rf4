@@ -24,7 +24,7 @@ const ConnectHomePage = () => {
 		<div className='centered-mobile-max-width mt-7'>
 			<div className='text-center'>
 				<Image
-					src={'/images/characters/connect-home-character.png'}
+					src={'/images/characters/31.png'}
 					width={220}
 					height={100}
 					alt='logo'

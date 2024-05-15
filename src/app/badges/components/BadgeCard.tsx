@@ -6,7 +6,7 @@ const BadgeCard = () => {
 			<div className='rounded-lg bg-[#F2F3F8] p-4'>
 				<Image
 					className='mx-auto'
-					src='/images/badges/badge-1.png'
+					src='/images/badges/1.png'
 					width={128}
 					height={128}
 					alt='badge'
