@@ -1,4 +1,5 @@
-// components/Header.jsx
+'use client';
+
 import React, { useState } from 'react';
 import Image from 'next/image'; // Make sure to install 'next/image'
 import Drawer from './Drawer';
