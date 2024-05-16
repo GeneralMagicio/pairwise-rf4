@@ -1,25 +1,26 @@
+'use client';
+
 import Image from 'next/image';
 import { PwLogo } from 'public/images/icons/PwLogo';
 import React from 'react';
 
-const ConnectHomePage = () => {
-	const steps = [
-		{
-			title: 'Go to Pairwise voting app',
-			description: 'Get the code from Pairwise connect modal',
-		},
-		{
-			title: 'Get the code & paste here',
-			description: 'Paste code here to verify',
-		},
-		{ title: 'Sign', description: 'Sign with your connected wallet' },
-		{
-			title: 'Delegate your voting power',
-			description:
-				'You have now successfully delegated your voting power',
-		},
-	];
+const steps = [
+	{
+		title: 'Go to Pairwise voting app',
+		description: 'Get the code from Pairwise connect modal',
+	},
+	{
+		title: 'Get the code & paste here',
+		description: 'Paste code here to verify',
+	},
+	{ title: 'Sign', description: 'Sign with your connected wallet' },
+	{
+		title: 'Delegate your voting power',
+		description: 'You have now successfully delegated your voting power',
+	},
+];
 
+const ConnectHomePage = () => {
 	return (
 		<div className='centered-mobile-max-width mt-7'>
 			<div className='text-center'>
