@@ -38,7 +38,7 @@ const Header = () => {
 				<ConnectWalletContent onConnect={handleConnect} />
 			</Drawer>
 			<Drawer setIsOpen={setIsClaimDrawerOpen} isOpen={isClaimDrawerOpen}>
-				<CollectVotingPowerContent />
+				<CollectVotingPowerContent setIsClaimDrawerOpen={setIsClaimDrawerOpen} />
 			</Drawer>
 		</header>
 	);
