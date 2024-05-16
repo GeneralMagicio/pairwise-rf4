@@ -1,6 +1,5 @@
 'use client';
 
-import Button from '@/app/components/Button';
 import Image from 'next/image';
 import ConnectButton from './ConnectButton';
 
