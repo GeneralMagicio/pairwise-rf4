@@ -26,7 +26,7 @@ const CategoryRankingDone = () => {
 				<Button
 					onClick={() =>
 						router.push(
-							`${Routes.Categories}/${categoryId}/project-ranking/summary`,
+							`${Routes.Categories}`,
 						)
 					}
 					className='w-full bg-primary'

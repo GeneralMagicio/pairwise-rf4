@@ -29,9 +29,13 @@ const CategoryItem = ({ category, progress }: ICategoryProps) => {
 				);
 				break;
 			case 'Finished':
+				router.push(
+					`${Routes.Categories}/${category.id}/pairwise-ranking/ranking-list`,
+				);
+				break;
 			case 'Attested':
 				router.push(
-					`${Routes.Categories}/${category.id}/project-ranking/summary`,
+					`${Routes.Categories}/${category.id}/pairwise-ranking/done`,
 				);
 				break;
 			case 'WIP':
