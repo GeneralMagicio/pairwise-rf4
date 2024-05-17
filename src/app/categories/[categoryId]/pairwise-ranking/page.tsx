@@ -12,6 +12,7 @@ import { useUpdateProjectVote } from '@/app/features/categories/updateProjectVot
 import { Routes } from '@/app/constants/Routes';
 import Button from '@/app/components/Button';
 import Modal from '@/app/components/Modal';
+import { useUpdatePairwiseFinish } from '@/app/features/categories/updatePairwiseFinish';
 
 interface IUserSeenRankingFinishedModal {
 	value: string;
@@ -64,6 +65,12 @@ const CategoryPairwiseRankingPage = () => {
 			},
 		});
 	};
+
+	const {mutateAsync: finishRankingMutation, isPending} = useUpdatePairwiseFinish()
+
+	const finishRanking = async () => {
+		await finishRankingMutation({data: {cid: +selectedCategoryId}})
+	}
 
 	const isLoading = isVotingPending || isFetchingPairwise;
 
@@ -163,12 +170,14 @@ const CategoryPairwiseRankingPage = () => {
 			{currentPercentage > thresholdPercentage ? (
 				<div className='border-t border-t-gray-300 px-6 py-6'>
 					<Button
-						onClick={() => {
+						onClick={async () => {
+							await finishRanking()
 							router.push(
 								`${Routes.Categories}/${selectedCategoryId}/pairwise-ranking/ranking-list`,
 							);
 						}}
 						className='w-full bg-primary'
+						isLoading={isPending}
 					>
 						Finish Ranking
 					</Button>
@@ -202,12 +211,14 @@ const CategoryPairwiseRankingPage = () => {
 						Continue ranking
 					</Button>
 					<Button
-						onClick={() => {
+						onClick={async () => {
+							await finishRanking()
 							userSawModal();
 							router.push(
 								`${Routes.Categories}/${selectedCategoryId}/pairwise-ranking/ranking-list`,
 							);
 						}}
+						isLoading={isPending}
 						className='w-full border border-gray-200 text-black shadow-md'
 					>
 						Finish Ranking

@@ -20,10 +20,6 @@ const CategoryRankingListPage = () => {
 	const { categoryId } = useParams();
 	const [listProjects, setListProjects] = useState<IProject[]>([]);
 	const {
-		mutateAsync: mutateAsyncUpdatePairwiseFinish,
-		isPending: isFinishPending,
-	} = useUpdatePairwiseFinish({ categoryId: +categoryId });
-	const {
 		mutateAsync: mutateAsyncUpdateSorting,
 		isPending: isSortingPending,
 	} = useUpdateSortingByCategoryId({
@@ -41,15 +37,10 @@ const CategoryRankingListPage = () => {
 	const { data: category, isLoading: isCategoryLoading } =
 		useCategoryById(+selectedCategoryId);
 
-	const isPending = isFinishPending || isSortingPending;
+	const isPending = isSortingPending;
 
 	const handleSubmitSortedProjects = async () => {
 		try {
-			await mutateAsyncUpdatePairwiseFinish({
-				data: {
-					cid: +selectedCategoryId,
-				},
-			});
 			await mutateAsyncUpdateSorting({
 				data: {
 					collectionId: +selectedCategoryId,

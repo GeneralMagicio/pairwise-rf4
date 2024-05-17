@@ -11,19 +11,11 @@ export const updatePairwiseFinish = ({ data }: ProjectVoteData) => {
 	return axios.post('flow/finish', data);
 };
 
-export const useUpdatePairwiseFinish = ({
-	categoryId,
-}: {
-	categoryId: number;
-}) => {
-	const queryClient = useQueryClient();
+export const useUpdatePairwiseFinish = () => {
+	// const queryClient = useQueryClient();
 
 	return useMutation({
 		mutationFn: updatePairwiseFinish,
-		onSuccess: () => {
-			// queryClient.refetchQueries({
-			// 	queryKey: ['pairwise-pairs', categoryId],
-			// });
-		},
+		// onSuccess:
 	});
 };
