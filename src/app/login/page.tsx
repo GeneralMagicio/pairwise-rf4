@@ -1,6 +1,5 @@
 'use client';
 import { client } from '@/lib/third-web/provider';
-import Head from 'next/head';
 import Image from 'next/image';
 import {
 	useActiveAccount,
@@ -21,19 +20,17 @@ import {
 	createSocialEoa,
 } from '@/lib/third-web/methods';
 import { InfoBox } from './components/InfoBox';
-import { useIsAutoConnecting } from '@/lib/third-web/AutoConnect';
 import { SignupSuccess } from './components/success-screens/SignupSuccess';
 import { SigninSuccess } from './components/success-screens/SigninSuccess';
-import { loginToPwBackend } from '@/utils/auth';
-import { activeChain } from '@/lib/third-web/constants';
+import { Routes } from '../constants/Routes';
+import { useAuth } from '@/lib/third-web/AutoConnect';
 
 enum Step {
 	Main,
 	EnterEmail,
 	Loading,
 	Otp,
-	SuccessSignIn,
-	SuccessSignUp,
+	Success,
 	Welcome,
 }
 
@@ -43,12 +40,11 @@ export default function Home() {
 	const [otpError, setOtpError] = useState<string | false>(false);
 	const [emailError, setEmailError] = useState(false);
 	const [otp, setOtp] = useState('');
-	const { isAutoConnecting } = useIsAutoConnecting();
+	const { isAutoConnecting, isNewUser, loggedToPw } = useAuth();
 	const router = useRouter();
 
 	const disconnectWallet = useDisconnect();
 	const { connect, error } = useConnect();
-	// const {signMessage} = useActiveAccount()
 	const [email, setEmail] = useState<string>('');
 
 	const handleEmail = (email: string) => {
@@ -91,12 +87,16 @@ export default function Home() {
 	}, [error]);
 
 	useEffect(() => {
-		if (!wallet) return;
-		const account = wallet.getAccount()
-		if (!account) return		
-		setStep(Step.SuccessSignIn);
-		setTimeout(() => router.push('/welcome'), 2000);
-	}, [wallet, router]);
+		if (loggedToPw) setStep(Step.Success)
+	}, [loggedToPw])
+
+	useEffect(() => {
+		if (step === Step.Success && !isNewUser) {
+			setTimeout(() => router.push(Routes.Categories), 1500)
+		} else if (step === Step.Success && isNewUser) {
+			setTimeout(() => router.push(Routes.Welcome), 1500)
+		}
+	}, [step, router, isNewUser])
 
 	const handleEmailLogin =
 		(email: string, verificationCode: string) => async () => {
@@ -124,7 +124,7 @@ export default function Home() {
 		connect(() => createSmartWalletFromEOA(account));
 	};
 
-	if (step === Step.SuccessSignUp) {
+	if (step === Step.Success && isNewUser) {
 		return (
 			<div className='mt-48 w-[85%]'>
 				<SignupSuccess />
@@ -132,7 +132,7 @@ export default function Home() {
 		);
 	}
 
-	if (step === Step.SuccessSignIn) {
+	if (step === Step.Success && !isNewUser) {
 		return (
 			<div className='mt-48 w-[85%]'>
 				<SigninSuccess />

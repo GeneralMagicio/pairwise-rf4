@@ -15,7 +15,7 @@ axios.interceptors.response.use(
 )
 
 export const isLoggedIn = async () => {
-  if (localStorage.getItem("auth")) return false
+  if (!localStorage.getItem("auth")) return false
   try {
     const { data } = await axios.get<User>('/auth/isloggedin')
     return data
@@ -42,14 +42,12 @@ export const isLoggedIn = async () => {
 //   return result;
 // }
 
-export let alreadyInProgress = false
 
 export const loginToPwBackend = async (
   chainId: number,
   address: string,
   signFunction: Account['signMessage']
 ) => {
-  alreadyInProgress = true
   // const nonce = await fetchNonce()
   // const nonce = generateRandomString(16
 
@@ -60,16 +58,16 @@ export const loginToPwBackend = async (
   })
 
   // Verify signature
-  const verifyRes = await axios.post('/auth/login', {
+  const {data} = await axios.post<{token: string; isNewUser: boolean}>('/auth/login', {
     ...{ message, signature: `${signature}`, address, chainId },
   })
 
-  window.localStorage.setItem('auth', verifyRes.data)
+  const token = data.token;
+  window.localStorage.setItem('auth', token)
   window.localStorage.setItem('loggedInAddress', address)
-  axios.defaults.headers.common['auth'] = verifyRes.data
+  axios.defaults.headers.common['auth'] = token
 
-  alreadyInProgress = false
-  return verifyRes
+  return data
 }
 
 export const logoutFromPwBackend = async () => {

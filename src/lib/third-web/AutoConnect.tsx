@@ -11,51 +11,50 @@ import React, {
 import { WalletId, createWallet } from 'thirdweb/wallets';
 import { useActiveAccount, useActiveWallet, useConnect } from 'thirdweb/react';
 import { LAST_CONNECT_PERSONAL_WALLET_ID, activeChain } from './constants';
-import { alreadyInProgress, isLoggedIn, loginToPwBackend } from '@/utils/auth';
-import { useRouter } from 'next/navigation';
+import { isLoggedIn, loginToPwBackend } from '@/utils/auth';
 
-const AutoConnectContext = React.createContext<{
+const AuthContext = React.createContext<{
 	isAutoConnecting: boolean | null;
-	setIsAutoConnecting: Function;
-	loggedToPw: number;
-	setLoggedToPw: Function;
+	setIsAutoConnecting: (bool: boolean | null) => void;
+	loggedToPw: boolean;
+	isNewUser: boolean;
+	setLoggedToPw: (bool: boolean) => void;
+	setIsNewUser: (bool: boolean) => void;
 }>({
 	isAutoConnecting: null,
 	setIsAutoConnecting: () => {},
-	loggedToPw: 12345,
+	loggedToPw: false,
+	isNewUser: false,
 	setLoggedToPw: () => {},
+	setIsNewUser: () => {},
 });
 
-export const AutoConnectProvider = ({ children }: { children: ReactNode }) => {
-	const [isAutoConnecting, setIsAutoConnecting] = useState(null);
-	const [loggedToPw, setLoggedToPw] = useState<number>(Date.now());
+export const AuthProvider = ({ children }: { children: ReactNode }) => {
+	const [isAutoConnecting, setIsAutoConnecting] = useState<boolean | null>(null);
+	const [loggedToPw, setLoggedToPw] = useState(false);
+	const [isNewUser, setIsNewUser] = useState(false)
 
 	return (
-		<AutoConnectContext.Provider
+		<AuthContext.Provider
 			value={{
 				isAutoConnecting,
 				setIsAutoConnecting,
 				loggedToPw,
 				setLoggedToPw,
+				isNewUser,
+				setIsNewUser,
 			}}
 		>
 			{children}
-		</AutoConnectContext.Provider>
+		</AuthContext.Provider>
 	);
 };
 
-export const useIsAutoConnecting = () => {
-	const { isAutoConnecting, setIsAutoConnecting, loggedToPw, setLoggedToPw } =
-		useContext(AutoConnectContext);
+export const useAuth = () => {
+	const { isAutoConnecting, setIsAutoConnecting, loggedToPw, setLoggedToPw, setIsNewUser, isNewUser } =
+		useContext(AuthContext);
 
-	return { isAutoConnecting, setIsAutoConnecting, loggedToPw, setLoggedToPw };
-};
-
-export const ThirdwebAutoConnect = () => {
 	const { connect } = useConnect();
-	const { replace, refresh } = useRouter();
-	const { isAutoConnecting, setIsAutoConnecting, setLoggedToPw } =
-		useIsAutoConnecting();
 	const account = useActiveAccount();
 	const wallet = useActiveWallet();
 
@@ -85,24 +84,30 @@ export const ThirdwebAutoConnect = () => {
 	}, [setIsAutoConnecting, connect]);
 
 	const checkLoginFlow = useCallback(async () => {
-		if (!wallet && isAutoConnecting === false) {
-			replace('/login');
-		} else if (account && wallet) {
-			const validToken = await isLoggedIn();
-			if (!validToken && alreadyInProgress === false) {
-				await loginToPwBackend(
-					activeChain.id,
-					account.address,
-					account.signMessage,
-				);
-				setLoggedToPw(Date.now());
+		try {
+			if (account && wallet) {
+				const validToken = await isLoggedIn();
+				if (validToken) setLoggedToPw(true);
+				else {
+					const res = await loginToPwBackend(
+						activeChain.id,
+						account.address,
+						account.signMessage,
+					);
+					if (res.isNewUser) {
+						setIsNewUser(true)
+					}
+					setLoggedToPw(true);
+				}
 			}
+		} catch (e) {
+			setLoggedToPw(false);
 		}
-	}, [account, wallet, isAutoConnecting, replace, refresh]);
+	}, [account, wallet, setLoggedToPw, setIsNewUser]);
 
 	useEffect(() => {
 		checkLoginFlow();
-	}, [replace, wallet, isAutoConnecting, checkLoginFlow]);
+	}, [wallet, isAutoConnecting, checkLoginFlow]);
 
-	return <></>;
+	return { isAutoConnecting, setIsAutoConnecting, loggedToPw, setLoggedToPw, setIsNewUser, isNewUser };
 };
