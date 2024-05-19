@@ -11,7 +11,7 @@ import React, {
 import { WalletId, createWallet } from 'thirdweb/wallets';
 import { useActiveAccount, useActiveWallet, useConnect } from 'thirdweb/react';
 import { LAST_CONNECT_PERSONAL_WALLET_ID, activeChain } from './constants';
-import { isLoggedIn, loginToPwBackend } from '@/utils/auth';
+import { alreadyInProgress, isLoggedIn, loginToPwBackend } from '@/utils/auth';
 
 const AuthContext = React.createContext<{
 	isAutoConnecting: boolean | null;
@@ -88,7 +88,7 @@ export const useAuth = () => {
 			if (account && wallet) {
 				const validToken = await isLoggedIn();
 				if (validToken) setLoggedToPw(true);
-				else {
+				else if (!alreadyInProgress) {
 					const res = await loginToPwBackend(
 						activeChain.id,
 						account.address,
