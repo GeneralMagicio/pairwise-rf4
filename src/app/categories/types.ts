@@ -5,7 +5,7 @@ export interface ICategory {
 	url: string;
 	impactDescription: string;
 	contributionDescription: null | string;
-	RPGF3Id: null | number;
+	RPGF4Id: null | number;
 	parentId: null | number;
 	image: string;
 	metadataUrl: null | string;
@@ -27,7 +27,7 @@ export interface IProject {
 	url: string;
 	impactDescription: string;
 	contributionDescription: string | null;
-	RPGF3Id: string | null;
+	RPGF4Id: string | null;
 	parentId: number | null;
 	image: string | null;
 	metadataUrl: string | null;
