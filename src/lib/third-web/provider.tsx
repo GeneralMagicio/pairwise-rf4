@@ -4,7 +4,7 @@ import { ReactNode } from 'react';
 import { createThirdwebClient } from 'thirdweb';
 import { ThirdwebProvider } from 'thirdweb/react';
 import { activeChain, clientId, factoryAddress } from './constants';
-import { AutoConnectProvider, ThirdwebAutoConnect } from './AutoConnect';
+import { AuthProvider, useAuth } from './AutoConnect';
 
 export const smartWalletConfig = {
 	factoryAddress: factoryAddress,
@@ -17,10 +17,9 @@ export const client = createThirdwebClient({ clientId });
 export const Thirdweb5Provider = ({ children }: { children: ReactNode }) => {
 	return (
 		<ThirdwebProvider>
-			<AutoConnectProvider>
-				<ThirdwebAutoConnect />
+			<AuthProvider>
 				{children}
-			</AutoConnectProvider>
+			</AuthProvider>
 		</ThirdwebProvider>
 	);
 };
