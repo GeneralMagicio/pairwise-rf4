@@ -10,11 +10,13 @@ import { truncate } from '@/app/helpers/text-helpers';
 interface ICategoryProps {
 	category: ICategory;
 	progress?: CollectionProgressStatus;
+	imageNumber?: number;
 }
 
-const CategoryItem = ({ category, progress }: ICategoryProps) => {
+const CategoryItem = ({ category, progress, imageNumber }: ICategoryProps) => {
 	const router = useRouter();
-
+	const imgNumber = imageNumber || Math.floor(Math.random() * 5) + 1;
+	const imgSrc = `/images/defaults/category/category-${imgNumber}.png`;
 	const onCategoryClick = () => {
 		if (progress) return null;
 		switch (category.progress) {
@@ -54,17 +56,18 @@ const CategoryItem = ({ category, progress }: ICategoryProps) => {
 			className='flex cursor-pointer items-center justify-between gap-2 border-b border-b-gray-300 py-3'
 			onClick={onCategoryClick}
 		>
-			<Image
-				className='rounded-full'
-				src={
-					category.image !== ''
-						? category.image
-						: '/images/characters/welcome-character.png'
-				}
-				alt='Logo'
-				width={40}
-				height={40}
-			/>
+			<div className='relative'>
+				<Image
+					className='rounded-full'
+					src={imgSrc}
+					alt='Logo'
+					width={40}
+					height={40}
+				/>
+				<p className='absolute inset-0 flex items-center justify-center px-1 text-center text-[4px] text-white'>
+					{category.name}
+				</p>
+			</div>
 			<div className='flex flex-1 flex-col'>
 				<p className='font-bold'>{category.name}</p>
 				<p className='text-ph'>
