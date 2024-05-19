@@ -11,21 +11,22 @@ const PublicRoutes = [
 	'/connect',
 	'/connect/otp',
 	'/connect/otp/success',
+	'/connect/otp/no-badge',
 ];
 
 export const AuthGuard: React.FC<PropsWithChildren> = ({ children }) => {
 	const wallet = useActiveWallet();
 	const currentRoute = usePathname();
 	const { loggedToPw, isAutoConnecting } = useAuth();
-	const {push} = useRouter()
+	const { push } = useRouter();
 
 	const [moveForward, setMoveForward] = useState(false);
 
 	const isPublicRoute = PublicRoutes.includes(currentRoute);
 
 	useEffect(() => {
-		if (!wallet && isAutoConnecting === false) push('/login')
-	}, [wallet, isAutoConnecting, push])
+		if (!wallet && isAutoConnecting === false) push('/login');
+	}, [wallet, isAutoConnecting, push]);
 
 	useEffect(() => {
 		const token = localStorage.getItem('auth');
