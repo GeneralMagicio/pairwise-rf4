@@ -10,6 +10,7 @@ import Button from '@/app/components/Button';
 import { useProjectsByCategoryId } from '@/app/features/categories/getProjectsByCategoryId';
 import LoadingSpinner from '@/app/components/LoadingSpinner';
 import { useCategoryById } from '@/app/features/categories/getCategoryById';
+import { truncate } from '@/app/helpers/text-helpers';
 
 const CategoryPage = () => {
 	const router = useRouter();
@@ -46,10 +47,13 @@ const CategoryPage = () => {
 					</div>
 					<div className='mx-4 my-4'>
 						<p className='text-ph'>
-							{selectedCategory?.impactDescription}
+							{truncate(selectedCategory?.impactDescription || '', 400)}
 						</p>
 					</div>
 				</div>
+				<p className='mx-4 font-bold text-red-800 my-4'>
+					Important: You must at least choose 2 projects.
+				</p>
 				<p className='mx-4 font-bold text-gray-600'>
 					Projects ({projects?.data?.length})
 				</p>
