@@ -35,7 +35,11 @@ const BadgesPage = () => {
 				<div className='mt-6 grid grid-cols-2 justify-between gap-4'>
 					{badges ? (
 						Object.entries(badges).map(([key, value]) => (
-							<BadgeCard key={key} badgeValue={value} />
+							<BadgeCard
+								key={key}
+								value={value}
+								type={key as keyof BadgeData}
+							/>
 						))
 					) : (
 						<p>No badges found for {address}</p>
