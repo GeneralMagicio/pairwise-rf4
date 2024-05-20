@@ -1,5 +1,5 @@
 import { axios as axiosInstance } from '@/lib/axios';
-import { IProject } from '@/app/categories/types';
+import { ICategory, IProject } from '@/app/categories/types';
 
 export const pinFileToIPFS = async (list: object) => {
 	try {
@@ -13,7 +13,7 @@ export const pinFileToIPFS = async (list: object) => {
 };
 
 export const convertRankingToAttestationFormat = async (
-	ranking: IProject[],
+	ranking: IProject[] | ICategory[],
 	collectionName: string,
 	collectionDescription: string,
 ) => {

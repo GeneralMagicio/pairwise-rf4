@@ -30,12 +30,15 @@ const CategoryRankingComment = () => {
 		typeof categoryId === 'string' ? categoryId : categoryId[0];
 
 	const [comment, setComment] = useState('');
-	const [attestUnderway, setAttestUnderway] = useState(false)
+	const [commentError, setCommentError] = useState(false);
+	const [attestUnderway, setAttestUnderway] = useState(false);
 
-	const onCommentChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => setComment(e.target.value);
-
+	const onCommentChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+		if (commentError) setCommentError(false);
+		setComment(e.target.value);
+	};
 	const wallet = useActiveWallet();
-	const signer = useSigner()
+	const signer = useSigner();
 
 	const { data: category, isLoading: isCategoryLoading } =
 		useCategoryById(+selectedCategoryId);
@@ -46,13 +49,17 @@ const CategoryRankingComment = () => {
 	const ranking = rankingRes?.data;
 
 	const attest = async () => {
+		if (comment.length < 100) {
+			setCommentError(true);
+			return;
+		}
 		if (!ranking) return;
 
-		setAttestUnderway(true)
+		setAttestUnderway(true);
 
 		const chainId = optimismSepolia.id;
 		const easConfig = EASNetworks[chainId];
-		const address = wallet?.getAccount()?.address
+		const address = wallet?.getAccount()?.address;
 
 		if (!easConfig) {
 			console.error('no eas config');
@@ -63,7 +70,7 @@ const CategoryRankingComment = () => {
 			return;
 		}
 		if (!signer || !address) {
-			console.error('signer', signer, "address", address);
+			console.error('signer', signer, 'address', address);
 			return;
 		}
 
@@ -82,7 +89,6 @@ const CategoryRankingComment = () => {
 				comment,
 			);
 
-
 			const encodedData = schemaEncoder.encodeData([
 				{ name: 'listName', type: 'string', value: item.listName },
 				{
@@ -96,9 +102,6 @@ const CategoryRankingComment = () => {
 					value: item.listMetadataPtr,
 				},
 			]);
-
-
-
 
 			const prevAttestations = await getPrevAttestationIds(
 				address,
@@ -127,7 +130,7 @@ const CategoryRankingComment = () => {
 
 			const newAttestationUID = await tx.wait();
 
-			console.log("attestaion id", newAttestationUID)
+			console.log('attestaion id', newAttestationUID);
 			// await finishCollections(collectionId);
 			await axios.post('/flow/reportAttest', {
 				cid: ranking.id,
@@ -135,11 +138,11 @@ const CategoryRankingComment = () => {
 
 			router.push(
 				`${Routes.Categories}/${category?.data.collection?.id}/pairwise-ranking/done`,
-			)
+			);
 		} catch (e) {
 			console.error('error on sending tx:', e);
 		} finally {
-			setAttestUnderway(false)
+			setAttestUnderway(false);
 		}
 	};
 
@@ -166,9 +169,11 @@ const CategoryRankingComment = () => {
 						value={comment}
 						onChange={onCommentChange}
 						placeholder='Add comments to describe reason for your voting and ranking.'
-						className='mt-1 block h-[100px] w-full resize-none rounded-md border border-gray-300 px-3 py-2 shadow-sm'
+						className={`mt-1 block h-[100px] w-full resize-none rounded-md border border-gray-300 px-3 py-2 shadow-sm`}
 					></textarea>
-					<p className='mt-2 text-sm text-gray-500'>
+					<p
+						className={`mt-2 text-sm ${commentError ? `text-red-500` : `text-gray-500`}`}
+					>
 						Min 100 characters
 					</p>
 				</div>
@@ -178,7 +183,8 @@ const CategoryRankingComment = () => {
 				<Button
 					onClick={attest}
 					disabled={isProjectsRankingLoading || attestUnderway}
-					className='w-full bg-primary disabled:opacity-50'
+					className='w-full bg-primary'
+					isLoading={attestUnderway}
 				>
 					Submit Vote
 				</Button>
