@@ -1,32 +1,38 @@
-//var csv is the CSV file with headers
+// Type definitions for badge data
+export type BadgeData = {
+	holderPoints: number;
+	delegatePoints: number;
+	recipientsPoints: number;
+	badgeholderPoints: number;
+};
 
-const badgesMap = new Map();
-processCSV();
+// Function to process CSV content and return a Map of BadgeData
+export const processCSV = (csvContent: string): Map<string, BadgeData> => {
+	const rows = csvContent.split(/\r?\n/);
+	const headers = rows[0].split(',');
+	console.log('csvContent:', csvContent);
+	const badgesMap = new Map<string, BadgeData>();
+	for (let i = 1; i < rows.length; i++) {
+		const cells = rows[i].split(',');
+		if (cells.length === headers.length) {
+			const userAddress = cells[0].trim();
+			const userData = {
+				holderPoints: parseInt(cells[1], 10),
+				delegatePoints: parseInt(cells[2], 10),
+				recipientsPoints: parseInt(cells[3], 10),
+				badgeholderPoints: parseInt(cells[4], 10),
+			};
+			badgesMap.set(userAddress, userData);
+		}
+	}
+	console.log('Badges Map:', badgesMap);
+	return badgesMap;
+};
 
-function processCSV(){
-    console.log("processing points_snapshot csv");
-    var csv_file = File('points_snapshot.csv');
-    csv_file.open('r');
-    csv_file.encoding = 'utf-8';
-    var data = csv_file.read().split('/\r\n|\n/'); // split by lines
-    csv_file.close();
-    for (var row in data) data[row].split(','); // split all lines by comas
-    var headers=data[0];
-    console.log("All rows of csv:");
-    console.log(data); // here is your 2d array
-    for(var i=1;i<data.length;i++){
-
-        var obj = {};
-        var currentline=data[i];
-  
-        for(var j=1;j<headers.length;j++){
-            badgesMap[headers[j]] = currentline[j];
-        }
-  
-        badgesMap.set(currentline[0],obj);
-    }
-    console.log("full map of badge holders");
-    console.log(badgesMap);
-  }
-
-  export const badgesMap ; 
+// Function to get badge data by user address from the Map
+export const getBadges = (
+	badgesMap: Map<string, BadgeData>,
+	userAddress: string,
+): BadgeData | undefined => {
+	return badgesMap.get(userAddress);
+};
