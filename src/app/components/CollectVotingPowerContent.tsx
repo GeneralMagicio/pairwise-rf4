@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { useAccount } from 'wagmi';
 import { formatAddress } from '../helpers/text-helpers';
-import { getMembersGroup, getGroup } from "../connect/utils/anonvote/bandadaApi"
+import { getMembersGroup, getGroup } from "../connect/anonvote/bandadaApi"
 import Button from './Button';
 import Image from 'next/image';
 import { useActiveAccount } from 'thirdweb/react';
@@ -28,6 +28,8 @@ const CollectVotingPowerContent = ({
 	);
 
 	const account = useActiveAccount();
+	const groupId = process.env.NEXT_PUBLIC_BANDADA_GROUP_ID!
+
 	const createIdentity = async () => {
 		if (!account) return;
 

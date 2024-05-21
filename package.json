@@ -10,6 +10,7 @@
 		"format": "prettier --write ."
 	},
 	"dependencies": {
+		"@bandada/api-sdk": "^2.2.7",
 		"@ethereum-attestation-service/eas-sdk": "^2.1.4",
 		"@semaphore-protocol/group": "^4.0.0-beta.11",
 		"@semaphore-protocol/identity": "^4.0.0-beta.11",
