@@ -27,20 +27,26 @@ const BadgesPage = () => {
 
 	const badges = address ? badgesMap.get(address) : undefined;
 
+	const allValuesZero = badges
+		? Object.values(badges).every(value => value === 0)
+		: false;
+
 	return (
 		<div>
 			<TopNavigation link={Routes.Categories} text='Badges' />
 			<div className='mx-5 my-6'>
 				<p className='font-bold'>Your Badges</p>
 				<div className='mt-6 grid grid-cols-2 justify-between gap-4'>
-					{badges ? (
-						Object.entries(badges).map(([key, value]) => (
-							<BadgeCard
-								key={key}
-								value={value}
-								type={key as keyof BadgeData}
-							/>
-						))
+					{badges && !allValuesZero ? (
+						Object.entries(badges).map(([key, value]) =>
+							value !== 0 ? (
+								<BadgeCard
+									key={key}
+									value={value}
+									type={key as keyof BadgeData}
+								/>
+							) : null,
+						)
 					) : (
 						<p>No badges found for {address}</p>
 					)}
