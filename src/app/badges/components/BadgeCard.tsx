@@ -12,7 +12,7 @@ const badgeTypeMapping = {
 	holderPoints: 'Holder',
 	delegatePoints: 'Delegate',
 	recipientsPoints: 'Recipient',
-	badgeholderPoints: 'Badge Holder',
+	badgeholderPoints: 'Badgeholder',
 };
 
 const BadgeCard: React.FC<BadgeCardProps> = ({ type, value }) => {
