@@ -3,4 +3,5 @@ export const Routes = {
 	Welcome: '/welcome',
 	Intro: '/intro',
 	Categories: '/categories',
+	Badges: '/badges',
 };
