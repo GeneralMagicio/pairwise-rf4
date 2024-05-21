@@ -4,7 +4,7 @@ import { formatAddress } from '../helpers/text-helpers';
 import { getMembersGroup, getGroup } from "../connect/utils/anonvote/bandadaApi"
 import Button from './Button';
 import Image from 'next/image';
-import { useActiveWallet } from 'thirdweb/react';
+import { useActiveAccount } from 'thirdweb/react';
 import { Identity } from "@semaphore-protocol/identity";
 import IconCheck from 'public/images/icons/IconCheck';
 
@@ -27,22 +27,19 @@ const CollectVotingPowerContent = ({
 		CollectVotingPowerState.Not_Started,
 	);
 
+	const account = useActiveAccount();
 	const createIdentity = async () => {
-
-		const wallet = useActiveWallet();
-		if (!wallet) return;
-		const account = wallet.getAccount()
 		if (!account) return;
 
 		  const signer = library.getSigner(account)
 		  const message = `Sign this message to generate your Semaphore identity.`
 		  const signature = await (await signer).signMessage(message)
 		  const identity = new Identity(signature)
-	
+		  console.log("identity.trapdoor: ",identity?.trapdoor.toString());
+		  console.log("identity.nullifier: ",identity?.nullifier.toString());
+		  console.log("identity.commitment: ",identity?.commitment.toString());
 		  setIdentity(identity)
-	
 		  localStorage.setItem(localStorageTag, identity.toString())
-	
 		  console.log("Your new Semaphore identity was just created 🎉")
 	  }
 
@@ -173,7 +170,7 @@ const CollectVotingPowerContent = ({
 		}
 	  }, [groupId, router])
 
-	const handleCollect = () => {
+	const handleCollect = async () => {
 		//Handle collect functionality here
 		setCollectState(CollectVotingPowerState.Collecting);
 
