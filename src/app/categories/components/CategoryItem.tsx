@@ -15,7 +15,7 @@ interface ICategoryProps {
 
 const CategoryItem = ({ category, progress, imageNumber }: ICategoryProps) => {
 	const router = useRouter();
-	const imgNumber = imageNumber || Math.floor(Math.random() * 5) + 1;
+	const imgNumber = imageNumber || category.id % 5 + 1;
 	const imgSrc = `/images/defaults/category/category-${imgNumber}.png`;
 	const onCategoryClick = () => {
 		if (progress) return null;
