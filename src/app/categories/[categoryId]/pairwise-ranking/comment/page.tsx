@@ -112,10 +112,11 @@ const CategoryRankingComment = () => {
 
 			if (prevAttestations.length > 0) {
 				for (const id of prevAttestations) {
-					await eas.revoke({
+					const revokedTransactions = await eas.revoke({
 						schema: SCHEMA_UID,
 						data: { uid: id },
 					});
+					await revokedTransactions.wait();
 				}
 			}
 
