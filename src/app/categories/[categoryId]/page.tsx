@@ -47,11 +47,14 @@ const CategoryPage = () => {
 					</div>
 					<div className='mx-4 my-4'>
 						<p className='text-ph'>
-							{truncate(selectedCategory?.impactDescription || '', 400)}
+							{truncate(
+								selectedCategory?.impactDescription || '',
+								400,
+							)}
 						</p>
 					</div>
 				</div>
-				<p className='mx-4 font-bold text-red-800 my-4'>
+				<p className='mx-4 my-4 font-bold text-red-800'>
 					Important: You must at least choose 2 projects.
 				</p>
 				<p className='mx-4 font-bold text-gray-600'>
@@ -70,7 +73,7 @@ const CategoryPage = () => {
 					className='w-full bg-primary'
 					onClick={() =>
 						router.push(
-							`${Routes.Categories}/${categoryId}/project-ranking`,
+							`${Routes.Categories}/${categoryId}/filter-guide`,
 						)
 					}
 				>
