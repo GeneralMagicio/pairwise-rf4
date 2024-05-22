@@ -23,7 +23,8 @@ import { InfoBox } from './components/InfoBox';
 import { SignupSuccess } from './components/success-screens/SignupSuccess';
 import { SigninSuccess } from './components/success-screens/SigninSuccess';
 import { Routes } from '../constants/Routes';
-import { useAuth } from '@/lib/third-web/AutoConnect';
+import { LogginToPwBackendState, useAuth } from '@/lib/third-web/AutoConnect';
+import { ErrorBox } from './components/ErrorBox';
 
 enum Step {
 	Main,
@@ -39,6 +40,7 @@ export default function Home() {
 	const [otpState, setOtpState] = useState<OtpState>(OtpState.InProgress);
 	const [otpError, setOtpError] = useState<string | false>(false);
 	const [emailError, setEmailError] = useState(false);
+	const [socialError, setSocialError] = useState(false);
 	const [otp, setOtp] = useState('');
 	const { isAutoConnecting, isNewUser, loggedToPw } = useAuth();
 	const router = useRouter();
@@ -87,16 +89,26 @@ export default function Home() {
 	}, [error]);
 
 	useEffect(() => {
-		if (loggedToPw) setStep(Step.Success)
-	}, [loggedToPw])
+		if (wallet) setStep(Step.Success);
+	}, [wallet]);
 
 	useEffect(() => {
-		if (step === Step.Success && !isNewUser) {
-			setTimeout(() => router.push(Routes.Categories), 1500)
-		} else if (step === Step.Success && isNewUser) {
-			setTimeout(() => router.push(Routes.Welcome), 1500)
+		if (loggedToPw === LogginToPwBackendState.Error) {
+			setStep(Step.Main);
+			setSocialError(true);
 		}
-	}, [step, router, isNewUser])
+	}, [loggedToPw]);
+
+	useEffect(() => {
+		if (loggedToPw === LogginToPwBackendState.LoggedIn && !isNewUser) {
+			router.push(Routes.Categories);
+		} else if (
+			loggedToPw === LogginToPwBackendState.LoggedIn &&
+			isNewUser
+		) {
+			router.push(Routes.Welcome);
+		}
+	}, [step, router, isNewUser, loggedToPw]);
 
 	const handleEmailLogin =
 		(email: string, verificationCode: string) => async () => {
@@ -176,11 +188,14 @@ export default function Home() {
 
 	if (step === Step.Main)
 		return (
-			<div className='relative my-auto'>
-				<div className='absolute top-8'>
+			<div className='relative flex h-full w-full flex-col items-center justify-between'>
+				<div className='absolute top-16 flex w-full flex-col items-center justify-center gap-4'>
 					{isAutoConnecting && (
+						<InfoBox message='Please wait. Auto connecting...' />
+					)}
+					{socialError && (
 						<div className=''>
-							<InfoBox message='Please wait. Auto connecting...' />
+							<ErrorBox message='Oops! we encountered and error. Please try again.' />
 						</div>
 					)}
 				</div>
