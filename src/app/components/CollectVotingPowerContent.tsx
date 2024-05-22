@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { useAccount } from 'wagmi';
 import { formatAddress } from '../helpers/text-helpers';
-import { getMembersGroup, getGroup } from "../connect/anonvote/utils/bandadaApi"
+import { getMembersGroup, addMemberByApiKey, getGroup } from "../connect/anonvote/utils/bandadaApi"
 import { getRoot } from "../connect/anonvote/utils/useSemaphore"
 import Button from './Button';
 import Image from 'next/image';
@@ -73,36 +73,35 @@ const CollectVotingPowerContent = ({
 		setIsGroupMember(answer || false)
 	  }
 
-	  const joinGroup = async () => {
+	const joinGroup = async () => {
 		setLoading(true)
-	
 		const commitment = _identity?.commitment.toString()
-	
 		try {
-		  const response = await fetch("api/join-api-key", {
-			method: "POST",
-			headers: { "Content-Type": "application/json" },
-			body: JSON.stringify({
-			  groupId,
-			  commitment
-			})
-		  })
-	
-		  if (response.status === 200) {
-			setIsGroupMember(true)
-			const users = await getMembersGroup(groupId)
-			setUsers(users!.reverse())
-		  } else {
-			alert(await response.json)
-		  }
-		} catch (error) {
-		  console.log(error)
-	
-		  alert("Some error occurred in joining the group, please try again!")
+  			const apiKey = process.env.NEXT_PUBLIC_BANDADA_GROUP_API_KEY!
+			console.log("going to add the user in the anonymous group")
+   			await addMemberByApiKey(groupId, commitment, apiKey)
+    		const group = await getGroup(groupId)
+    		if (group) {
+      			const groupRoot = await getRoot(groupId, group.treeDepth, group.members)
+      			const { error } = await supabase
+        		.from("root_history")
+        		.insert([{ root: groupRoot.toString() }])
+
+      			if (error) {
+        			console.error(error)
+					console.log(await response.json)
+        			return
+     			}
+
+				setIsGroupMember(true)
+				const users = await getMembersGroup(groupId)
+				setUsers(users!.reverse())
+			} 
 		} finally {
-		  setLoading(false)
+			setLoading(false)
 		}
-	  }
+    }
+	
 
 	  //should be called before attestation is done
 	  const sendVote = async () => {
