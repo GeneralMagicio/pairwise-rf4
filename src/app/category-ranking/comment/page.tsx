@@ -74,7 +74,7 @@ const CategoryRankingComment = () => {
 		try {
 			const item = await convertRankingToAttestationFormat(
 				ranking.ranking,
-				ranking.name,
+				"Pairwise categories",
 				comment,
 			);
 
