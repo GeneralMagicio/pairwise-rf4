@@ -1,12 +1,15 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { useAccount } from 'wagmi';
 import { formatAddress } from '../helpers/text-helpers';
-import { getMembersGroup, getGroup } from "../connect/anonvote/bandadaApi"
+import { getMembersGroup, getGroup } from "../connect/anonvote/utils/bandadaApi"
+import { getRoot } from "../connect/anonvote/utils/useSemaphore"
 import Button from './Button';
 import Image from 'next/image';
 import { useActiveAccount } from 'thirdweb/react';
 import { Identity } from "@semaphore-protocol/identity";
 import IconCheck from 'public/images/icons/IconCheck';
+import { useSearchParams, useRouter } from "next/navigation"
+import { useSigner } from '@/utils/eas';
 
 enum CollectVotingPowerState {
 	Not_Started,
@@ -18,36 +21,55 @@ interface ICollectionsVotingPowerContentProps {
 	setIsClaimDrawerOpen: (isOpen: boolean) => void;
 }
 
+const groupId = process.env.NEXT_PUBLIC_BANDADA_GROUP_ID!
+const localStorageTag = process.env.NEXT_PUBLIC_LOCAL_STORAGE_TAG!
+
 const CollectVotingPowerContent = ({
 	setIsClaimDrawerOpen,
 }: ICollectionsVotingPowerContentProps) => {
+
 	const { address } = useAccount();
+	const router = useRouter();
+	const [_loading, setLoading] = useState<boolean>(false)
+
 	const [_identity, setIdentity] = useState<Identity>()
+	const [_isGroupMember, setIsGroupMember] = useState<boolean>(false)
+  const [_users, setUsers] = useState<string[]>([])
+
 	const [collectState, setCollectState] = useState(
 		CollectVotingPowerState.Not_Started,
 	);
 
 	const account = useActiveAccount();
-	const groupId = process.env.NEXT_PUBLIC_BANDADA_GROUP_ID!
+	const signer = useSigner();
 
 	const createIdentity = async () => {
 		if (!account) return;
 
-		  const signer = library.getSigner(account)
 		  const message = `Sign this message to generate your Semaphore identity.`
-		  const signature = await (await signer).signMessage(message)
+		  const signature = await signer.signMessage(message)
+		console.log("got the signature for semaphore identity: ", signature);
+		//   const signature = account.signMessage(message)
 		  const identity = new Identity(signature)
-		  console.log("identity.trapdoor: ",identity?.trapdoor.toString());
-		  console.log("identity.nullifier: ",identity?.nullifier.toString());
-		  console.log("identity.commitment: ",identity?.commitment.toString());
+		  console.log("identity.trapdoor: ",identity?.trapdoor);
+		  console.log("identity.nullifier: ",identity?.nullifier);
+		  console.log("identity.commitment: ",identity?.commitment);
 		  setIdentity(identity)
 		  localStorage.setItem(localStorageTag, identity.toString())
 		  console.log("Your new Semaphore identity was just created 🎉")
 	  }
 
+	  const getUsers = useCallback(async () => {
+		setLoading(true)
+		const users = await getMembersGroup(groupId)
+		setUsers(users)
+		setLoading(false)
+		return users
+	  }, [groupId])
+
 	  async function isMember() {
 		const users = await getUsers()
-		const answer = users?.includes(identity!.commitment.toString())
+		const answer = users?.includes(_identity!.commitment)
 		setIsGroupMember(answer || false)
 	  }
 
@@ -76,18 +98,19 @@ const CollectVotingPowerContent = ({
 		} catch (error) {
 		  console.log(error)
 	
-		  alert("Some error occurred, please try again!")
+		  alert("Some error occurred in joining the group, please try again!")
 		} finally {
 		  setLoading(false)
 		}
 	  }
 
-	  const sendFeedback = async () => {
+	  //should be called before attestation is done
+	  const sendVote = async () => {
 		if (!_identity) {
 		  return
 		}
 	
-		const feedback = prompt("Please enter your feedback:")
+		const feedback = prompt("Please enter your vote:")
 	
 		const users = await getMembersGroup(groupId)
 	
@@ -99,6 +122,7 @@ const CollectVotingPowerContent = ({
 	
 			const signal = toBigInt(encodeBytes32String(feedback)).toString()
 	
+			// this proof should be put inside the attestation
 			const { proof, merkleTreeRoot, nullifierHash } = await generateProof(
 			  _identity,
 			  group,
@@ -124,7 +148,7 @@ const CollectVotingPowerContent = ({
 	
 			  if (data) setFeedback([data[0].signal, ..._feedback])
 	
-			  console.log(`Your feedback was posted 🎉`)
+			  console.log(`Your vote was recorded 🎉`)
 			} else {
 			  console.log(await response.text())
 			  alert(await response.text())
@@ -132,45 +156,12 @@ const CollectVotingPowerContent = ({
 		  } catch (error) {
 			console.error(error)
 	
-			alert("Some error occurred, please try again!")
+			alert("Some error occurred in submitting vote, please try again!")
 		  } finally {
 			setLoading(false)
 		  }
 		}
 	  }
-
-	  const afterJoinCredentialGroup = useCallback(async () => {
-		setLoading(true)
-		const group = await getGroup(groupId)
-		if (group === null) {
-		  alert("Some error ocurred! Group not found!")
-		  return
-		}
-		const groupRoot = await getRoot(groupId, group.treeDepth, group.members)
-	
-		try {
-		  const response = await fetch("api/join-credential", {
-			method: "POST",
-			headers: { "Content-Type": "application/json" },
-			body: JSON.stringify({
-			  groupRoot: groupRoot.toString()
-			})
-		  })
-	
-		  if (response.status === 200) {
-			setLoading(false)
-			router.push("/groups")
-		  } else {
-			alert(await response.json)
-		  }
-		} catch (error) {
-		  console.log(error)
-	
-		  alert("Some error occurred, please try again!")
-		} finally {
-		  setLoading(false)
-		}
-	  }, [groupId, router])
 
 	const handleCollect = async () => {
 		//Handle collect functionality here
@@ -183,8 +174,11 @@ const CollectVotingPowerContent = ({
 		//get users in the group
 		const users = await getMembersGroup(groupId)
     	setUsers(users)
-  
 	  isMember()
+
+	  if (!_isGroupMember) {
+		await joinGroup()
+	  }
 	  
 	};
 
