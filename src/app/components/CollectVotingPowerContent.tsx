@@ -9,7 +9,9 @@ import { useActiveAccount } from 'thirdweb/react';
 import { Identity } from "@semaphore-protocol/identity";
 import IconCheck from 'public/images/icons/IconCheck';
 import { useSearchParams, useRouter } from "next/navigation"
-import { useSigner } from '@/utils/eas';
+// import { useSigner } from '@/utils/eas';
+import { useSignMessage } from 'wagmi'
+
 
 enum CollectVotingPowerState {
 	Not_Started,
@@ -28,35 +30,39 @@ const CollectVotingPowerContent = ({
 	setIsClaimDrawerOpen,
 }: ICollectionsVotingPowerContentProps) => {
 
+	const { data: signMessageData, error, isLoading, signMessage, variables } = useSignMessage()
+
 	const { address } = useAccount();
 	const router = useRouter();
 	const [_loading, setLoading] = useState<boolean>(false)
 
 	const [_identity, setIdentity] = useState<Identity>()
 	const [_isGroupMember, setIsGroupMember] = useState<boolean>(false)
-  const [_users, setUsers] = useState<string[]>([])
+  	const [_users, setUsers] = useState<string[]>([])
 
 	const [collectState, setCollectState] = useState(
 		CollectVotingPowerState.Not_Started,
 	);
 
 	const account = useActiveAccount();
-	const signer = useSigner();
+	// const signer = useSigner();
 
 	const createIdentity = async () => {
 		if (!account) return;
 
-		  const message = `Sign this message to generate your Semaphore identity.`
-		  const signature = await signer.signMessage(message)
+		const message = `Sign this message to generate your Semaphore identity.`
+		// const signature = await signer.signMessage(message)
+		const signature = await signMessage({ message: message })
 		console.log("got the signature for semaphore identity: ", signature);
 		//   const signature = account.signMessage(message)
-		  const identity = new Identity(signature)
-		  console.log("identity.trapdoor: ",identity?.trapdoor);
-		  console.log("identity.nullifier: ",identity?.nullifier);
-		  console.log("identity.commitment: ",identity?.commitment);
-		  setIdentity(identity)
-		  localStorage.setItem(localStorageTag, identity.toString())
-		  console.log("Your new Semaphore identity was just created 🎉")
+		const identity = new Identity(signature)
+		console.log("identity.trapdoor: ",identity?.trapdoor);
+		console.log("identity.nullifier: ",identity?.nullifier);
+		console.log("identity.commitment: ",identity?.commitment);
+		console.log("identity: ", identity);
+		setIdentity(identity)
+		localStorage.setItem(localStorageTag, identity.toString())
+		console.log("Your new Semaphore identity was just created 🎉")
 	  }
 
 	  const getUsers = useCallback(async () => {
@@ -75,7 +81,8 @@ const CollectVotingPowerContent = ({
 
 	const joinGroup = async () => {
 		setLoading(true)
-		const commitment = _identity?.commitment.toString()
+		console.log("identity: ", _identity);
+		const commitment = _identity?.commitment
 		try {
   			const apiKey = process.env.NEXT_PUBLIC_BANDADA_GROUP_API_KEY!
 			console.log("going to add the user in the anonymous group")
@@ -106,6 +113,7 @@ const CollectVotingPowerContent = ({
 	  //should be called before attestation is done
 	  const sendVote = async () => {
 		if (!_identity) {
+			console.log("unable to sendVote as identity is null")
 		  return
 		}
 	
@@ -173,11 +181,12 @@ const CollectVotingPowerContent = ({
 		//get users in the group
 		const users = await getMembersGroup(groupId)
     	setUsers(users)
-	  isMember()
+	  	isMember()
 
 	  if (!_isGroupMember) {
 		await joinGroup()
 	  }
+	  await sendVote()
 	  
 	};
 
