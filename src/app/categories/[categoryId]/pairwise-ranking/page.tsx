@@ -66,11 +66,12 @@ const CategoryPairwiseRankingPage = () => {
 		});
 	};
 
-	const {mutateAsync: finishRankingMutation, isPending} = useUpdatePairwiseFinish()
+	const { mutateAsync: finishRankingMutation, isPending } =
+		useUpdatePairwiseFinish();
 
 	const finishRanking = async () => {
-		await finishRankingMutation({data: {cid: +selectedCategoryId}})
-	}
+		await finishRankingMutation({ data: { cid: +selectedCategoryId } });
+	};
 
 	const isLoading = isVotingPending || isFetchingPairwise;
 
@@ -114,9 +115,9 @@ const CategoryPairwiseRankingPage = () => {
 				pairwisePairs?.data.totalPairs,
 				pairwisePairs?.data.totalPairs,
 			);
-			//it should change
+
 			router.push(
-				`${Routes.Categories}/${selectedCategoryId}/pairwise-ranking/ranking-list`,
+				`${Routes.Categories}/${selectedCategoryId}/pairwise-ranking/ranking-done`,
 			);
 		}
 	}, [pairwisePairs?.data]);
@@ -171,9 +172,9 @@ const CategoryPairwiseRankingPage = () => {
 				<div className='border-t border-t-gray-300 px-6 py-6'>
 					<Button
 						onClick={async () => {
-							await finishRanking()
+							await finishRanking();
 							router.push(
-								`${Routes.Categories}/${selectedCategoryId}/pairwise-ranking/ranking-list`,
+								`${Routes.Categories}/${selectedCategoryId}/pairwise-ranking/ranking-done`,
 							);
 						}}
 						className='w-full bg-primary'
@@ -212,10 +213,10 @@ const CategoryPairwiseRankingPage = () => {
 					</Button>
 					<Button
 						onClick={async () => {
-							await finishRanking()
+							await finishRanking();
 							userSawModal();
 							router.push(
-								`${Routes.Categories}/${selectedCategoryId}/pairwise-ranking/ranking-list`,
+								`${Routes.Categories}/${selectedCategoryId}/pairwise-ranking/ranking-done`,
 							);
 						}}
 						isLoading={isPending}
