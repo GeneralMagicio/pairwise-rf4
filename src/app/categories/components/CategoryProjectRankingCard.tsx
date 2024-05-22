@@ -44,7 +44,7 @@ const CategoryProjectRankingCard = ({
 			exit='exit'
 			variants={variants}
 		>
-			<div className='w-[324px] rounded-2xl px-3 pb-5 shadow-lg'>
+			<div className='w-[324px] select-none rounded-2xl px-3 pb-5 shadow-lg'>
 				<div className='relative mb-4'>
 					<Image
 						src={
