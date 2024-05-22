@@ -40,6 +40,7 @@ export default function Home() {
 	const [otpState, setOtpState] = useState<OtpState>(OtpState.InProgress);
 	const [otpError, setOtpError] = useState<string | false>(false);
 	const [emailError, setEmailError] = useState(false);
+	const [createdEOA, setCreatedEOA] = useState(false);
 	const [socialError, setSocialError] = useState(false);
 	const [otp, setOtp] = useState('');
 	const { isAutoConnecting, isNewUser, loggedToPw } = useAuth();
@@ -89,8 +90,9 @@ export default function Home() {
 	}, [error]);
 
 	useEffect(() => {
-		if (wallet) setStep(Step.Success);
-	}, [wallet]);
+		if (createdEOA) setStep(Step.Success);
+		else if (!createdEOA && step === Step.Success) setStep(Step.Main);
+	}, [createdEOA, step]);
 
 	useEffect(() => {
 		if (loggedToPw === LogginToPwBackendState.Error) {
@@ -120,6 +122,7 @@ export default function Home() {
 					throw new Error(`Unable to create an email EOA`);
 				}
 				setOtpState(OtpState.Valid);
+				setTimeout(() => setCreatedEOA(true), 500);
 				connect(() => createSmartWalletFromEOA(account));
 			} catch (e) {
 				setOtpState(OtpState.Invalid);
@@ -129,6 +132,7 @@ export default function Home() {
 
 	const handleSocialConnect = (strategy: 'google' | 'apple') => async () => {
 		const socialEoa = await createSocialEoa(strategy);
+		setCreatedEOA(true);
 		const account = socialEoa.getAccount();
 		if (!account) {
 			throw new Error(`Unable to create a ${strategy} EOA`);
