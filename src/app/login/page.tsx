@@ -42,6 +42,7 @@ export default function Home() {
 	const [emailError, setEmailError] = useState(false);
 	const [createdEOA, setCreatedEOA] = useState(false);
 	const [socialError, setSocialError] = useState(false);
+	const [socialLoading, setSocialLoading] = useState(false);
 	const [otp, setOtp] = useState('');
 	const { isAutoConnecting, isNewUser, loggedToPw } = useAuth();
 	const router = useRouter();
@@ -131,12 +132,14 @@ export default function Home() {
 		};
 
 	const handleSocialConnect = (strategy: 'google' | 'apple') => async () => {
+		setSocialLoading(true);
 		const socialEoa = await createSocialEoa(strategy);
 		setCreatedEOA(true);
 		const account = socialEoa.getAccount();
 		if (!account) {
 			throw new Error(`Unable to create a ${strategy} EOA`);
 		}
+		setSocialLoading(false);
 		connect(() => createSmartWalletFromEOA(account));
 	};
 
@@ -196,6 +199,9 @@ export default function Home() {
 				<div className='absolute top-16 flex w-full flex-col items-center justify-center gap-4'>
 					{isAutoConnecting && (
 						<InfoBox message='Please wait. Auto connecting...' />
+					)}
+					{socialLoading && (
+						<InfoBox message='Please wait...' />
 					)}
 					{socialError && (
 						<div className=''>
