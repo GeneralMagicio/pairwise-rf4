@@ -10,21 +10,19 @@ const IntroPage = () => {
 				<div className='flex flex-col items-center justify-center gap-4'>
 					<CircleNumber number={1} />
 					<p className='text-ph'>
-						Select the category where your expertise shines
-						brightest
+						Select a category to start ranking projects
 					</p>
 				</div>
 				<div className='flex flex-col items-center justify-center gap-4'>
 					<CircleNumber number={2} />
 					<p className='text-ph'>
-						Learn about each project and decide if they should be
-						funded
+						Discover projects and filter through them easily
 					</p>
 				</div>
 				<div className='flex flex-col items-center justify-center gap-4'>
 					<CircleNumber number={3} />
 					<p className='text-ph'>
-						Rank projects using Pairwise voting
+						Finally, rank them to submit your vote!
 					</p>
 				</div>
 			</div>
