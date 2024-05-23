@@ -88,6 +88,7 @@ const CollectVotingPowerContent = ({
 					</p>
 					{/* add badges here */}
 					<p>badges</p>
+					<p>Voting Power Collected</p>
 					<Button
 						onClick={() => {
 							setIsClaimDrawerOpen(false);
