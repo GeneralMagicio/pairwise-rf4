@@ -207,7 +207,7 @@ const CategoryPairwiseRankingPage = () => {
 							userSawModal();
 							setIsModalOpen(false);
 						}}
-						className='mb-3 w-full bg-primary'
+						className='mb-5 w-full bg-primary'
 					>
 						Continue ranking
 					</Button>
