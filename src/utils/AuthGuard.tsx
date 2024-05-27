@@ -25,8 +25,8 @@ export const AuthGuard: React.FC<PropsWithChildren> = ({ children }) => {
 	const isPublicRoute = PublicRoutes.includes(currentRoute);
 
 	useEffect(() => {
-		if (!wallet && isAutoConnecting === false) push('/login');
-	}, [wallet, isAutoConnecting, push]);
+		if (!wallet && isAutoConnecting === false && !isPublicRoute) push('/login');
+	}, [wallet, isAutoConnecting, push, isPublicRoute]);
 
 	useEffect(() => {
 		const token = localStorage.getItem('auth');
