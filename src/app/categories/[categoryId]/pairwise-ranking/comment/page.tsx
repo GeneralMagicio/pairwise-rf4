@@ -129,6 +129,8 @@ const CategoryRankingComment = () => {
 
 				const merkleTreeDepth = 16
 				const group = new Group(groupId, merkleTreeDepth, users)
+				console.log("going to encode schemaData: ")
+				console.log(schemaData)
 				const signal = toBigInt(encodeBytes32String(schemaData.toString())).toString()
 				const { proof, merkleTreeRoot, nullifierHash } = await generateProof(
 					identity,
@@ -195,21 +197,6 @@ const CategoryRankingComment = () => {
 					console.log("You are using the same nullifier twice")
 				}
 
-				const isVerified = await verifyProof(
-					{
-						merkleTreeRoot,
-						nullifierHash,
-						externalNullifier: groupId,
-						signal: schemaData,
-						proof
-					},
-					merkleTreeDepth
-				)
-
-				if (!isVerified) {
-					console.error("The proof was not verified successfully")
-				}
-
 				const { error: errorNullifier } = await supabase
 					.from("nullifier_hash")
 					.insert([{ nullifier: nullifierHash }])
@@ -232,7 +219,7 @@ const CategoryRankingComment = () => {
 					console.error("Wrong dataFeedback")
 				}
 
-				// everything is good so add the proof in attestation
+				// TODO everything is good so add the proof in attestation : Mahdi
 			}
 
 			const encodedData = schemaEncoder.encodeData(schemaData);
