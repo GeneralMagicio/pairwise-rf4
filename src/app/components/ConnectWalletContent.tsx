@@ -5,6 +5,8 @@ import IconCopy from 'public/images/icons/IconCopy';
 import { useAccount, useConnect, useDisconnect } from 'wagmi';
 import Button from './Button';
 import { useEffect } from 'react';
+import { useGetOtp } from '../features/categories/getOtp';
+import useCopyToClipboard from '../hooks/useCopyToClipboard';
 
 interface IConnectWalletContentProps {
 	onConnect?: () => void;
@@ -13,8 +15,12 @@ interface IConnectWalletContentProps {
 const ConnectWalletContent = ({ onConnect }: IConnectWalletContentProps) => {
 	const { connectors, connectAsync } = useConnect();
 	const { address, isConnected } = useAccount();
+	const { data: OtpData, isLoading: isOtpLoading } = useGetOtp();
 	const { disconnect } = useDisconnect();
+	const [copiedText, copy] = useCopyToClipboard();
+
 	console.log('Connectors', connectors);
+	console.log('OtpData', OtpData?.data);
 
 	useEffect(() => {
 		if (isConnected) {
@@ -74,8 +80,13 @@ const ConnectWalletContent = ({ onConnect }: IConnectWalletContentProps) => {
 					copying the code and following instructions on the [website]
 				</p>
 				<div className='flex justify-between rounded-md bg-gray-100 px-4 py-2'>
-					<p className='font-bold'>456790</p>
-					<div className='cursor-pointer'>
+					<p className='font-bold'>
+						{isOtpLoading ? '-' : OtpData?.data}
+					</p>
+					<div
+						onClick={() => copy(OtpData?.data || '')}
+						className='cursor-pointer'
+					>
 						<IconCopy />
 					</div>
 				</div>
