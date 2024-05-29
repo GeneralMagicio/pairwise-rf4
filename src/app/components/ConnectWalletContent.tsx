@@ -5,8 +5,10 @@ import IconCopy from 'public/images/icons/IconCopy';
 import { useAccount, useConnect, useDisconnect } from 'wagmi';
 import Button from './Button';
 import { useEffect } from 'react';
-import { useGetOtp } from '../features/categories/getOtp';
+import { useGetOtp } from '../features/user/getOtp';
 import useCopyToClipboard from '../hooks/useCopyToClipboard';
+import { useRouter } from 'next/navigation';
+import { Routes } from '../constants/Routes';
 
 interface IConnectWalletContentProps {
 	onConnect?: () => void;
@@ -15,6 +17,7 @@ interface IConnectWalletContentProps {
 const ConnectWalletContent = ({ onConnect }: IConnectWalletContentProps) => {
 	const { connectors, connectAsync } = useConnect();
 	const { address, isConnected } = useAccount();
+	const router = useRouter();
 	const { data: OtpData, isLoading: isOtpLoading } = useGetOtp();
 	const { disconnect } = useDisconnect();
 	const [copiedText, copy] = useCopyToClipboard();
@@ -92,7 +95,7 @@ const ConnectWalletContent = ({ onConnect }: IConnectWalletContentProps) => {
 				</div>
 
 				<Button
-					onClick={onConnect}
+					onClick={() => router.push(Routes.Connect)}
 					className='border border-gray-200 bg-white text-black shadow-md'
 				>
 					Collect voting power
