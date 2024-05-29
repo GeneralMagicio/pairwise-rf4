@@ -4,5 +4,6 @@ export const Routes = {
 	Intro: '/intro',
 	Categories: '/categories',
 	Badges: '/badges',
+	Connect: '/connect',
 	ConnectOtp: '/connect/otp',
 };
