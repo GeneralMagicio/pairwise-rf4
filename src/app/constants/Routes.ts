@@ -6,4 +6,5 @@ export const Routes = {
 	Badges: '/badges',
 	Connect: '/connect',
 	ConnectOtp: '/connect/otp',
+	ConnectSuccess: '/connect/otp/success',
 };
