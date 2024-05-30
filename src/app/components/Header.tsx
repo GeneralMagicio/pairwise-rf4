@@ -11,7 +11,7 @@ import { useRouter } from 'next/navigation';
 import { Routes } from '../constants/Routes';
 
 const Header = () => {
-	const { isConnected } = useAccount();
+	const isConnected = false; //useAccount();
 	const router = useRouter();
 	const [isConnectDrawerOpen, setIsConnectDrawerOpen] = useState(false);
 	const [isClaimDrawerOpen, setIsClaimDrawerOpen] = useState(false);

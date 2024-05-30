@@ -22,6 +22,15 @@ import { useProjectsRankingByCategoryId } from '@/app/features/categories/getPro
 import { optimismSepolia } from 'thirdweb/chains';
 import { useState } from 'react';
 import { axios } from '@/lib/axios';
+import { Identity } from "@semaphore-protocol/identity"
+import { Group } from "@semaphore-protocol/group"
+import { generateProof, verifyProof } from "@semaphore-protocol/proof"
+import { getMembersGroup, addMemberByApiKey, getGroup } from "@/app/connect/anonvote/utils/bandadaApi"
+import supabase from "@/app/connect/anonvote/utils/supabaseClient"
+import {
+	encodeBytes32String,
+	toBigInt,
+} from "ethers"
 
 const CategoryRankingComment = () => {
 	const router = useRouter();
@@ -49,6 +58,16 @@ const CategoryRankingComment = () => {
 	const ranking = rankingRes?.data;
 
 	const attest = async () => {
+		const localStorageTag = process.env.NEXT_PUBLIC_LOCAL_STORAGE_TAG!
+		const identityString = localStorage.getItem(localStorageTag)
+
+		if (!identityString) {
+			router.push("/")
+			return
+		}
+
+		const identity = new Identity(identityString)
+
 		if (comment.length < 100) {
 			setCommentError(true);
 			return;
@@ -89,7 +108,7 @@ const CategoryRankingComment = () => {
 				comment,
 			);
 
-			const encodedData = schemaEncoder.encodeData([
+			const schemaData = [
 				{ name: 'listName', type: 'string', value: item.listName },
 				{
 					name: 'listMetadataPtrType',
@@ -101,7 +120,109 @@ const CategoryRankingComment = () => {
 					type: 'string',
 					value: item.listMetadataPtr,
 				},
-			]);
+			];
+
+			// generate proof of vote
+			const groupId = process.env.NEXT_PUBLIC_BANDADA_GROUP_ID!
+			const users = await getMembersGroup(groupId)
+			if (users) {
+
+				const merkleTreeDepth = 16
+				const group = new Group(groupId, merkleTreeDepth, users)
+				console.log("going to encode schemaData: ")
+				console.log(schemaData)
+				const signal = toBigInt(encodeBytes32String(schemaData.toString())).toString()
+				const { proof, merkleTreeRoot, nullifierHash } = await generateProof(
+					identity,
+					group,
+					groupId,
+					signal
+				)
+				console.log("generated proof of vote: ", proof);
+
+				const { data: currentMerkleRoot, error: errorRootHistory } = await supabase
+					.from("root_history")
+					.select()
+					.order("created_at", { ascending: false })
+					.limit(1)
+
+				if (errorRootHistory) {
+					console.log(errorRootHistory)
+				}
+
+				if (!currentMerkleRoot) {
+					console.error("Wrong currentMerkleRoot")
+				}
+
+				if (currentMerkleRoot == null || merkleTreeRoot !== currentMerkleRoot[0].root) {
+					// compare merkle tree roots
+					const { data: dataMerkleTreeRoot, error: errorMerkleTreeRoot } =
+						await supabase.from("root_history").select().eq("root", merkleTreeRoot)
+
+					if (errorMerkleTreeRoot) {
+						console.log(errorMerkleTreeRoot)
+					}
+
+					if (!dataMerkleTreeRoot) {
+						console.error("Wrong dataMerkleTreeRoot")
+					} else if (dataMerkleTreeRoot.length === 0) {
+						console.log("Merkle Root is not part of the group")
+					}
+
+					console.log("dataMerkleTreeRoot", dataMerkleTreeRoot)
+					const bandadaGroup = await getGroup(groupId)
+					const merkleTreeRootDuration = bandadaGroup?.fingerprintDuration ?? 0
+
+					if (
+						dataMerkleTreeRoot &&
+						Date.now() >
+						Date.parse(dataMerkleTreeRoot[0].created_at) + merkleTreeRootDuration
+					) {
+						console.log("Merkle Tree Root is expired")
+					}
+				}
+
+				const { data: nullifier, error: errorNullifierHash } = await supabase
+					.from("nullifier_hash")
+					.select("nullifier")
+					.eq("nullifier", nullifierHash)
+
+				if (errorNullifierHash) {
+					console.log(errorNullifierHash)
+				}
+
+				if (!nullifier) {
+					console.log("Wrong nullifier")
+				} else if (nullifier.length > 0) {
+					console.log("You are using the same nullifier twice")
+				}
+
+				const { error: errorNullifier } = await supabase
+					.from("nullifier_hash")
+					.insert([{ nullifier: nullifierHash }])
+
+				if (errorNullifier) {
+					console.error(errorNullifier)
+				}
+
+				const { data: dataFeedback, error: errorFeedback } = await supabase
+					.from("feedback")
+					.insert([{ signal: schemaData }])
+					.select()
+					.order("created_at", { ascending: false })
+
+				if (errorFeedback) {
+					console.error(errorFeedback)
+				}
+
+				if (!dataFeedback) {
+					console.error("Wrong dataFeedback")
+				}
+
+				// TODO everything is good so add the proof in attestation : Mahdi
+			}
+
+			const encodedData = schemaEncoder.encodeData(schemaData);
 
 			const prevAttestations = await getPrevAttestationIds(
 				address,
