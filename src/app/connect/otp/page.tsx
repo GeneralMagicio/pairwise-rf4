@@ -5,10 +5,30 @@ import ConnectOTPInput, { OtpState } from '../components/ConnectOtpInput';
 import { useState } from 'react';
 import Button from '@/app/components/Button';
 import { badgesImages } from '@/app/constants/BadgesData';
+import { useUpdateOtp } from '@/app/features/user/updateOtp';
 
 const ConnectOTPPage = () => {
 	const [otp, setOtp] = useState('');
 	const [otpState, setOtpState] = useState<OtpState>(OtpState.Ready);
+	const [error, setError] = useState<string | false>(false);
+	const { mutateAsync, isPending } = useUpdateOtp();
+
+	const handleSubmitOtp = async () => {
+		try {
+			if (otp) {
+				const res = await mutateAsync({ data: { otp } });
+				if (res.data === false) {
+					setOtpState(OtpState.Invalid);
+					setError('There’s no user associated with this OTP');
+				}
+			}
+		} catch (error) {
+			setOtpState(OtpState.Invalid);
+			setError('Please try again');
+		}
+	};
+
+	const disabled = otp.length !== 6 || isPending;
 
 	return (
 		<div className='centered-mobile-max-width'>
@@ -50,12 +70,20 @@ const ConnectOTPPage = () => {
 					<ConnectOTPInput
 						otp={otp}
 						setOtp={setOtp}
-						onSubmit={() => {}}
+						onSubmit={handleSubmitOtp}
+						error={error}
 						state={otpState}
 						setState={setOtpState}
+						setError={setError}
 					/>
 				</div>
-				<Button className='mt-16 w-full bg-primary'>Delegate</Button>
+				<Button
+					onClick={handleSubmitOtp}
+					className={`mt-6 w-full ${!disabled ? 'bg-primary' : 'cursor-not-allowed bg-gray-200'}`}
+					disabled={disabled}
+				>
+					Delegate
+				</Button>
 			</div>
 		</div>
 	);
