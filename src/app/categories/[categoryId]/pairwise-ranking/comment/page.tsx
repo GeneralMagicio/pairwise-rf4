@@ -171,7 +171,7 @@ const CategoryRankingComment = () => {
 
 					console.log("dataMerkleTreeRoot", dataMerkleTreeRoot)
 					const bandadaGroup = await getGroup(groupId)
-					const merkleTreeRootDuration = bandadaGroup.fingerprintDuration
+					const merkleTreeRootDuration = bandadaGroup?.fingerprintDuration ?? 0
 
 					if (
 						dataMerkleTreeRoot &&

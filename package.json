@@ -11,7 +11,7 @@
 	},
 	"dependencies": {
 		"@ethereum-attestation-service/eas-sdk": "^2.1.4",
-		"@bandada/api-sdk": "^1.1.0",
+		"@bandada/api-sdk": "^2.2.8",
 		"@semaphore-protocol/group": "^3.11.0",
 		"@semaphore-protocol/identity": "^3.11.0",
 		"@semaphore-protocol/proof": "^3.11.0",

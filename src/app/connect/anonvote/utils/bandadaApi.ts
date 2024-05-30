@@ -1,8 +1,8 @@
-import { ApiSdk, GroupResponse } from "@bandada/api-sdk"
+import { ApiSdk, Group } from "@bandada/api-sdk"
 
 const bandadaApi = new ApiSdk(process.env.NEXT_PUBLIC_BANDADA_API_URL)
 
-export async function getGroup(groupId: string): Promise<GroupResponse | null> {
+export async function getGroup(groupId: string): Promise<Group | null> {
   try {
     return await bandadaApi.getGroup(groupId)
   } catch (error: any) {

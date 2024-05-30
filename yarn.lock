@@ -80,17 +80,17 @@
     "@babel/helper-validator-identifier" "^7.24.5"
     to-fast-properties "^2.0.0"
 
-"@bandada/api-sdk@^1.1.0":
-  version "1.1.0"
-  resolved "https://registry.yarnpkg.com/@bandada/api-sdk/-/api-sdk-1.1.0.tgz#f2acf595d05609d0e9d39b3f5e710d659ebe8c45"
-  integrity sha512-4W30zT0w71PbYitHU5pxIj8mifoc8pAiZXWGXGyA85tEN2AylUC1WbOGrw5wcsmCkbOdX/M5oYG/f7BFKa4R3A==
+"@bandada/api-sdk@^2.2.8":
+  version "2.2.8"
+  resolved "https://registry.yarnpkg.com/@bandada/api-sdk/-/api-sdk-2.2.8.tgz#2e40de76f13d8e357f5b7a0116dd110f6ebc8473"
+  integrity sha512-uGgkgioty5cZx6ZrVqlTNnJjpRWhLUsVSfRAhGzU4iW15hh6vOuvlWN2l2NkV6ZBpBDHxDCM6G+Te9cdKF2v3Q==
   dependencies:
-    "@bandada/utils" "1.1.0"
+    "@bandada/utils" "2.2.8"
 
-"@bandada/utils@1.1.0":
-  version "1.1.0"
-  resolved "https://registry.yarnpkg.com/@bandada/utils/-/utils-1.1.0.tgz#172f08b75bd3d6e234c702cdd7088ff7ef1887dd"
-  integrity sha512-N0FuKvaow2+cTwFN2UEAkJsplS9K8ycqhaIu/yN6srWGjnJN6loQM5kK/hjdZ91Tq0uB8njtGGfDslzV/0C/8A==
+"@bandada/utils@2.2.8":
+  version "2.2.8"
+  resolved "https://registry.yarnpkg.com/@bandada/utils/-/utils-2.2.8.tgz#0b89159390dee479289714cecff90b77373fa488"
+  integrity sha512-8KIIJAlt2Og1ukivefg0GMl2FI8ETvUhITdMEm0wXOXMhTufS/DAJUxtJ/Qzd4aJbad9CAkBfdRgIS3mI8lCpA==
   dependencies:
     "@ethersproject/abstract-signer" "^5.7.0"
     "@ethersproject/address" "^5.7.0"
