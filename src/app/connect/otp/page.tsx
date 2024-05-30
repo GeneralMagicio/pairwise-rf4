@@ -6,12 +6,15 @@ import { useState } from 'react';
 import Button from '@/app/components/Button';
 import { badgesImages } from '@/app/constants/BadgesData';
 import { useUpdateOtp } from '@/app/features/user/updateOtp';
+import { useRouter } from 'next/navigation';
+import { Routes } from '@/app/constants/Routes';
 
 const ConnectOTPPage = () => {
 	const [otp, setOtp] = useState('');
 	const [otpState, setOtpState] = useState<OtpState>(OtpState.Ready);
 	const [error, setError] = useState<string | false>(false);
 	const { mutateAsync, isPending } = useUpdateOtp();
+	const router = useRouter();
 
 	const handleSubmitOtp = async () => {
 		try {
@@ -20,6 +23,10 @@ const ConnectOTPPage = () => {
 				if (res.data === false) {
 					setOtpState(OtpState.Invalid);
 					setError('There’s no user associated with this OTP');
+				} else {
+					//Smart Wallet Address
+					console.log('resss', res.data);
+					router.push(Routes.ConnectSuccess);
 				}
 			}
 		} catch (error) {
