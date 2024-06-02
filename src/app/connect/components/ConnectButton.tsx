@@ -9,11 +9,13 @@ import { useState } from 'react';
 import { formatAddress } from '@/app/helpers/text-helpers';
 import { useRouter } from 'next/navigation';
 import { Routes } from '@/app/constants/Routes';
+import { useCreateIdentity } from '@/app/hooks/useCreateIdentity';
 
 const ConnectButton = () => {
 	const router = useRouter();
 
 	const { connectors, connectAsync } = useConnect();
+	const { createIdentity } = useCreateIdentity();
 	const { address } = useAccount();
 	const { disconnect } = useDisconnect();
 	const [isConnectDrawerOpen, setIsConnectDrawerOpen] = useState(false);
@@ -50,18 +52,11 @@ const ConnectButton = () => {
 									<div
 										className='flex w-full cursor-pointer select-none items-center gap-2 rounded-xl bg-gray-100 p-2 transition-colors duration-200 ease-in-out'
 										key={connector.id}
-										onClick={() =>
-											connectAsync({ connector }).then(
-												() => {
-													console.log(
-														'Connected to wallet',
-													);
-													router.push(
-														Routes.ConnectOtp,
-													);
-												},
-											)
-										}
+										onClick={async () => {
+											await connectAsync({ connector });
+											await createIdentity();
+											router.push(Routes.ConnectOtp);
+										}}
 									>
 										<div className='overflow-hidden rounded-full'>
 											{connector.icon &&
