@@ -12,35 +12,39 @@ import { useCallback, useState } from 'react';
 const localStorageTag = process.env.NEXT_PUBLIC_LOCAL_STORAGE_TAG!;
 const groupId = process.env.NEXT_PUBLIC_BANDADA_GROUP_ID!;
 
-export const useCreateIdentity = async () => {
+export const useCreateIdentity = () => {
 	const { signMessageAsync } = useSignMessage();
 	const [isLoading, setIsLoading] = useState(false);
 
 	const createIdentity = useCallback(async () => {
 		setIsLoading(true);
-		const message = `Sign this message to generate your Semaphore identity.`;
-		const signature = await signMessageAsync({
-			message: message,
-		});
-		console.log('got the signature for semaphore identity: ', signature);
-		const identity = new Identity(signature);
-		console.log('identity.trapdoor: ', identity?.trapdoor);
-		console.log('identity.nullifier: ', identity?.nullifier);
-		console.log('identity.commitment: ', identity?.commitment);
-		console.log('identity: ', identity);
-		localStorage.setItem(localStorageTag, identity.toString());
-		console.log('Your new Semaphore identity was just created 🎉');
-		//get users in the group
-		const users = await getMembersGroup(groupId);
-		console.log('fetched users in the group: ', users?.length);
+		try {
+			const message = `Sign this message to generate your Semaphore identity.`;
+			const signature = await signMessageAsync({
+				message: message,
+			});
+			console.log(
+				'got the signature for semaphore identity: ',
+				signature,
+			);
+			const identity = new Identity(signature);
+			console.log('identity.trapdoor: ', identity?.trapdoor);
+			console.log('identity.nullifier: ', identity?.nullifier);
+			console.log('identity.commitment: ', identity?.commitment);
+			console.log('identity: ', identity);
+			localStorage.setItem(localStorageTag, identity.toString());
+			console.log('Your new Semaphore identity was just created 🎉');
+			//get users in the group
+			const users = await getMembersGroup(groupId);
+			console.log('fetched users in the group: ', users?.length);
 
-		if (
-			users == null ||
-			!users?.includes(identity!.getCommitment().toString())
-		) {
-			console.log('joining the group as user is not already a member');
-			setIsLoading(true);
-			try {
+			if (
+				users == null ||
+				!users?.includes(identity!.getCommitment().toString())
+			) {
+				console.log(
+					'joining the group as user is not already a member',
+				);
 				const apiKey = process.env.NEXT_PUBLIC_BANDADA_GROUP_API_KEY!;
 				console.log('going to add the user in the anonymous group');
 				let commitment = identity?.getCommitment().toString();
@@ -62,12 +66,13 @@ export const useCreateIdentity = async () => {
 						console.error('error in getting group root: ', error);
 					}
 				}
-			} finally {
-				setIsLoading(false);
+			} else {
+				console.log('user is already in the group');
 			}
-		} else {
-			console.log('user is already in the group');
+		} finally {
+			setIsLoading(false);
 		}
 	}, [signMessageAsync]);
+
 	return { createIdentity, isLoading };
 };
