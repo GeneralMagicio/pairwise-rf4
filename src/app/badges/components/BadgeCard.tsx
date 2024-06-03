@@ -1,5 +1,11 @@
 import Image from 'next/image';
-import { BadgeData } from '../utility/getBadges';
+
+export type BadgeData = {
+	holderPoints?: number;
+	delegatePoints?: number;
+	recipientsPoints?: 1;
+	badgeholderPoints?: 1;
+};
 
 type BadgeType = keyof BadgeData;
 
