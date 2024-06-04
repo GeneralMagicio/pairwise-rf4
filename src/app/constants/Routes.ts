@@ -1,3 +1,5 @@
+import Link from 'next/link';
+
 export const Routes = {
 	Home: '/',
 	Welcome: '/welcome',
@@ -7,4 +9,7 @@ export const Routes = {
 	Connect: '/connect',
 	ConnectOtp: '/connect/otp',
 	ConnectSuccess: '/connect/otp/success',
+	LinkX: 'https://twitter.com/Pairwisevote',
+	LinkGithub: 'https://github.com/GeneralMagicio/pairwise-RPGF4',
+	LinkParagraph: 'https://paragraph.xyz/@pairwise',
 };
