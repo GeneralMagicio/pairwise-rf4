@@ -8,8 +8,8 @@ import IconCheck from 'public/images/icons/IconCheck';
 import { identityLsKey, useCreateIdentity } from '../hooks/useCreateIdentity';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import { axios } from '@/lib/axios';
-import { Identity } from '@semaphore-protocol/identity';
 import { BadgeData } from '../badges/components/BadgeCard';
+import { AdjacentBadges } from '../badges/components/AdjacentBadges';
 
 enum CollectVotingPowerState {
 	Not_Started,
@@ -24,7 +24,7 @@ interface ICollectionsVotingPowerContentProps {
 const getBadges = async (address: string) => {
 	const { data } = await axios.get<BadgeData>('/user/public/badges', {
 		params: {
-			address
+			address,
 		},
 	});
 
@@ -114,12 +114,11 @@ const CollectVotingPowerContent = ({
 							Claim your badges to start voting on projects.
 						</p>
 					</div>
-					<div className='py-6 text-center'>
+					<div className='my-4 flex flex-col items-center'>
 						<p className='mb-6 text-lg font-semibold'>
 							{formatAddress(address!)}
 						</p>
-						{/* add badges here */}
-						<div className='mb-4'>Badges</div>
+						<AdjacentBadges {...publicBadges} />
 						<p className='text-ph'>
 							{Object.keys(publicBadges || {}).length} badges
 							found
@@ -145,8 +144,7 @@ const CollectVotingPowerContent = ({
 					<p className='text-lg font-semibold'>
 						{formatAddress(address)}
 					</p>
-					{/* add badges here */}
-					<p>badges</p>
+					<AdjacentBadges {...publicBadges} />
 					<p className='text-ph'>Collecting Voting Power</p>
 				</div>
 			);
@@ -159,9 +157,7 @@ const CollectVotingPowerContent = ({
 					<p className='text-lg font-semibold'>
 						{formatAddress(address)}
 					</p>
-					{/* add badges here */}
-					<p>badges</p>
-					<p> {badges ? badges.toString() : ''}</p>
+					<AdjacentBadges {...publicBadges} />
 					<p>Voting Power Collected</p>
 					<Button
 						onClick={() => {
