@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Image from 'next/image'; // Make sure to install 'next/image'
 import Drawer from './Drawer';
 import ConnectWalletContent from './ConnectWalletContent';
@@ -9,10 +9,23 @@ import { useAccount } from 'wagmi';
 import { badgesImages } from '../constants/BadgesData';
 import { useRouter } from 'next/navigation';
 import { Routes } from '../constants/Routes';
+import { useQuery } from '@tanstack/react-query';
+import { BadgeData } from '../badges/components/BadgeCard';
+import { axios } from '@/lib/axios';
+import { AdjacentBadges } from '../badges/components/AdjacentBadges';
+
+const getBadges = async () => {
+	const { data } = await axios.get<BadgeData>('/user/badges');
+	return data;
+};
 
 const Header = () => {
-	const isConnected = false; //useAccount();
 	const router = useRouter();
+	const { data: badges } = useQuery({
+		queryKey: ['badges'],
+		queryFn: getBadges,
+	});
+
 	const [isConnectDrawerOpen, setIsConnectDrawerOpen] = useState(false);
 	const [isClaimDrawerOpen, setIsClaimDrawerOpen] = useState(false);
 	const handleConnect = () => {
@@ -30,26 +43,9 @@ const Header = () => {
 					height={40}
 				/>
 			</div>
-			{isConnected ? (
-				<div
-					onClick={() => router.push(Routes.Badges)}
-					className='relative flex cursor-pointer justify-center'
-				>
-					{badgesImages.map((image, index) => (
-						<div
-							key={index}
-							className={`flex-shrink-0 ${index > 0 ? '-ml-7' : 'ml-0'} rounded-full p-2`}
-						>
-							<div className='rounded-full'>
-								<Image
-									width={32}
-									height={32}
-									src={image.src}
-									alt={image.alt}
-								/>
-							</div>
-						</div>
-					))}
+			{badges && Object.keys(badges).length > 0 ? (
+				<div onClick={() => router.push('/badges')}>
+					<AdjacentBadges {...badges} size={25} />
 				</div>
 			) : (
 				<button

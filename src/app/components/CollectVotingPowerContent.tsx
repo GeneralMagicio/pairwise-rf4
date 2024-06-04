@@ -6,7 +6,7 @@ import Image from 'next/image';
 import IconCheck from 'public/images/icons/IconCheck';
 
 import { identityLsKey, useCreateIdentity } from '../hooks/useCreateIdentity';
-import { useMutation, useQuery } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { axios } from '@/lib/axios';
 import { BadgeData } from '../badges/components/BadgeCard';
 import { AdjacentBadges } from '../badges/components/AdjacentBadges';
@@ -62,6 +62,8 @@ const CollectVotingPowerContent = ({
 
 	const { createIdentity } = useCreateIdentity();
 
+	const queryClient = useQueryClient();
+
 	const { data: publicBadges } = useQuery({
 		queryKey: ['publicBadges', address],
 		queryFn: () => getBadges(address || ''),
@@ -72,6 +74,11 @@ const CollectVotingPowerContent = ({
 	});
 	const { mutateAsync: storeBadgesMutation, data: badges } = useMutation({
 		mutationFn: storeBadges,
+		onSuccess: () => {
+			queryClient.refetchQueries({
+				queryKey: ['badges'],
+			});
+		},
 	});
 
 	const [collectState, setCollectState] = useState(
@@ -114,14 +121,16 @@ const CollectVotingPowerContent = ({
 							Claim your badges to start voting on projects.
 						</p>
 					</div>
-					<div className='my-4 flex flex-col items-center'>
-						<p className='mb-6 text-lg font-semibold'>
+					<div className='my-4 flex flex-col items-center gap-4'>
+						<p className='text-lg font-semibold'>
 							{formatAddress(address!)}
 						</p>
-						<AdjacentBadges {...publicBadges} />
+						<AdjacentBadges {...publicBadges} size={40} />
 						<p className='text-ph'>
-							{Object.keys(publicBadges || {}).length} badges
-							found
+							{publicBadges
+								? `${Object.keys(publicBadges).length} badges
+							found}`
+								: '...'}
 						</p>
 					</div>
 					<Button
@@ -144,7 +153,7 @@ const CollectVotingPowerContent = ({
 					<p className='text-lg font-semibold'>
 						{formatAddress(address)}
 					</p>
-					<AdjacentBadges {...publicBadges} />
+					<AdjacentBadges {...publicBadges} size={40} />
 					<p className='text-ph'>Collecting Voting Power</p>
 				</div>
 			);
@@ -157,7 +166,7 @@ const CollectVotingPowerContent = ({
 					<p className='text-lg font-semibold'>
 						{formatAddress(address)}
 					</p>
-					<AdjacentBadges {...publicBadges} />
+					<AdjacentBadges {...publicBadges} size={40} />
 					<p>Voting Power Collected</p>
 					<Button
 						onClick={() => {
