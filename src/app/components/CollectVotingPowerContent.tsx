@@ -1,11 +1,15 @@
 import React, { useState } from 'react';
-import { useAccount } from 'wagmi';
+import { useAccount, useSignMessage } from 'wagmi';
 import { formatAddress } from '../helpers/text-helpers';
 import Button from './Button';
 import Image from 'next/image';
 import IconCheck from 'public/images/icons/IconCheck';
 
-import { useCreateIdentity } from '../hooks/useCreateIdentity';
+import { identityLsKey, useCreateIdentity } from '../hooks/useCreateIdentity';
+import { useMutation, useQuery } from '@tanstack/react-query';
+import { axios } from '@/lib/axios';
+import { Identity } from '@semaphore-protocol/identity';
+import { BadgeData } from '../badges/components/BadgeCard';
 
 enum CollectVotingPowerState {
 	Not_Started,
@@ -17,12 +21,58 @@ interface ICollectionsVotingPowerContentProps {
 	setIsClaimDrawerOpen: (isOpen: boolean) => void;
 }
 
+const getBadges = async (address: string) => {
+	const { data } = await axios.get<BadgeData>('/user/public/badges', {
+		params: {
+			address
+		},
+	});
+
+	return data;
+};
+
+const storeIdentity = async ({ identity }: { identity: string }) => {
+	return axios.post('/user/store-identity', {
+		identity,
+	});
+};
+
+const storeBadges = async ({
+	mainAddress,
+	signature,
+}: {
+	mainAddress: string;
+	signature: string;
+}) => {
+	const { data: badges } = await axios.post<BadgeData>('/user/store-badges', {
+		mainAddress,
+		signature,
+	});
+
+	return badges;
+};
+
 const CollectVotingPowerContent = ({
 	setIsClaimDrawerOpen,
 }: ICollectionsVotingPowerContentProps) => {
 	const { address } = useAccount();
+	// const [badges, setBadges] = useState()
+
+	const { signMessageAsync } = useSignMessage();
 
 	const { createIdentity } = useCreateIdentity();
+
+	const { data: publicBadges } = useQuery({
+		queryKey: ['publicBadges', address],
+		queryFn: () => getBadges(address || ''),
+	});
+
+	const { mutateAsync: storeIdentityMutation } = useMutation({
+		mutationFn: storeIdentity,
+	});
+	const { mutateAsync: storeBadgesMutation, data: badges } = useMutation({
+		mutationFn: storeBadges,
+	});
 
 	const [collectState, setCollectState] = useState(
 		CollectVotingPowerState.Not_Started,
@@ -34,6 +84,21 @@ const CollectVotingPowerContent = ({
 
 		// create bandada anonymous identity if not already present
 		await createIdentity();
+
+		const message = `Pairwise`;
+		const signature = await signMessageAsync({
+			message: message,
+		});
+
+		const identity = localStorage.getItem(identityLsKey);
+
+		if (!identity || !address) return;
+
+		await Promise.all([
+			storeIdentityMutation({ identity }),
+			storeBadgesMutation({ mainAddress: address, signature }),
+		]);
+
 		setCollectState(CollectVotingPowerState.Collected);
 	};
 
@@ -55,7 +120,10 @@ const CollectVotingPowerContent = ({
 						</p>
 						{/* add badges here */}
 						<div className='mb-4'>Badges</div>
-						<p className='text-ph'>4 badges found</p>
+						<p className='text-ph'>
+							{Object.keys(publicBadges || {}).length} badges
+							found
+						</p>
 					</div>
 					<Button
 						onClick={handleCollect}
@@ -93,6 +161,7 @@ const CollectVotingPowerContent = ({
 					</p>
 					{/* add badges here */}
 					<p>badges</p>
+					<p> {badges ? badges.toString() : ''}</p>
 					<p>Voting Power Collected</p>
 					<Button
 						onClick={() => {

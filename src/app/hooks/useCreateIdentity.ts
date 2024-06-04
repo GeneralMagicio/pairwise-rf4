@@ -9,12 +9,16 @@ import supabase from '../connect/anonvote/utils/supabaseClient';
 import { getRoot } from '../connect/anonvote/utils/useSemaphore';
 import { useCallback, useState } from 'react';
 
-const localStorageTag = process.env.NEXT_PUBLIC_LOCAL_STORAGE_TAG!;
+/**
+ * identity local storage key
+ */
+export const identityLsKey = process.env.NEXT_PUBLIC_LOCAL_STORAGE_TAG!;
 const groupId = process.env.NEXT_PUBLIC_BANDADA_GROUP_ID!;
 
 export const useCreateIdentity = () => {
 	const { signMessageAsync } = useSignMessage();
 	const [isLoading, setIsLoading] = useState(false);
+	// const [identity, setIdentity] = useState<Identity>()
 
 	const createIdentity = useCallback(async () => {
 		setIsLoading(true);
@@ -28,11 +32,12 @@ export const useCreateIdentity = () => {
 				signature,
 			);
 			const identity = new Identity(signature);
-			console.log('identity.trapdoor: ', identity?.trapdoor);
-			console.log('identity.nullifier: ', identity?.nullifier);
-			console.log('identity.commitment: ', identity?.commitment);
-			console.log('identity: ', identity);
-			localStorage.setItem(localStorageTag, identity.toString());
+			// console.log('identity.trapdoor: ', identity?.trapdoor);
+			// console.log('identity.nullifier: ', identity?.nullifier);
+			// console.log('identity.commitment: ', identity?.commitment);
+			// console.log('identity: ', identity);
+			// setIdentity(identity)
+			localStorage.setItem(identityLsKey, identity.toString());
 			console.log('Your new Semaphore identity was just created 🎉');
 			//get users in the group
 			const users = await getMembersGroup(groupId);
