@@ -1,6 +1,6 @@
 'use client';
 
-import React, {  } from 'react';
+import React from 'react';
 import TopNavigation from '../components/TopNavigation';
 import { Routes } from '../constants/Routes';
 import BadgeCard, { BadgeData } from './components/BadgeCard';

@@ -89,13 +89,13 @@ const CollectVotingPowerContent = ({
 		//Handle collect functionality here
 		setCollectState(CollectVotingPowerState.Collecting);
 
-		// create bandada anonymous identity if not already present
-		await createIdentity();
-
-		const message = `Pairwise`;
+		const message = `Sign this message to generate your Semaphore identity.`;
 		const signature = await signMessageAsync({
 			message: message,
 		});
+
+		// create bandada anonymous identity if not already present
+		await createIdentity(signature);
 
 		const identity = localStorage.getItem(identityLsKey);
 
@@ -128,8 +128,7 @@ const CollectVotingPowerContent = ({
 						<AdjacentBadges {...publicBadges} size={40} />
 						<p className='text-ph'>
 							{publicBadges
-								? `${Object.keys(publicBadges).length} badges
-							found}`
+								? `${Object.keys(publicBadges).length} badges found`
 								: '...'}
 						</p>
 					</div>

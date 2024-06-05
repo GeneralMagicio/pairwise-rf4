@@ -18,25 +18,19 @@ const groupId = process.env.NEXT_PUBLIC_BANDADA_GROUP_ID!;
 export const useCreateIdentity = () => {
 	const { signMessageAsync } = useSignMessage();
 	const [isLoading, setIsLoading] = useState(false);
-	// const [identity, setIdentity] = useState<Identity>()
 
-	const createIdentity = useCallback(async () => {
+	const createIdentity = useCallback(async (signature: string) => {
 		setIsLoading(true);
 		try {
-			const message = `Sign this message to generate your Semaphore identity.`;
-			const signature = await signMessageAsync({
-				message: message,
-			});
 			console.log(
 				'got the signature for semaphore identity: ',
 				signature,
 			);
 			const identity = new Identity(signature);
-			// console.log('identity.trapdoor: ', identity?.trapdoor);
-			// console.log('identity.nullifier: ', identity?.nullifier);
-			// console.log('identity.commitment: ', identity?.commitment);
-			// console.log('identity: ', identity);
-			// setIdentity(identity)
+			console.log('identity.trapdoor: ', identity?.trapdoor);
+			console.log('identity.nullifier: ', identity?.nullifier);
+			console.log('identity.commitment: ', identity?.commitment);
+			console.log('identity: ', identity);
 			localStorage.setItem(identityLsKey, identity.toString());
 			console.log('Your new Semaphore identity was just created 🎉');
 			//get users in the group
