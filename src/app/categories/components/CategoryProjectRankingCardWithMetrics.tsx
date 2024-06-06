@@ -21,6 +21,7 @@ const CategoryProjectRankingCardWithMetrics = ({
 	setHasSeenProjectDetails,
 }: ICategoryProjectRankingCardWithMetricsProps) => {
 	const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+	const [learnMore, setLearnMore] = useState(false);
 
 	const variants = {
 		hidden: { opacity: 0 },
@@ -46,14 +47,14 @@ const CategoryProjectRankingCardWithMetrics = ({
 			variants={variants}
 			className='m-4'
 		>
-			<div className='= w-full select-none rounded-2xl pb-5'>
+			<div className='w-full select-none rounded-2xl pb-5'>
 				<div className='relative mb-4'>
 					{project.image ? (
 						<Image
 							src={project.image}
 							alt={project.name}
-							width={300}
-							height={300}
+							width={500}
+							height={500}
 							className='mx-auto rounded-2xl'
 						/>
 					) : (
@@ -68,9 +69,18 @@ const CategoryProjectRankingCardWithMetrics = ({
 					<p className='mb-4 font-bold'>{project.name}</p>
 				</div>
 				<p className='text-ph'>
-					{truncate(project.impactDescription, 90)}
+					{!learnMore
+						? truncate(project.impactDescription, 90)
+						: project.impactDescription}
 				</p>
-				<Button className='mt-4 w-full border'>Learn more</Button>
+				{!learnMore && (
+					<Button
+						onClick={() => setLearnMore(true)}
+						className='mt-4 w-full border border-gray-300 text-black'
+					>
+						Learn more
+					</Button>
+				)}
 			</div>
 		</motion.div>
 	);
