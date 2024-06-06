@@ -27,7 +27,7 @@ const storeIdentity = async ({
 	token: string;
 }) => {
 	return axios.post(
-		`${API_URL}/user/store-identity`,
+		`${API_URL}user/store-identity`,
 		{
 			identity,
 		},
@@ -50,7 +50,7 @@ const storeBadges = async ({
 	token: string;
 }) => {
 	const { data: badges } = await axios.post<BadgeData>(
-		`${API_URL}/user/store-badges`,
+		`${API_URL}user/store-badges`,
 		{
 			mainAddress,
 			signature,
