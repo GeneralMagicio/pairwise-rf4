@@ -4,17 +4,11 @@ import React from 'react';
 import TopNavigation from '../components/TopNavigation';
 import { Routes } from '../constants/Routes';
 import BadgeCard, { BadgeData } from './components/BadgeCard';
-import { useQuery } from '@tanstack/react-query';
-import { axios } from '@/lib/axios';
 import LoadingSpinner from '../components/LoadingSpinner';
-
-const getBadges = async () => {
-	const {data} = await axios.get<BadgeData>('/user/badges')
-	return data;
-}
+import { useGetBadges } from './requests';
 
 const BadgesPage = () => {
-	const {data: badges, isLoading} = useQuery({queryKey: ["badges"], queryFn: getBadges})
+	const {data: badges, isLoading} = useGetBadges()
 
 
 	if (isLoading) return <LoadingSpinner/>

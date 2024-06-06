@@ -1,30 +1,17 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import Image from 'next/image'; // Make sure to install 'next/image'
 import Drawer from './Drawer';
 import ConnectWalletContent from './ConnectWalletContent';
 import CollectVotingPowerContent from './CollectVotingPowerContent';
-import { useAccount } from 'wagmi';
-import { badgesImages } from '../constants/BadgesData';
 import { useRouter } from 'next/navigation';
-import { Routes } from '../constants/Routes';
-import { useQuery } from '@tanstack/react-query';
-import { BadgeData } from '../badges/components/BadgeCard';
-import { axios } from '@/lib/axios';
 import { AdjacentBadges } from '../badges/components/AdjacentBadges';
-
-const getBadges = async () => {
-	const { data } = await axios.get<BadgeData>('/user/badges');
-	return data;
-};
+import { useGetBadges } from '../badges/requests';
 
 const Header = () => {
 	const router = useRouter();
-	const { data: badges } = useQuery({
-		queryKey: ['badges'],
-		queryFn: getBadges,
-	});
+	const { data: badges } = useGetBadges()
 
 	const [isConnectDrawerOpen, setIsConnectDrawerOpen] = useState(false);
 	const [isClaimDrawerOpen, setIsClaimDrawerOpen] = useState(false);
@@ -43,7 +30,7 @@ const Header = () => {
 					height={40}
 				/>
 			</div>
-			{badges && Object.keys(badges).length > 0 ? (
+			{badges ? (
 				<div onClick={() => router.push('/badges')}>
 					<AdjacentBadges {...badges} size={25} />
 				</div>

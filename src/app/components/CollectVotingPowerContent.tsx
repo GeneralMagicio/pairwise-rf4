@@ -4,12 +4,12 @@ import { formatAddress } from '../helpers/text-helpers';
 import Button from './Button';
 import Image from 'next/image';
 import IconCheck from 'public/images/icons/IconCheck';
-
 import { identityLsKey, useCreateIdentity } from '../hooks/useCreateIdentity';
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { axios } from '@/lib/axios';
 import { BadgeData } from '../badges/components/BadgeCard';
 import { AdjacentBadges } from '../badges/components/AdjacentBadges';
+import { useGetPublicBadges } from '../badges/requests';
 
 enum CollectVotingPowerState {
 	Not_Started,
@@ -20,16 +20,6 @@ enum CollectVotingPowerState {
 interface ICollectionsVotingPowerContentProps {
 	setIsClaimDrawerOpen: (isOpen: boolean) => void;
 }
-
-const getBadges = async (address: string) => {
-	const { data } = await axios.get<BadgeData>('/user/public/badges', {
-		params: {
-			address,
-		},
-	});
-
-	return data;
-};
 
 const storeIdentity = async ({ identity }: { identity: string }) => {
 	return axios.post('/user/store-identity', {
@@ -56,7 +46,6 @@ const CollectVotingPowerContent = ({
 	setIsClaimDrawerOpen,
 }: ICollectionsVotingPowerContentProps) => {
 	const { address } = useAccount();
-	// const [badges, setBadges] = useState()
 
 	const { signMessageAsync } = useSignMessage();
 
@@ -64,10 +53,7 @@ const CollectVotingPowerContent = ({
 
 	const queryClient = useQueryClient();
 
-	const { data: publicBadges } = useQuery({
-		queryKey: ['publicBadges', address],
-		queryFn: () => getBadges(address || ''),
-	});
+	const { data: publicBadges } = useGetPublicBadges(address || '')
 
 	const { mutateAsync: storeIdentityMutation } = useMutation({
 		mutationFn: storeIdentity,
