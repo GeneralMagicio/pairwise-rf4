@@ -169,7 +169,7 @@ const ProjectRankingPage = () => {
 	return (
 		<div>
 			<div className='flex min-h-[calc(100dvh)] flex-col'>
-				<div className='border-b border-b-gray-300 pb-7 pt-9'>
+				<div className='border-b border-b-gray-200 pb-7 pt-9'>
 					<div className='mx-4 flex justify-between gap-6'>
 						<p>{selectedCategory?.name}</p>
 						<Link href={`${Routes.Categories}/${categoryId}`}>
@@ -177,7 +177,7 @@ const ProjectRankingPage = () => {
 						</Link>
 					</div>
 				</div>
-				<div className='border-b border-b-gray-300 pb-7'>
+				<div className='border-b border-b-gray-200 pb-7'>
 					<div className='mx-8 mt-6'>
 						<ProgressBar
 							progress={
@@ -199,7 +199,7 @@ const ProjectRankingPage = () => {
 						animate='show'
 						exit='exit'
 					>
-						<div className='flex justify-center'>
+						<div className='flex justify-center border-b  border-b-gray-200'>
 							<CategoryProjectRankingCardWithMetrics
 								project={projects?.data[currentIndex]!}
 								hasSeenProjectDetails={hasSeenProjectDetails}
