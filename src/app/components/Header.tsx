@@ -30,7 +30,7 @@ const Header = () => {
 					height={40}
 				/>
 			</div>
-			{badges ? (
+			{badges && Object.keys(badges).length > 0 ? (
 				<div onClick={() => router.push('/badges')}>
 					<AdjacentBadges {...badges} size={25} />
 				</div>
