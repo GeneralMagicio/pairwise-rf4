@@ -7,7 +7,7 @@ import ConnectWalletContent from './ConnectWalletContent';
 import CollectVotingPowerContent from './CollectVotingPowerContent';
 import { useRouter } from 'next/navigation';
 import { AdjacentBadges } from '../badges/components/AdjacentBadges';
-import { useGetBadges } from '../badges/requests';
+import { useGetBadges } from '../features/badges/getBadges';
 
 const Header = () => {
 	const router = useRouter();

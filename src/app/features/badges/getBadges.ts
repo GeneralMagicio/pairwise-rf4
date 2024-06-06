@@ -1,6 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
 import {axios} from '@/lib/axios';
-import { BadgeData } from '../components/BadgeCard';
+import { BadgeData } from '@/app/badges/components/BadgeCard';
 
 const getBadges = async () => {
 	const { data } = await axios.get<BadgeData>('/user/badges');

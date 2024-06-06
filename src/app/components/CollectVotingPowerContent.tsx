@@ -9,7 +9,7 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { axios } from '@/lib/axios';
 import { BadgeData } from '../badges/components/BadgeCard';
 import { AdjacentBadges } from '../badges/components/AdjacentBadges';
-import { useGetPublicBadges } from '../badges/requests';
+import { useGetPublicBadges } from '../features/badges/getBadges';
 
 enum CollectVotingPowerState {
 	Not_Started,

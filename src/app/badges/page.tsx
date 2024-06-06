@@ -5,7 +5,7 @@ import TopNavigation from '../components/TopNavigation';
 import { Routes } from '../constants/Routes';
 import BadgeCard, { BadgeData } from './components/BadgeCard';
 import LoadingSpinner from '../components/LoadingSpinner';
-import { useGetBadges } from './requests';
+import { useGetBadges } from '../features/badges/getBadges';
 
 const BadgesPage = () => {
 	const {data: badges, isLoading} = useGetBadges()
