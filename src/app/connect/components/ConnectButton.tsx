@@ -5,20 +5,23 @@ import Drawer from '@/app/components/Drawer';
 import IconWallet from 'public/images/icons/IconWallet';
 import { useAccount, useConnect, useDisconnect } from 'wagmi';
 import Image from 'next/image';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { formatAddress } from '@/app/helpers/text-helpers';
 import { useRouter } from 'next/navigation';
 import { Routes } from '@/app/constants/Routes';
-import { useCreateIdentity } from '@/app/hooks/useCreateIdentity';
 
 const ConnectButton = () => {
 	const router = useRouter();
 
 	const { connectors, connectAsync } = useConnect();
-	const { createIdentity } = useCreateIdentity();
-	const { address } = useAccount();
+	const { address, isConnected } = useAccount();
 	const { disconnect } = useDisconnect();
 	const [isConnectDrawerOpen, setIsConnectDrawerOpen] = useState(false);
+
+	useEffect(() => {
+		if (isConnected) router.push(Routes.ConnectOtp);
+	}, [isConnected, router]);
+
 	return (
 		<div>
 			{address ? (
@@ -54,8 +57,6 @@ const ConnectButton = () => {
 										key={connector.id}
 										onClick={async () => {
 											await connectAsync({ connector });
-											await createIdentity();
-											router.push(Routes.ConnectOtp);
 										}}
 									>
 										<div className='overflow-hidden rounded-full'>

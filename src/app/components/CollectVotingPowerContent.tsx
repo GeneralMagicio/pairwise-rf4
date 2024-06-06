@@ -1,11 +1,15 @@
 import React, { useState } from 'react';
-import { useAccount } from 'wagmi';
+import { useAccount, useSignMessage } from 'wagmi';
 import { formatAddress } from '../helpers/text-helpers';
 import Button from './Button';
 import Image from 'next/image';
 import IconCheck from 'public/images/icons/IconCheck';
-
-import { useCreateIdentity } from '../hooks/useCreateIdentity';
+import { identityLsKey, useCreateIdentity } from '../hooks/useCreateIdentity';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { axios } from '@/lib/axios';
+import { BadgeData } from '../badges/components/BadgeCard';
+import { AdjacentBadges } from '../badges/components/AdjacentBadges';
+import { useGetPublicBadges } from '../features/badges/getBadges';
 
 enum CollectVotingPowerState {
 	Not_Started,
@@ -17,12 +21,51 @@ interface ICollectionsVotingPowerContentProps {
 	setIsClaimDrawerOpen: (isOpen: boolean) => void;
 }
 
+const storeIdentity = async ({ identity }: { identity: string }) => {
+	return axios.post('/user/store-identity', {
+		identity,
+	});
+};
+
+const storeBadges = async ({
+	mainAddress,
+	signature,
+}: {
+	mainAddress: string;
+	signature: string;
+}) => {
+	const { data: badges } = await axios.post<BadgeData>('/user/store-badges', {
+		mainAddress,
+		signature,
+	});
+
+	return badges;
+};
+
 const CollectVotingPowerContent = ({
 	setIsClaimDrawerOpen,
 }: ICollectionsVotingPowerContentProps) => {
 	const { address } = useAccount();
 
+	const { signMessageAsync } = useSignMessage();
+
 	const { createIdentity } = useCreateIdentity();
+
+	const queryClient = useQueryClient();
+
+	const { data: publicBadges } = useGetPublicBadges(address || '')
+
+	const { mutateAsync: storeIdentityMutation } = useMutation({
+		mutationFn: storeIdentity,
+	});
+	const { mutateAsync: storeBadgesMutation, data: badges } = useMutation({
+		mutationFn: storeBadges,
+		onSuccess: () => {
+			queryClient.refetchQueries({
+				queryKey: ['badges'],
+			});
+		},
+	});
 
 	const [collectState, setCollectState] = useState(
 		CollectVotingPowerState.Not_Started,
@@ -32,8 +75,23 @@ const CollectVotingPowerContent = ({
 		//Handle collect functionality here
 		setCollectState(CollectVotingPowerState.Collecting);
 
+		const message = `Sign this message to generate your Semaphore identity.`;
+		const signature = await signMessageAsync({
+			message: message,
+		});
+
 		// create bandada anonymous identity if not already present
-		await createIdentity();
+		await createIdentity(signature);
+
+		const identity = localStorage.getItem(identityLsKey);
+
+		if (!identity || !address) return;
+
+		await Promise.all([
+			storeIdentityMutation({ identity }),
+			storeBadgesMutation({ mainAddress: address, signature }),
+		]);
+
 		setCollectState(CollectVotingPowerState.Collected);
 	};
 
@@ -49,13 +107,16 @@ const CollectVotingPowerContent = ({
 							Claim your badges to start voting on projects.
 						</p>
 					</div>
-					<div className='py-6 text-center'>
-						<p className='mb-6 text-lg font-semibold'>
+					<div className='my-4 flex flex-col items-center gap-4'>
+						<p className='text-lg font-semibold'>
 							{formatAddress(address!)}
 						</p>
-						{/* add badges here */}
-						<div className='mb-4'>Badges</div>
-						<p className='text-ph'>4 badges found</p>
+						<AdjacentBadges {...publicBadges} size={40} />
+						<p className='text-ph'>
+							{publicBadges
+								? `${Object.keys(publicBadges).length} badges found`
+								: '...'}
+						</p>
 					</div>
 					<Button
 						onClick={handleCollect}
@@ -77,8 +138,7 @@ const CollectVotingPowerContent = ({
 					<p className='text-lg font-semibold'>
 						{formatAddress(address)}
 					</p>
-					{/* add badges here */}
-					<p>badges</p>
+					<AdjacentBadges {...publicBadges} size={40} />
 					<p className='text-ph'>Collecting Voting Power</p>
 				</div>
 			);
@@ -91,8 +151,7 @@ const CollectVotingPowerContent = ({
 					<p className='text-lg font-semibold'>
 						{formatAddress(address)}
 					</p>
-					{/* add badges here */}
-					<p>badges</p>
+					<AdjacentBadges {...publicBadges} size={40} />
 					<p>Voting Power Collected</p>
 					<Button
 						onClick={() => {

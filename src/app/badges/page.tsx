@@ -1,35 +1,17 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import TopNavigation from '../components/TopNavigation';
 import { Routes } from '../constants/Routes';
-import BadgeCard from './components/BadgeCard';
-import { BadgeData, processCSV } from './utility/getBadges';
+import BadgeCard, { BadgeData } from './components/BadgeCard';
+import LoadingSpinner from '../components/LoadingSpinner';
+import { useGetBadges } from '../features/badges/getBadges';
 
 const BadgesPage = () => {
-	const [badgesMap, setBadgesMap] = useState<Map<string, BadgeData>>(
-		new Map(),
-	);
-	const [address, setAddress] = useState<string | null>(null);
+	const {data: badges, isLoading} = useGetBadges()
 
-	useEffect(() => {
-		setAddress('olimpio.eth');
-		fetch('/csv/points_snapshot.csv')
-			.then(response => response.text())
-			.then(data => {
-				const processedMap = processCSV(data);
-				setBadgesMap(processedMap);
-			})
-			.catch(error =>
-				console.error('Failed to load or process CSV', error),
-			);
-	}, []);
 
-	const badges = address ? badgesMap.get(address) : undefined;
-
-	const allValuesZero = badges
-		? Object.values(badges).every(value => value === 0)
-		: false;
+	if (isLoading) return <LoadingSpinner/>
 
 	return (
 		<div>
@@ -37,18 +19,18 @@ const BadgesPage = () => {
 			<div className='mx-5 my-6'>
 				<p className='font-bold'>Your Badges</p>
 				<div className='mt-6 grid grid-cols-2 justify-between gap-4'>
-					{badges && !allValuesZero ? (
+					{badges ? (
 						Object.entries(badges).map(([key, value]) =>
-							value !== 0 ? (
+							 (
 								<BadgeCard
 									key={key}
 									value={value}
 									type={key as keyof BadgeData}
 								/>
-							) : null,
+							),
 						)
 					) : (
-						<p>No badges found for {address}</p>
+						<p>No badges found for You</p>
 					)}
 				</div>
 			</div>

@@ -1,5 +1,5 @@
 import { axios } from '@/lib/axios';
-import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { useMutation } from '@tanstack/react-query';
 
 type ProjectVoteData = {
 	data: {
@@ -8,7 +8,7 @@ type ProjectVoteData = {
 };
 
 export const updateOtp = ({ data }: ProjectVoteData) => {
-	return axios.post('auth/otp/validate', data);
+	return axios.post<string>('auth/otp/validate', data);
 };
 
 export const useUpdateOtp = () => {
