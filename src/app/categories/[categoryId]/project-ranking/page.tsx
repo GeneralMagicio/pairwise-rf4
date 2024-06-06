@@ -18,6 +18,7 @@ import { useUpdateProjectInclusion } from '@/app/features/categories/updateProje
 import { AnimatePresence, motion } from 'framer-motion';
 import { useEffect, useState } from 'react';
 import { useUpdateCategoryMarkFiltered } from '@/app/features/categories/updateCategoryMarkFiltered';
+import CategoryProjectRankingCardWithMetrics from '../../components/CategoryProjectRankingCardWithMetrics';
 
 const ProjectRankingPage = () => {
 	//States for animation
@@ -167,7 +168,7 @@ const ProjectRankingPage = () => {
 	}
 	return (
 		<div>
-			<div className='flex min-h-[calc(100dvh)] flex-col  justify-between'>
+			<div className='flex min-h-[calc(100dvh)] flex-col'>
 				<div className='border-b border-b-gray-300 pb-7 pt-9'>
 					<div className='mx-4 flex justify-between gap-6'>
 						<p>{selectedCategory?.name}</p>
@@ -176,16 +177,19 @@ const ProjectRankingPage = () => {
 						</Link>
 					</div>
 				</div>
-				<div className='mx-8'>
-					<ProgressBar
-						progress={
-							((backendCurrentIndex + 1) / projectsCount) * 100
-						}
-					/>
-					<p className='mt-2 text-sm'>
-						{backendCurrentIndex + 1} of {projectsCount} Projects
-						Selected
-					</p>
+				<div className='border-b border-b-gray-300 pb-7'>
+					<div className='mx-8 mt-6'>
+						<ProgressBar
+							progress={
+								((backendCurrentIndex + 1) / projectsCount) *
+								100
+							}
+						/>
+						<p className='mt-2 text-sm'>
+							{backendCurrentIndex + 1} of {projectsCount}{' '}
+							Projects Selected
+						</p>
+					</div>
 				</div>
 				<AnimatePresence mode='wait'>
 					<motion.div
@@ -195,8 +199,8 @@ const ProjectRankingPage = () => {
 						animate='show'
 						exit='exit'
 					>
-						<div className='mt-7 flex justify-center'>
-							<CategoryProjectRankingCard
+						<div className='flex justify-center'>
+							<CategoryProjectRankingCardWithMetrics
 								project={projects?.data[currentIndex]!}
 								hasSeenProjectDetails={hasSeenProjectDetails}
 								setHasSeenProjectDetails={
