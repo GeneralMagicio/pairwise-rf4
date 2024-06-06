@@ -5,14 +5,14 @@ import Image from 'next/image'; // Make sure to install 'next/image'
 import Drawer from './Drawer';
 import ConnectWalletContent from './ConnectWalletContent';
 import CollectVotingPowerContent from './CollectVotingPowerContent';
-import { useAccount } from 'wagmi';
-import { badgesImages } from '../constants/BadgesData';
 import { useRouter } from 'next/navigation';
-import { Routes } from '../constants/Routes';
+import { AdjacentBadges } from '../badges/components/AdjacentBadges';
+import { useGetBadges } from '../features/badges/getBadges';
 
 const Header = () => {
-	const isConnected = false; //useAccount();
 	const router = useRouter();
+	const { data: badges } = useGetBadges()
+
 	const [isConnectDrawerOpen, setIsConnectDrawerOpen] = useState(false);
 	const [isClaimDrawerOpen, setIsClaimDrawerOpen] = useState(false);
 	const handleConnect = () => {
@@ -30,26 +30,9 @@ const Header = () => {
 					height={40}
 				/>
 			</div>
-			{isConnected ? (
-				<div
-					onClick={() => router.push(Routes.Badges)}
-					className='relative flex cursor-pointer justify-center'
-				>
-					{badgesImages.map((image, index) => (
-						<div
-							key={index}
-							className={`flex-shrink-0 ${index > 0 ? '-ml-7' : 'ml-0'} rounded-full p-2`}
-						>
-							<div className='rounded-full'>
-								<Image
-									width={32}
-									height={32}
-									src={image.src}
-									alt={image.alt}
-								/>
-							</div>
-						</div>
-					))}
+			{badges ? (
+				<div onClick={() => router.push('/badges')}>
+					<AdjacentBadges {...badges} size={25} />
 				</div>
 			) : (
 				<button

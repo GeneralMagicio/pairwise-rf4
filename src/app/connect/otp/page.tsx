@@ -8,30 +8,115 @@ import { badgesImages } from '@/app/constants/BadgesData';
 import { useUpdateOtp } from '@/app/features/user/updateOtp';
 import { useRouter } from 'next/navigation';
 import { Routes } from '@/app/constants/Routes';
+import { queryClient } from '@/lib/react-query';
+import { useMutation } from '@tanstack/react-query';
+import { useAccount, useSignMessage } from 'wagmi';
+import {
+	identityLsKey,
+	useCreateIdentity,
+} from '@/app/hooks/useCreateIdentity';
+import axios from 'axios';
+import { API_URL } from '@/app/config';
+import { BadgeData } from '@/app/badges/components/BadgeCard';
+
+const storeIdentity = async ({
+	identity,
+	token,
+}: {
+	identity: string;
+	token: string;
+}) => {
+	return axios.post(
+		`${API_URL}/user/store-identity`,
+		{
+			identity,
+		},
+		{
+			headers: {
+				'Content-Type': 'application/json',
+				auth: token,
+			},
+		},
+	);
+};
+
+const storeBadges = async ({
+	mainAddress,
+	signature,
+	token,
+}: {
+	mainAddress: string;
+	signature: string;
+	token: string;
+}) => {
+	const { data: badges } = await axios.post<BadgeData>(
+		`${API_URL}/user/store-badges`,
+		{
+			mainAddress,
+			signature,
+		},
+		{
+			headers: {
+				'Content-Type': 'application/json',
+				auth: token,
+			},
+		},
+	);
+
+	return badges;
+};
 
 const ConnectOTPPage = () => {
 	const [otp, setOtp] = useState('');
 	const [otpState, setOtpState] = useState<OtpState>(OtpState.Ready);
 	const [error, setError] = useState<string | false>(false);
 	const { mutateAsync, isPending } = useUpdateOtp();
+	const { createIdentity } = useCreateIdentity();
+	const { mutateAsync: storeIdentityMutation } = useMutation({
+		mutationFn: storeIdentity,
+	});
+	const { mutateAsync: storeBadgesMutation, data: badges } = useMutation({
+		mutationFn: storeBadges,
+	});
+
+	const { address } = useAccount();
+
+	const { signMessageAsync } = useSignMessage();
+
 	const router = useRouter();
 
 	const handleSubmitOtp = async () => {
 		try {
 			if (otp) {
 				const res = await mutateAsync({ data: { otp } });
-				if (res.data === false) {
-					setOtpState(OtpState.Invalid);
-					setError('There’s no user associated with this OTP');
-				} else {
-					//Smart Wallet Address
-					console.log('resss', res.data);
-					router.push(Routes.ConnectSuccess);
-				}
+				setOtpState(OtpState.Valid)
+
+				const token = res.data;
+				const message = `Sign this message to generate your Semaphore identity.`;
+				const signature = await signMessageAsync({
+					message: message,
+				});
+
+				await createIdentity(signature);
+
+				const identity = localStorage.getItem(identityLsKey);
+
+				if (!identity || !address) return;
+
+				await Promise.all([
+					storeIdentityMutation({ identity, token }),
+					storeBadgesMutation({
+						mainAddress: address,
+						signature,
+						token,
+					}),
+				]);
+
+				router.push(Routes.ConnectSuccess);
 			}
 		} catch (error) {
 			setOtpState(OtpState.Invalid);
-			setError('Please try again');
+			setError('Not able to connect you to a user. Please try again later');
 		}
 	};
 
