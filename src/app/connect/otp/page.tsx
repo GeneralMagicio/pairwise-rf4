@@ -103,14 +103,8 @@ const ConnectOTPPage = () => {
 
 				if (!identity || !address) return;
 
-				await Promise.all([
-					storeIdentityMutation({ identity, token }),
-					storeBadgesMutation({
-						mainAddress: address,
-						signature,
-						token,
-					}),
-				]);
+				await storeIdentityMutation({ identity, token })
+				await storeBadgesMutation({ mainAddress: address, signature, token })
 
 				router.push(Routes.ConnectSuccess);
 			}

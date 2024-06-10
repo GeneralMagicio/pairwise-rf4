@@ -87,10 +87,8 @@ const CollectVotingPowerContent = ({
 
 		if (!identity || !address) return;
 
-		await Promise.all([
-			storeIdentityMutation({ identity }),
-			storeBadgesMutation({ mainAddress: address, signature }),
-		]);
+		await storeIdentityMutation({ identity })
+		await storeBadgesMutation({ mainAddress: address, signature })
 
 		setCollectState(CollectVotingPowerState.Collected);
 	};
