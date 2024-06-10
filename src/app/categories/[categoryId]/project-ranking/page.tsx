@@ -24,7 +24,6 @@ const ProjectRankingPage = () => {
 	//States for animation
 	const [exitDirection, setExitDirection] = useState(0);
 	const [exitRotation, setExitRotation] = useState(0);
-	const [hasSeenProjectDetails, setHasSeenProjectDetails] = useState(false);
 
 	const router = useRouter();
 	const { categoryId } = useParams();
@@ -84,7 +83,6 @@ const ProjectRankingPage = () => {
 			})
 			.then(() => {
 				if (!isLastProjectInTheList) {
-					setHasSeenProjectDetails(false);
 					setCurrentIndex(curr => curr + 1);
 				} else {
 					updateCategoryMarkFiltered
@@ -202,40 +200,38 @@ const ProjectRankingPage = () => {
 						<div className='flex justify-center border-b  border-b-gray-200'>
 							<CategoryProjectRankingCardWithMetrics
 								project={projects?.data[currentIndex]!}
-								hasSeenProjectDetails={hasSeenProjectDetails}
-								setHasSeenProjectDetails={
-									setHasSeenProjectDetails
-								}
 							/>
 						</div>
 					</motion.div>
 				</AnimatePresence>
-				<div className='mb-3 flex justify-center gap-14 px-6 py-6'>
-					<Button
-						disabled={updatingProject || !hasSeenProjectDetails}
-						onClick={() =>
-							handleProjectInclusion(InclusionState.Excluded)
-						}
-						className={`rounded-full p-4 ${updatingProject || !hasSeenProjectDetails ? 'cursor-not-allowed bg-red-200' : 'bg-red-500'}`}
-					>
-						<IconTrash />
-					</Button>
-					<Button
-						disabled={isRevertDisabled}
-						className={`rounded-full p-4 ${isRevertDisabled && 'cursor-not-allowed '}`}
-						onClick={handleGoBack}
-					>
-						<IconRefresh />
-					</Button>
-					<Button
-						disabled={updatingProject || !hasSeenProjectDetails}
-						className={`rounded-full p-4 ${updatingProject || !hasSeenProjectDetails ? 'cursor-not-allowed bg-green-200' : 'bg-green-600'}`}
-						onClick={() =>
-							handleProjectInclusion(InclusionState.Included)
-						}
-					>
-						<IconCheck />
-					</Button>
+				<div className='bg-red sticky bottom-0 w-full border-t border-gray-200 bg-white py-6'>
+					<div className='mb-3 flex justify-center gap-14 px-6 py-6'>
+						<Button
+							disabled={updatingProject}
+							onClick={() =>
+								handleProjectInclusion(InclusionState.Excluded)
+							}
+							className={`rounded-full p-4 ${updatingProject ? 'cursor-not-allowed bg-red-200' : 'bg-red-500'}`}
+						>
+							<IconTrash />
+						</Button>
+						<Button
+							disabled={isRevertDisabled}
+							className={`rounded-full p-4 ${isRevertDisabled && 'cursor-not-allowed '}`}
+							onClick={handleGoBack}
+						>
+							<IconRefresh />
+						</Button>
+						<Button
+							disabled={updatingProject}
+							className={`rounded-full p-4 ${updatingProject ? 'cursor-not-allowed bg-green-200' : 'bg-green-600'}`}
+							onClick={() =>
+								handleProjectInclusion(InclusionState.Included)
+							}
+						>
+							<IconCheck />
+						</Button>
+					</div>
 				</div>
 			</div>
 		</div>
