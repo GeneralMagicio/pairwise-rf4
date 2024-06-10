@@ -1,27 +1,54 @@
 import Image from 'next/image';
 import { IProject } from '../types';
-import IconAlertCircle from 'public/images/icons/IconAlertCircle';
+
 import { truncate } from '@/app/helpers/text-helpers';
-import { useState } from 'react';
-import Drawer from '@/app/components/Drawer';
-import CategoriesProjectDrawerContent from './CategoriesProjectDrawerContent';
+import { useEffect, useState } from 'react';
+
 import { motion } from 'framer-motion';
-import IconEye from 'public/images/icons/IconEye';
+
 import Button from '@/app/components/Button';
+import {
+	CategoryMetricData,
+	getProjectMetrics,
+	Metric,
+	processProjectMetricsCSV,
+} from '@/utils/getMetrics';
 
 interface ICategoryProjectRankingCardWithMetricsProps {
 	project: IProject;
-	hasSeenProjectDetails: boolean;
-	setHasSeenProjectDetails: (value: boolean) => void;
 }
 
 const CategoryProjectRankingCardWithMetrics = ({
 	project,
-	hasSeenProjectDetails,
-	setHasSeenProjectDetails,
 }: ICategoryProjectRankingCardWithMetricsProps) => {
-	const [isDrawerOpen, setIsDrawerOpen] = useState(false);
 	const [learnMore, setLearnMore] = useState(false);
+
+	const [metricsMap, setMetricsMap] = useState<
+		Map<string, CategoryMetricData>
+	>(new Map());
+
+	const projectMetrics = getProjectMetrics(
+		metricsMap,
+		'SaXSYwJ5Gr4V4mwVN-b3nS6NbRYbY0zufdVVBje99J4=', //sample project ID
+	);
+	console.log('projectMetrics:', projectMetrics);
+	const [address, setAddress] = useState<string | null>(null);
+
+	const fetchMetrics = async () => {
+		try {
+			const response = await fetch('/data/cleaned_metrics.csv');
+			const data = await response.text();
+			const processedMap = processProjectMetricsCSV(data);
+			setMetricsMap(processedMap);
+		} catch (error) {
+			console.error('Failed to load or process CSV', error);
+		}
+	};
+
+	useEffect(() => {
+		setAddress('olimpio.eth');
+		fetchMetrics();
+	}, []);
 
 	const variants = {
 		hidden: { opacity: 0 },
@@ -38,7 +65,7 @@ const CategoryProjectRankingCardWithMetrics = ({
 			},
 		},
 	};
-	console.log('project', project);
+
 	return (
 		<motion.div
 			initial='hidden'
@@ -58,7 +85,7 @@ const CategoryProjectRankingCardWithMetrics = ({
 							className='mx-auto rounded-2xl'
 						/>
 					) : (
-						<div className='relative h-[300px] w-[300px] rounded-2xl bg-gray-700'>
+						<div className='relative mx-auto h-[360px] w-[360px] rounded-2xl bg-gray-700'>
 							<p className='absolute inset-0 flex items-center justify-center overflow-hidden px-1 text-center text-lg font-bold text-white'>
 								{project.name}
 							</p>
@@ -81,6 +108,47 @@ const CategoryProjectRankingCardWithMetrics = ({
 						Learn more
 					</Button>
 				)}
+
+				<div className='my-6 border-t'></div>
+				<div>
+					{projectMetrics &&
+						Object.keys(projectMetrics).map(categoryKey => {
+							const categoryMetrics =
+								projectMetrics[
+									categoryKey as keyof typeof projectMetrics
+								];
+							return (
+								<div
+									className='my-2 flex flex-col rounded-lg border border-gray-300 p-3'
+									key={categoryKey}
+								>
+									<h3 className='pb-2 font-bold'>
+										{categoryKey}
+									</h3>
+									{Object.keys(categoryMetrics).map(
+										metricKey => {
+											const metric = categoryMetrics[
+												metricKey as keyof typeof categoryMetrics
+											] as Metric;
+											return (
+												<div
+													key={metricKey}
+													className='flex justify-between border-b-2 border-gray-200 py-2 last:border-b-0'
+												>
+													<p className='text-ph'>
+														{metric.description}
+													</p>
+													<p className='font-medium'>
+														{metric.value}
+													</p>
+												</div>
+											);
+										},
+									)}
+								</div>
+							);
+						})}
+				</div>
 			</div>
 		</motion.div>
 	);
