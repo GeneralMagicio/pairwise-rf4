@@ -119,8 +119,9 @@ const CollectVotingPowerContent = ({
 						</p>
 					</div>
 					<Button
+						disabled={!(Object.keys(publicBadges || {}).length > 0)}
 						onClick={handleCollect}
-						className='w-full bg-primary'
+						className='w-full bg-primary disabled:bg-gray-100 disabled:text-gray-700'
 					>
 						Collect Voting Power
 					</Button>

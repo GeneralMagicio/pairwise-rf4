@@ -76,7 +76,7 @@ const ConnectWalletContent = ({ onConnect }: IConnectWalletContentProps) => {
 					</div>
 				)}
 			</div>
-			<div className='mb-10 flex flex-col gap-4'>
+			<div className='mb-10 flex flex-col gap-4 lg:hidden'>
 				<p className='mt-4 font-bold'>Don’t want to connect wallet?</p>
 				<p className='text-ph'>
 					You can still collect voting power from your wallet by
@@ -98,7 +98,7 @@ const ConnectWalletContent = ({ onConnect }: IConnectWalletContentProps) => {
 					onClick={() => router.push(Routes.Connect)}
 					className='border border-gray-200 bg-white text-black shadow-md'
 				>
-					Collect voting power
+					Collect Voting Power
 				</Button>
 				<p className='text-ph'>
 					You will be redirected to another page outside the app.
