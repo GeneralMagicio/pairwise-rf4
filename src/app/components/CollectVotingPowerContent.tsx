@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useAccount, useSignMessage } from 'wagmi';
 import { formatAddress } from '../helpers/text-helpers';
 import Button from './Button';
@@ -10,9 +10,11 @@ import { axios } from '@/lib/axios';
 import { BadgeData } from '../badges/components/BadgeCard';
 import { AdjacentBadges } from '../badges/components/AdjacentBadges';
 import { useGetPublicBadges } from '../features/badges/getBadges';
+import { DotsLoader } from '../login/components/bouncing-dots/DotsLoader';
 
 enum CollectVotingPowerState {
 	Not_Started,
+	No_Badges,
 	Collecting,
 	Collected,
 }
@@ -53,7 +55,7 @@ const CollectVotingPowerContent = ({
 
 	const queryClient = useQueryClient();
 
-	const { data: publicBadges } = useGetPublicBadges(address || '')
+	const { data: publicBadges } = useGetPublicBadges(address || '');
 
 	const { mutateAsync: storeIdentityMutation } = useMutation({
 		mutationFn: storeIdentity,
@@ -71,6 +73,11 @@ const CollectVotingPowerContent = ({
 		CollectVotingPowerState.Not_Started,
 	);
 
+	useEffect(() => {
+		if (publicBadges && Object.keys(publicBadges).length === 0)
+			setCollectState(CollectVotingPowerState.No_Badges);
+	}, [collectState, publicBadges]);
+
 	const handleCollect = async () => {
 		//Handle collect functionality here
 		setCollectState(CollectVotingPowerState.Collecting);
@@ -87,8 +94,8 @@ const CollectVotingPowerContent = ({
 
 		if (!identity || !address) return;
 
-		await storeIdentityMutation({ identity })
-		await storeBadgesMutation({ mainAddress: address, signature })
+		await storeIdentityMutation({ identity });
+		await storeBadgesMutation({ mainAddress: address, signature });
 
 		setCollectState(CollectVotingPowerState.Collected);
 	};
@@ -113,15 +120,41 @@ const CollectVotingPowerContent = ({
 						<p className='text-ph'>
 							{publicBadges
 								? `${Object.keys(publicBadges).length} badges found`
-								: '...'}
+								: <DotsLoader/>}
 						</p>
 					</div>
 					<Button
-						disabled={!(Object.keys(publicBadges || {}).length > 0)}
 						onClick={handleCollect}
-						className='w-full bg-primary disabled:bg-gray-100 disabled:text-gray-700'
+						className='w-full bg-primary'
 					>
 						Collect Voting Power
+					</Button>
+				</div>
+			);
+		case CollectVotingPowerState.No_Badges:
+			return (
+				<div className='px-4 py-6'>
+					<div>
+						<p className='pb-2 text-3xl font-bold'>Claim badges</p>
+						<p className='text-ph'>
+							Oh no, this address does not have any badge to
+							claim. But no worries, you can still play and vote.
+						</p>
+					</div>
+					<div className='my-2 flex flex-col items-center gap-4'>
+						<Image
+							src={'/images/characters/12.png'}
+							alt='No badges character'
+							height={160}
+							width={160}
+						/>
+						<p className='text-primary mb-4'>No Badges found</p>
+					</div>
+					<Button
+						onClick={() => {setIsClaimDrawerOpen(false)}}
+						className='w-full bg-primary'
+					>
+						Done
 					</Button>
 				</div>
 			);
