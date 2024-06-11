@@ -67,6 +67,7 @@ const ConnectButton = () => {
 													width={40}
 													height={40}
 													alt={connector.name}
+													unoptimized
 												/>
 											) : (
 												<Image
