@@ -48,6 +48,7 @@ const ConnectButton = () => {
 										className='flex w-full cursor-pointer select-none items-center gap-2 rounded-xl bg-gray-100 p-2 transition-colors duration-200 ease-in-out'
 										key={connector.id}
 										onClick={async () => {
+											setIsConnectDrawerOpen(false)
 											await connectAsync({ connector });
 										}}
 									>
