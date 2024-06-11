@@ -5,22 +5,14 @@ import Drawer from '@/app/components/Drawer';
 import IconWallet from 'public/images/icons/IconWallet';
 import { useAccount, useConnect, useDisconnect } from 'wagmi';
 import Image from 'next/image';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { formatAddress } from '@/app/helpers/text-helpers';
-import { useRouter } from 'next/navigation';
-import { Routes } from '@/app/constants/Routes';
 
 const ConnectButton = () => {
-	const router = useRouter();
-
 	const { connectors, connectAsync } = useConnect();
-	const { address, isConnected } = useAccount();
+	const { address } = useAccount();
 	const { disconnect } = useDisconnect();
 	const [isConnectDrawerOpen, setIsConnectDrawerOpen] = useState(false);
-
-	useEffect(() => {
-		if (isConnected) router.push(Routes.ConnectOtp);
-	}, [isConnected, router]);
 
 	return (
 		<div>
