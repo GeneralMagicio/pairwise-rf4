@@ -7,7 +7,7 @@ import IconCheck from 'public/images/icons/IconCheck';
 import { identityLsKey, useCreateIdentity } from '../hooks/useCreateIdentity';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { axios } from '@/lib/axios';
-import { BadgeData } from '../badges/components/BadgeCard';
+import { BadgeData, badgeTypeMapping } from '../badges/components/BadgeCard';
 import { AdjacentBadges } from '../badges/components/AdjacentBadges';
 import { useGetPublicBadges } from '../features/badges/getBadges';
 import { DotsLoader } from '../login/components/bouncing-dots/DotsLoader';
@@ -100,6 +100,11 @@ const CollectVotingPowerContent = ({
 		setCollectState(CollectVotingPowerState.Collected);
 	};
 
+	const numOfBadgesFunc = (publicBadges: BadgeData) =>
+		Object.keys(publicBadges).filter(el =>
+			Object.keys(badgeTypeMapping).includes(el),
+		).length;
+
 	switch (collectState) {
 		case CollectVotingPowerState.Not_Started:
 			return (
@@ -118,9 +123,11 @@ const CollectVotingPowerContent = ({
 						</p>
 						<AdjacentBadges {...publicBadges} size={40} />
 						<p className='text-ph'>
-							{publicBadges
-								? `${Object.keys(publicBadges).length} badges found`
-								: <DotsLoader/>}
+							{publicBadges ? (
+								`${numOfBadgesFunc(publicBadges)} badges found`
+							) : (
+								<DotsLoader />
+							)}
 						</p>
 					</div>
 					<Button
@@ -148,10 +155,12 @@ const CollectVotingPowerContent = ({
 							height={160}
 							width={160}
 						/>
-						<p className='text-primary mb-4'>No Badges found</p>
+						<p className='mb-4 text-primary'>No Badges found</p>
 					</div>
 					<Button
-						onClick={() => {setIsClaimDrawerOpen(false)}}
+						onClick={() => {
+							setIsClaimDrawerOpen(false);
+						}}
 						className='w-full bg-primary'
 					>
 						Done
