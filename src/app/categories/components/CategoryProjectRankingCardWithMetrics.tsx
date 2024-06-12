@@ -46,7 +46,6 @@ const CategoryProjectRankingCardWithMetrics = ({
 	};
 
 	useEffect(() => {
-		setAddress('olimpio.eth');
 		fetchMetrics();
 	}, []);
 
