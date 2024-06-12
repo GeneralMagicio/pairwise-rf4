@@ -3,19 +3,17 @@
 import { useParams, useRouter } from 'next/navigation';
 import React, { useEffect, useState } from 'react';
 import TopRouteIndicator from '@/app/components/TopRouteIndicator';
-import CategoryPairwiseCard from '../../components/CategoryPairwiseCard';
 import ProgressBar from '@/app/components/ProgressBar';
 import { useGetPairwisePairs } from '@/app/features/categories/getPairwisePairs';
 import LoadingSpinner from '@/app/components/LoadingSpinner';
 import { useCategoryById } from '@/app/features/categories/getCategoryById';
 import { useUpdateProjectVote } from '@/app/features/categories/updateProjectVote';
 import { Routes } from '@/app/constants/Routes';
-import Button from '@/app/components/Button';
-import Modal from '@/app/components/Modal';
+import Image from 'next/image';
+
 import { useUpdatePairwiseFinish } from '@/app/features/categories/updatePairwiseFinish';
 import CategoryPairwiseCardWithMetrics from '../../components/CategoryPairwiseCardWithMetrics';
 import {
-	CategoryMetricData,
 	compareProjects,
 	ComparisonResult,
 	processProjectMetricsCSV,
@@ -23,15 +21,12 @@ import {
 import { cn } from '@/app/helpers/cn';
 import { formatMetricsNumber } from '@/utils/numbers';
 
+import { truncate } from '@/app/helpers/text-helpers';
+
 interface IUserSeenRankingFinishedModal {
 	value: string;
 	categoryId: string;
 }
-
-const variants = {
-	hidden: { opacity: 0 },
-	visible: { opacity: 1 },
-};
 
 const project1Id = 'UF36qYsUzfwX6GDNuWgpDXrqsmrLcK4Rw5D4hZY5Pxc=';
 const project2Id = 'Q8XI5uvgwOT41A1eWKKVRoQdzjDvYXRtVLpT6n7KVrg=';
@@ -43,7 +38,7 @@ const CategoryPairwiseRankingPage = () => {
 	const selectedCategoryId =
 		typeof categoryId === 'string' ? categoryId : categoryId[0];
 
-	const [isModalOpen, setIsModalOpen] = useState(false);
+	const [customLoading, setCustomLoading] = useState(false);
 
 	const [formattedMetrics, setFormattedMetrics] =
 		useState<ComparisonResult>();
@@ -63,13 +58,10 @@ const CategoryPairwiseRankingPage = () => {
 	console.log('PairwiseData', pairwisePairs);
 	const [firstProject, secondProject] = pairwisePairs?.data.pairs[0] ?? [];
 
-	const currentPercentage =
-		((pairwisePairs?.data.votedPairs ?? 0) /
-			(pairwisePairs?.data.totalPairs ?? 1)) *
-		100;
-	const thresholdPercentage = pairwisePairs?.data.threshold
-		? +pairwisePairs?.data.threshold * 100
-		: 100;
+	const threshold = pairwisePairs?.data.threshold ?? 0;
+	const votedPairs = pairwisePairs?.data.votedPairs ?? 0;
+	const totalPairs = pairwisePairs?.data.totalPairs ?? 1;
+	const progressPercentage = (votedPairs / totalPairs / threshold) * 100;
 
 	const handleVote = async (pickedId: number) => {
 		mutate({
@@ -89,16 +81,6 @@ const CategoryPairwiseRankingPage = () => {
 	};
 
 	const isLoading = isVotingPending || isFetchingPairwise;
-
-	const userSawModal = () => {
-		localStorage.setItem(
-			'hasUserSeenRankingFinishedModal',
-			JSON.stringify({
-				value: 'true',
-				categoryId: selectedCategoryId,
-			}),
-		);
-	};
 
 	const fetchMetrics = async () => {
 		try {
@@ -131,37 +113,25 @@ const CategoryPairwiseRankingPage = () => {
 		);
 
 		if (
-			currentPercentage > thresholdPercentage &&
+			progressPercentage >= 100 &&
 			(!hasUserSeenRankingFinishedModal ||
 				parsedData.categoryId !== selectedCategoryId ||
 				parsedData.value !== 'true')
 		) {
-			setIsModalOpen(true);
+			setCustomLoading(true);
+			finishRanking().then(() => {
+				router.push(
+					`${Routes.Categories}/${selectedCategoryId}/pairwise-ranking/ranking-done`,
+				);
+			});
 		}
-	}, [currentPercentage]);
-
-	useEffect(() => {
-		//If the user has voted all the pairs, redirect to the ranking list
-		if (
-			pairwisePairs?.data &&
-			pairwisePairs?.data.votedPairs === pairwisePairs?.data.totalPairs
-		) {
-			console.log(
-				'My Log',
-				pairwisePairs?.data.totalPairs,
-				pairwisePairs?.data.totalPairs,
-			);
-
-			router.push(
-				`${Routes.Categories}/${selectedCategoryId}/pairwise-ranking/ranking-done`,
-			);
-		}
-	}, [pairwisePairs?.data]);
+	}, [progressPercentage]);
 
 	if (
 		isCategoryLoading ||
 		isPairwisePairsLoading ||
-		!pairwisePairs?.data.pairs[0]
+		!pairwisePairs?.data.pairs[0] ||
+		customLoading
 	) {
 		return <LoadingSpinner />;
 	}
@@ -171,13 +141,17 @@ const CategoryPairwiseRankingPage = () => {
 			<div>
 				<TopRouteIndicator name={categoryData?.data.collection.name} />
 				<div className='mb-1 mt-6 px-8'>
-					<ProgressBar progress={currentPercentage} />
+					<ProgressBar
+						progress={
+							progressPercentage > 100 ? 100 : progressPercentage
+						}
+					/>
 					<p className='mt-2 text-sm'>
-						{currentPercentage.toFixed(2)}% of 100% Projects ranked
+						{progressPercentage > 100
+							? 100
+							: progressPercentage.toFixed(2)}
+						% of 100% Projects ranked
 					</p>
-					{/* <p>Voted {pairwisePairs?.data.votedPairs}</p>
-				<p>Total {pairwisePairs?.data.totalPairs}</p>
-				<p>Total {pairwisePairs?.data.threshold}</p> */}
 				</div>
 				<p className='text-bold mb-4 mt-6 px-3 text-center text-base'>
 					{`Which project should receive more RetroPGF funding in ${categoryData?.data.collection.name}?`}
@@ -185,10 +159,6 @@ const CategoryPairwiseRankingPage = () => {
 				<div className='items-top flex justify-between gap-4 pb-6'>
 					<div
 						key={firstProject.id}
-						onClick={() => {
-							console.log('Clicking on First', isLoading);
-							!isLoading && handleVote(firstProject.id);
-						}}
 						className={`${isLoading ? 'cursor-not-allowed opacity-50' : 'opacity-100'} cursor-pointer`}
 					>
 						<CategoryPairwiseCardWithMetrics
@@ -197,9 +167,6 @@ const CategoryPairwiseRankingPage = () => {
 					</div>
 					<div
 						key={secondProject.id}
-						onClick={() =>
-							!isLoading && handleVote(secondProject.id)
-						}
 						className={`${isLoading ? 'cursor-not-allowed opacity-50' : 'opacity-100'} cursor-pointer`}
 					>
 						<CategoryPairwiseCardWithMetrics
@@ -234,7 +201,6 @@ const CategoryPairwiseRankingPage = () => {
 														key={metricKey}
 														className='flex justify-between gap-2 border-b-2 border-gray-200 py-2 last:border-b-0'
 													>
-														{/* <p className='font-medium'> */}
 														<p
 															className={cn(
 																metric.value1 >
@@ -271,66 +237,75 @@ const CategoryPairwiseRankingPage = () => {
 							})}
 						</div>
 					)}
+					<div className='sticky bottom-5 px-6 py-6'>
+						<div className='flex justify-between'>
+							<div
+								className={cn(
+									'flex items-center justify-center gap-2 rounded-lg bg-white px-4 py-2 font-semibold shadow-md',
+									{
+										'cursor-not-allowed opacity-50':
+											isLoading,
+									},
+								)}
+								onClick={() => {
+									console.log('Clicking on First', isLoading);
+									!isLoading && handleVote(firstProject.id);
+								}}
+							>
+								<div>
+									{firstProject.image ? (
+										<Image
+											className='rounded-full'
+											src={firstProject.image}
+											alt='Logo'
+											width={32}
+											height={32}
+										/>
+									) : (
+										<div className='relative h-[32px] w-[32px] rounded-full bg-gray-700'>
+											<p className='absolute inset-0 flex items-center justify-center overflow-hidden px-1 text-center text-[4px] text-white'>
+												{firstProject.name}
+											</p>
+										</div>
+									)}
+								</div>
+								<div>{truncate(firstProject.name, 12)}</div>
+							</div>
+							<div
+								className={cn(
+									'flex items-center justify-center gap-2 rounded-lg bg-white px-4 py-2 font-semibold shadow-md',
+									{
+										'cursor-not-allowed opacity-50':
+											isLoading,
+									},
+								)}
+								onClick={() =>
+									!isLoading && handleVote(secondProject.id)
+								}
+							>
+								<div>
+									{secondProject.image ? (
+										<Image
+											className='rounded-full'
+											src={secondProject.image}
+											alt='Logo'
+											width={32}
+											height={32}
+										/>
+									) : (
+										<div className='relative h-[32px] w-[32px] rounded-full bg-gray-700'>
+											<p className='absolute inset-0 flex items-center justify-center overflow-hidden px-1 text-center text-[4px] text-white'>
+												{secondProject.name}
+											</p>
+										</div>
+									)}
+								</div>
+								{truncate(secondProject.name, 12)}
+							</div>
+						</div>
+					</div>
 				</div>
 			</div>
-			{currentPercentage > thresholdPercentage ? (
-				<div className='border-t border-t-gray-300 px-6 py-6'>
-					<Button
-						onClick={async () => {
-							await finishRanking();
-							router.push(
-								`${Routes.Categories}/${selectedCategoryId}/pairwise-ranking/ranking-done`,
-							);
-						}}
-						className='w-full bg-primary'
-						isLoading={isPending}
-					>
-						Finish Ranking
-					</Button>
-				</div>
-			) : (
-				<div></div>
-			)}
-			<Modal
-				isOpen={isModalOpen}
-				onClose={() => {
-					userSawModal();
-					setIsModalOpen(false);
-				}}
-			>
-				<div className='p-5'>
-					<p className='mb-4 text-center font-bold'>
-						You voted on the minimum amount of projects, but you can
-						continue for even better results!
-					</p>
-					<p className='mb-6 text-center text-ph'>
-						For best results continue voting on more projects. Some
-						projects may appear again, but that’s normal.
-					</p>
-					<Button
-						onClick={() => {
-							userSawModal();
-							setIsModalOpen(false);
-						}}
-						className='mb-5 w-full bg-primary'
-					>
-						Continue ranking
-					</Button>
-					<Button
-						onClick={async () => {
-							await finishRanking();
-							userSawModal();
-							router.push(
-								`${Routes.Categories}/${selectedCategoryId}/pairwise-ranking/ranking-done`,
-							);
-						}}
-						isLoading={isPending}
-						className='w-full border border-gray-200 text-black shadow-md'
-					>
-						Finish Ranking
-					</Button>
-				</div>
-			</Modal>
 		</div>
 	);
 };
