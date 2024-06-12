@@ -4,6 +4,16 @@ export type Metric = {
 	description: string;
 };
 
+export interface ComparisonResult {
+	[key: string]: {
+		[key: string]: {
+			description: string;
+			value1: number;
+			value2: number;
+		};
+	};
+}
+
 export type CategoryMetricData = {
 	NetworkGrowth: {
 		dailyActiveAddresses: Metric;
@@ -47,20 +57,6 @@ export const processProjectMetricsCSV = (
 		if (cells.length === headers.length) {
 			const projectId = cells[0];
 			const metricData = {
-				NetworkGrowth: {
-					dailyActiveAddresses: {
-						value: parseNumber(cells[7]),
-						description: 'Daily Active Users (DAU)',
-					},
-					monthlyActiveAddresses: {
-						value: parseNumber(cells[9]),
-						description: 'Monthly Active Users',
-					},
-					recurringAddresses: {
-						value: parseNumber(cells[11]),
-						description: 'Recurring Addresses',
-					},
-				},
 				NetworkQuality: {
 					gasFees: {
 						value: parseNumber(cells[2]),
@@ -79,6 +75,21 @@ export const processProjectMetricsCSV = (
 						description: 'Trusted Transaction Share',
 					},
 				},
+				NetworkGrowth: {
+					dailyActiveAddresses: {
+						value: parseNumber(cells[7]),
+						description: 'Daily Active Users (DAU)',
+					},
+					monthlyActiveAddresses: {
+						value: parseNumber(cells[9]),
+						description: 'Monthly Active Users',
+					},
+					recurringAddresses: {
+						value: parseNumber(cells[11]),
+						description: 'Recurring Addresses',
+					},
+				},
+
 				UserGrowth: {
 					trustedUsersOnboarded: {
 						value: parseNumber(cells[6]),
@@ -122,4 +133,48 @@ export const getProjectMetrics = (
 	projectId: string,
 ): CategoryMetricData | undefined => {
 	return metricsMap.get(projectId);
+};
+
+export const compareProjects = (
+	metricsMap: Map<string, CategoryMetricData>,
+	projectId1: string,
+	projectId2: string,
+): ComparisonResult => {
+	const project1Metrics = metricsMap.get(projectId1);
+	const project2Metrics = metricsMap.get(projectId2);
+
+	if (!project1Metrics || !project2Metrics) {
+		return {};
+	}
+
+	const result: ComparisonResult = {};
+
+	for (const category in project1Metrics) {
+		if (project1Metrics.hasOwnProperty(category)) {
+			result[category] = {};
+			const categoryMetrics1 =
+				project1Metrics[category as keyof CategoryMetricData];
+			const categoryMetrics2 =
+				project2Metrics[category as keyof CategoryMetricData];
+
+			for (const metric in categoryMetrics1) {
+				if (categoryMetrics1.hasOwnProperty(metric)) {
+					const metricData1 = categoryMetrics1[
+						metric as keyof typeof categoryMetrics1
+					] as Metric;
+					const metricData2 = categoryMetrics2[
+						metric as keyof typeof categoryMetrics2
+					] as Metric;
+
+					result[category][metric] = {
+						description: metricData1.description,
+						value1: metricData1.value as number,
+						value2: (metricData2?.value as number) || 0,
+					};
+				}
+			}
+		}
+	}
+
+	return result;
 };
