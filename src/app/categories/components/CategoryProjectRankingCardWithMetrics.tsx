@@ -32,7 +32,6 @@ const CategoryProjectRankingCardWithMetrics = ({
 		'SaXSYwJ5Gr4V4mwVN-b3nS6NbRYbY0zufdVVBje99J4=', //sample project ID
 	);
 	console.log('projectMetrics:', projectMetrics);
-	const [address, setAddress] = useState<string | null>(null);
 
 	const fetchMetrics = async () => {
 		try {
@@ -51,38 +50,29 @@ const CategoryProjectRankingCardWithMetrics = ({
 
 	const variants = {
 		hidden: { opacity: 0 },
-		show: {
-			opacity: 1,
-			transition: {
-				duration: 0.5,
-			},
-		},
-		exit: {
-			opacity: 0,
-			transition: {
-				duration: 0.5,
-			},
-		},
+		visible: { opacity: 1 },
 	};
 
 	return (
 		<motion.div
 			initial='hidden'
-			animate='show'
-			exit='exit'
+			animate='visible'
+			exit='hidden'
 			variants={variants}
 			className='m-4'
 		>
 			<div className='w-full select-none rounded-2xl pb-5'>
 				<div className='relative mb-4'>
 					{project.image ? (
-						<Image
-							src={project.image}
-							alt={project.name}
-							width={500}
-							height={500}
-							className='mx-auto rounded-2xl'
-						/>
+						<div className='mx-auto h-[360px] w-[360px]'>
+							<Image
+								src={project.image}
+								alt={project.name}
+								width={500}
+								height={500}
+								className='mx-auto rounded-2xl'
+							/>
+						</div>
 					) : (
 						<div className='relative mx-auto h-[360px] w-[360px] rounded-2xl bg-gray-700'>
 							<p className='absolute inset-0 flex items-center justify-center overflow-hidden px-1 text-center text-lg font-bold text-white'>
