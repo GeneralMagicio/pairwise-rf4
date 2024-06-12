@@ -1,13 +1,6 @@
 import Image from 'next/image';
 
-const medalTypes = [
-	'Bronze',
-	'Diamond',
-	'Platnium',
-	'Gold',
-	'Silver',
-	'WHALE',
-] as const;
+export type MedalTypes = "Bronze" | "Diamond" | "Platnium" | "Gold" | "Silver" | "WHALE"
 
 export type BadgeData = {
 	holderPoints?: number;
@@ -16,8 +9,8 @@ export type BadgeData = {
 	badgeholderPoints?: 1;
 	holderAmount?: number;
 	delegateAmount?: number;
-	holderType?: (typeof medalTypes)[number];
-	delegateType?: (typeof medalTypes)[number];
+	holderType?: MedalTypes;
+	delegateType?: MedalTypes;
 };
 
 interface BadgeCardProps {
