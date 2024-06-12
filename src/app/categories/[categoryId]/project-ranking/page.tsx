@@ -21,10 +21,6 @@ import { useUpdateCategoryMarkFiltered } from '@/app/features/categories/updateC
 import CategoryProjectRankingCardWithMetrics from '../../components/CategoryProjectRankingCardWithMetrics';
 
 const ProjectRankingPage = () => {
-	//States for animation
-	const [exitDirection, setExitDirection] = useState(0);
-	const [exitRotation, setExitRotation] = useState(0);
-
 	const router = useRouter();
 	const { categoryId } = useParams();
 	const updateProjectInclusion = useUpdateProjectInclusion({
@@ -66,14 +62,6 @@ const ProjectRankingPage = () => {
 	console.log('isLastProjectInTheList', isLastProjectInTheList);
 
 	const handleProjectInclusion = (state: InclusionState) => {
-		if (state === InclusionState.Excluded) {
-			setExitDirection(-150);
-			setExitRotation(-20);
-		} else if (state === InclusionState.Included) {
-			setExitDirection(150);
-			setExitRotation(20);
-		}
-
 		updateProjectInclusion
 			.mutateAsync({
 				data: {
@@ -109,23 +97,9 @@ const ProjectRankingPage = () => {
 
 	const isRevertDisabled = updatingProject || currentIndex === 0;
 
-	const animationVariants = {
-		hidden: { opacity: 0, x: -50 },
-		show: {
-			opacity: 1,
-			x: 0,
-			transition: {
-				duration: 0.5,
-			},
-		},
-		exit: {
-			opacity: 0,
-			x: exitDirection,
-			rotate: exitRotation,
-			transition: {
-				duration: 0.5,
-			},
-		},
+	const variants = {
+		hidden: { opacity: 0 },
+		visible: { opacity: 1 },
 	};
 
 	useEffect(() => {
@@ -192,10 +166,9 @@ const ProjectRankingPage = () => {
 				<AnimatePresence mode='wait'>
 					<motion.div
 						key={currentIndex}
-						variants={animationVariants}
 						initial='hidden'
-						animate='show'
-						exit='exit'
+						animate='visible'
+						exit='hidden'
 					>
 						<div className='flex justify-center border-b  border-b-gray-200'>
 							<CategoryProjectRankingCardWithMetrics
