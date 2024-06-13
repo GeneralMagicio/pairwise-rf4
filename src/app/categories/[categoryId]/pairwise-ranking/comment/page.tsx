@@ -122,6 +122,12 @@ const CategoryRankingComment = () => {
 				},
 			];
 
+			const signalData =
+			{
+				category: item.listName,
+				value: item.listMetadataPtr,
+			};
+
 			// generate proof of vote
 			const groupId = process.env.NEXT_PUBLIC_BANDADA_GROUP_ID!
 			const users = await getMembersGroup(groupId)
@@ -129,9 +135,9 @@ const CategoryRankingComment = () => {
 
 				const merkleTreeDepth = 16
 				const group = new Group(groupId, merkleTreeDepth, users)
-				console.log("going to encode schemaData: ")
-				console.log(schemaData)
-				const signal = toBigInt(encodeBytes32String(schemaData.toString())).toString()
+				console.log("going to encode signalData: ")
+				console.log(signalData)
+				const signal = toBigInt(encodeBytes32String(signalData.toString())).toString()
 				const { proof, merkleTreeRoot, nullifierHash } = await generateProof(
 					identity,
 					group,
