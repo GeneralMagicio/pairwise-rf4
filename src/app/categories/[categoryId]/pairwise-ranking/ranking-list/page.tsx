@@ -12,8 +12,8 @@ import { IProject } from '@/app/categories/types';
 import LoadingSpinner from '@/app/components/LoadingSpinner';
 import { useCategoryById } from '@/app/features/categories/getCategoryById';
 import { useUpdateSortingByCategoryId } from '@/app/features/categories/updateSortingByCategoryId';
-
 import CategoryRankingBasicListItem from '@/app/categories/components/CategoryRankingBasicListItem';
+import posthog from 'posthog-js';
 
 const CategoryRankingListPage = () => {
 	const router = useRouter();
@@ -41,6 +41,11 @@ const CategoryRankingListPage = () => {
 
 	const handleSubmitSortedProjects = async () => {
 		try {
+			const filteredProjects = listProjects.filter(project => listProjectsIds.includes(project.id))
+			.map(project => ({ id: project.id, name: project.name }));
+			posthog.capture('Ranked', { rankedCategories: filteredProjects });
+
+
 			await mutateAsyncUpdateSorting({
 				data: {
 					collectionId: +selectedCategoryId,

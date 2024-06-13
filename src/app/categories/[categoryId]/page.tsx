@@ -11,6 +11,7 @@ import { useProjectsByCategoryId } from '@/app/features/categories/getProjectsBy
 import LoadingSpinner from '@/app/components/LoadingSpinner';
 import { useCategoryById } from '@/app/features/categories/getCategoryById';
 import { truncate } from '@/app/helpers/text-helpers';
+import posthog from 'posthog-js';
 
 const CategoryPage = () => {
 	const router = useRouter();
@@ -29,6 +30,8 @@ const CategoryPage = () => {
 
 	if (isProjectsLoading || isCategoryLoading) {
 		return <LoadingSpinner />;
+	}else{
+		posthog.capture('User goes to the Categories page', {categoryName:`${selectedCategory?.name}`});
 	}
 
 	return (

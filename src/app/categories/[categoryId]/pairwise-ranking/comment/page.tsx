@@ -31,6 +31,7 @@ import {
 	encodeBytes32String,
 	toBigInt,
 } from "ethers"
+import posthog from 'posthog-js';
 
 const CategoryRankingComment = () => {
 	const router = useRouter();
@@ -58,6 +59,8 @@ const CategoryRankingComment = () => {
 	const ranking = rankingRes?.data;
 
 	const attest = async () => {
+		posthog.capture("Attested",{ attestedCategory:category?.data.collection?.name })
+		
 		const localStorageTag = process.env.NEXT_PUBLIC_LOCAL_STORAGE_TAG!
 		const identityString = localStorage.getItem(localStorageTag)
 

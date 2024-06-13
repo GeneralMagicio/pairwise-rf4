@@ -10,6 +10,7 @@ import { useCategoryById } from '@/app/features/categories/getCategoryById';
 import { useProjectsByCategoryId } from '@/app/features/categories/getProjectsByCategoryId';
 import { useUpdateCategoryMarkFiltered } from '@/app/features/categories/updateCategoryMarkFiltered';
 import { useParams, useRouter } from 'next/navigation';
+import posthog from 'posthog-js';
 
 const ProjectRankingSummaryPage = () => {
 	const router = useRouter();
@@ -34,6 +35,13 @@ const ProjectRankingSummaryPage = () => {
 	const includedProjects = projects?.data.filter(
 		project => project.inclusionState === InclusionState.Included,
 	);
+
+	const includedProjectsEvents  = includedProjects?.map(project => {
+		return {id:project.id, name: project.name };
+	});
+
+	posthog.capture('Filtered Categories', { categories: includedProjectsEvents });
+
 
 	const excludedProjects = projects?.data.filter(
 		project => project.inclusionState === InclusionState.Excluded,

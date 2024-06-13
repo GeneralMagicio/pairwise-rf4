@@ -1,7 +1,10 @@
+'use client'
 import Image from 'next/image';
 import React from 'react';
+import posthog from 'posthog-js';
 
 const WelcomePage = () => {
+	posthog.capture('Just Landed');
 	return (
 		<div className='flex flex-col items-center justify-center'>
 			<Image

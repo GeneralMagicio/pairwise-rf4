@@ -25,6 +25,7 @@ import { SigninSuccess } from './components/success-screens/SigninSuccess';
 import { Routes } from '../constants/Routes';
 import { LogginToPwBackendState, useAuth } from '@/lib/third-web/AutoConnect';
 import { ErrorBox } from './components/ErrorBox';
+import posthog from 'posthog-js';
 
 enum Step {
 	Main,
@@ -46,6 +47,8 @@ export default function Home() {
 	const [otp, setOtp] = useState('');
 	const { isAutoConnecting, isNewUser, loggedToPw } = useAuth();
 	const router = useRouter();
+	const [strategy, setStrategy] = useState('');
+
 
 	const disconnectWallet = useDisconnect();
 	const { connect, error } = useConnect();
@@ -56,8 +59,17 @@ export default function Home() {
 		setEmail(email);
 	};
 
+	
+
 	const wallet = useActiveWallet();
 	const account = useActiveAccount();
+	useEffect(() => {
+		const CaptureEvent = async () => {
+			posthog.capture('Open Login Page');
+		};
+	
+		CaptureEvent();
+	  }, []); 
 
 	const handleOtpChange = (otp: string) => {
 		setOtpError(false);
@@ -104,11 +116,15 @@ export default function Home() {
 
 	useEffect(() => {
 		if (loggedToPw === LogginToPwBackendState.LoggedIn && !isNewUser) {
+			posthog.identify(localStorage.getItem("auth")|| '')
+			posthog.capture('User Logged In',{loginType:strategy})
 			router.push(Routes.Categories);
 		} else if (
 			loggedToPw === LogginToPwBackendState.LoggedIn &&
 			isNewUser
 		) {
+			posthog.identify(localStorage.getItem("auth")|| '')
+			posthog.capture('User Logged In',{loginType:strategy})
 			router.push(Routes.Welcome);
 		}
 	}, [step, router, isNewUser, loggedToPw]);
@@ -132,6 +148,7 @@ export default function Home() {
 		};
 
 	const handleSocialConnect = (strategy: 'google' | 'apple') => async () => {
+		setStrategy(strategy);
 		setSocialLoading(true);
 		const socialEoa = await createSocialEoa(strategy);
 		setCreatedEOA(true);
@@ -246,7 +263,9 @@ export default function Home() {
 							</span>
 						</button>
 						<button
-							onClick={() => setStep(Step.EnterEmail)}
+							onClick={() => {
+								setStrategy('email');
+								setStep(Step.EnterEmail)}}
 							className='border-color-fg flex w-full justify-center gap-2 rounded-lg border bg-white p-3 text-black shadow-sm'
 						>
 							<Image
