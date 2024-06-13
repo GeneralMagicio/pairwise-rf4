@@ -61,7 +61,11 @@ const CategoryPairwiseRankingPage = () => {
 	const threshold = pairwisePairs?.data.threshold ?? 0;
 	const votedPairs = pairwisePairs?.data.votedPairs ?? 0;
 	const totalPairs = pairwisePairs?.data.totalPairs ?? 1;
-	const progressPercentage = (votedPairs / totalPairs / threshold) * 100;
+	let progressPercentage = 0;
+
+	if (totalPairs !== 0) {
+		progressPercentage = (votedPairs / totalPairs / threshold) * 100;
+	}
 
 	const handleVote = async (pickedId: number) => {
 		mutate({
