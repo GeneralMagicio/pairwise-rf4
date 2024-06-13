@@ -46,7 +46,7 @@ const FilterGuidePage = () => {
 					}
 					className='w-full bg-primary'
 				>
-					Start ranking
+					Got it!
 				</Button>
 			</div>
 		</div>

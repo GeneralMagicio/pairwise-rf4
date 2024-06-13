@@ -13,17 +13,23 @@ import { useActiveAccount, useActiveWallet, useConnect } from 'thirdweb/react';
 import { LAST_CONNECT_PERSONAL_WALLET_ID, activeChain } from './constants';
 import { alreadyInProgress, isLoggedIn, loginToPwBackend } from '@/utils/auth';
 
+export enum LogginToPwBackendState {
+	Initial,
+	Error,
+	LoggedIn
+}
+
 const AuthContext = React.createContext<{
 	isAutoConnecting: boolean | null;
 	setIsAutoConnecting: (bool: boolean | null) => void;
-	loggedToPw: boolean;
+	loggedToPw: LogginToPwBackendState;
 	isNewUser: boolean;
-	setLoggedToPw: (bool: boolean) => void;
+	setLoggedToPw: (bool: LogginToPwBackendState) => void;
 	setIsNewUser: (bool: boolean) => void;
 }>({
 	isAutoConnecting: null,
 	setIsAutoConnecting: () => {},
-	loggedToPw: false,
+	loggedToPw: LogginToPwBackendState.Initial,
 	isNewUser: false,
 	setLoggedToPw: () => {},
 	setIsNewUser: () => {},
@@ -31,7 +37,7 @@ const AuthContext = React.createContext<{
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
 	const [isAutoConnecting, setIsAutoConnecting] = useState<boolean | null>(null);
-	const [loggedToPw, setLoggedToPw] = useState(false);
+	const [loggedToPw, setLoggedToPw] = useState(LogginToPwBackendState.Initial);
 	const [isNewUser, setIsNewUser] = useState(false)
 
 	return (
@@ -87,7 +93,7 @@ export const useAuth = () => {
 		try {
 			if (account && wallet) {
 				const validToken = await isLoggedIn();
-				if (validToken) setLoggedToPw(true);
+				if (validToken) setLoggedToPw(LogginToPwBackendState.LoggedIn);
 				else if (!alreadyInProgress) {
 					const res = await loginToPwBackend(
 						activeChain.id,
@@ -97,11 +103,11 @@ export const useAuth = () => {
 					if (res.isNewUser) {
 						setIsNewUser(true)
 					}
-					setLoggedToPw(true);
+					setLoggedToPw(LogginToPwBackendState.LoggedIn);
 				}
 			}
 		} catch (e) {
-			setLoggedToPw(false);
+			setLoggedToPw(LogginToPwBackendState.Error);
 		}
 	}, [account, wallet, setLoggedToPw, setIsNewUser]);
 

@@ -7,16 +7,13 @@ import { useAccount, useConnect, useDisconnect } from 'wagmi';
 import Image from 'next/image';
 import { useState } from 'react';
 import { formatAddress } from '@/app/helpers/text-helpers';
-import { useRouter } from 'next/navigation';
-import { Routes } from '@/app/constants/Routes';
 
 const ConnectButton = () => {
-	const router = useRouter();
-
 	const { connectors, connectAsync } = useConnect();
 	const { address } = useAccount();
 	const { disconnect } = useDisconnect();
 	const [isConnectDrawerOpen, setIsConnectDrawerOpen] = useState(false);
+
 	return (
 		<div>
 			{address ? (
@@ -50,18 +47,10 @@ const ConnectButton = () => {
 									<div
 										className='flex w-full cursor-pointer select-none items-center gap-2 rounded-xl bg-gray-100 p-2 transition-colors duration-200 ease-in-out'
 										key={connector.id}
-										onClick={() =>
-											connectAsync({ connector }).then(
-												() => {
-													console.log(
-														'Connected to wallet',
-													);
-													router.push(
-														Routes.ConnectOtp,
-													);
-												},
-											)
-										}
+										onClick={async () => {
+											setIsConnectDrawerOpen(false)
+											await connectAsync({ connector });
+										}}
 									>
 										<div className='overflow-hidden rounded-full'>
 											{connector.icon &&
@@ -71,6 +60,7 @@ const ConnectButton = () => {
 													width={40}
 													height={40}
 													alt={connector.name}
+													unoptimized
 												/>
 											) : (
 												<Image

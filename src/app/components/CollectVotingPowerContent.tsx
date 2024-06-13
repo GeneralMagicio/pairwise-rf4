@@ -1,17 +1,20 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useAccount, useSignMessage } from 'wagmi';
 import { formatAddress } from '../helpers/text-helpers';
-import { getMembersGroup, addMemberByApiKey, getGroup } from "../connect/anonvote/utils/bandadaApi"
-import { getRoot } from "../connect/anonvote/utils/useSemaphore"
 import Button from './Button';
 import Image from 'next/image';
-import { Identity } from "@semaphore-protocol/identity";
 import IconCheck from 'public/images/icons/IconCheck';
-import { useRouter } from "next/navigation"
-import supabase from "../connect/anonvote/utils/supabaseClient"
+import { identityLsKey, useCreateIdentity } from '../hooks/useCreateIdentity';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { axios } from '@/lib/axios';
+import { BadgeData, badgeTypeMapping } from '../badges/components/BadgeCard';
+import { AdjacentBadges } from '../badges/components/AdjacentBadges';
+import { useGetPublicBadges } from '../features/badges/getBadges';
+import { DotsLoader } from '../login/components/bouncing-dots/DotsLoader';
 
 enum CollectVotingPowerState {
 	Not_Started,
+	No_Badges,
 	Collecting,
 	Collected,
 }
@@ -20,78 +23,87 @@ interface ICollectionsVotingPowerContentProps {
 	setIsClaimDrawerOpen: (isOpen: boolean) => void;
 }
 
-const groupId = process.env.NEXT_PUBLIC_BANDADA_GROUP_ID!
-const localStorageTag = process.env.NEXT_PUBLIC_LOCAL_STORAGE_TAG!
+const storeIdentity = async ({ identity }: { identity: string }) => {
+	return axios.post('/user/store-identity', {
+		identity,
+	});
+};
+
+const storeBadges = async ({
+	mainAddress,
+	signature,
+}: {
+	mainAddress: string;
+	signature: string;
+}) => {
+	const { data: badges } = await axios.post<BadgeData>('/user/store-badges', {
+		mainAddress,
+		signature,
+	});
+
+	return badges;
+};
 
 const CollectVotingPowerContent = ({
 	setIsClaimDrawerOpen,
 }: ICollectionsVotingPowerContentProps) => {
-
 	const { address } = useAccount();
-	const router = useRouter();
-	const [_loading, setLoading] = useState<boolean>(false)
 
-	const { signMessageAsync } = useSignMessage()
+	const { signMessageAsync } = useSignMessage();
+
+	const { createIdentity } = useCreateIdentity();
+
+	const queryClient = useQueryClient();
+
+	const { data: publicBadges } = useGetPublicBadges(address || '');
+
+	const { mutateAsync: storeIdentityMutation } = useMutation({
+		mutationFn: storeIdentity,
+	});
+	const { mutateAsync: storeBadgesMutation, data: badges } = useMutation({
+		mutationFn: storeBadges,
+		onSuccess: () => {
+			queryClient.refetchQueries({
+				queryKey: ['badges'],
+			});
+		},
+	});
+
 	const [collectState, setCollectState] = useState(
 		CollectVotingPowerState.Not_Started,
 	);
 
-	const createIdentity = async () => {
-
-		const message = `Sign this message to generate your Semaphore identity.`
-		const signature = await signMessageAsync({
-			message: message,
-		})
-		console.log("got the signature for semaphore identity: ", signature);
-		const identity = new Identity(signature)
-		console.log("identity.trapdoor: ", identity?.trapdoor);
-		console.log("identity.nullifier: ", identity?.nullifier);
-		console.log("identity.commitment: ", identity?.commitment);
-		console.log("identity: ", identity);
-		localStorage.setItem(localStorageTag, identity.toString())
-		console.log("Your new Semaphore identity was just created 🎉")
-		//get users in the group
-		const users = await getMembersGroup(groupId)
-		console.log("fetched users in the group: ", users?.length)
-
-		if (users == null || !users?.includes(identity!.getCommitment().toString())) {
-			console.log("joining the group as user is not already a member")
-			setLoading(true)
-			try {
-				const apiKey = process.env.NEXT_PUBLIC_BANDADA_GROUP_API_KEY!
-				console.log("going to add the user in the anonymous group")
-				let commitment = identity?.getCommitment().toString();
-				if (commitment) {
-					await addMemberByApiKey(groupId, commitment, apiKey)
-				}
-				const group = await getGroup(groupId)
-				if (group) {
-					const groupRoot = await getRoot(groupId, group.treeDepth, group.members)
-					const { error } = await supabase
-						.from("root_history")
-						.insert([{ root: groupRoot.toString() }])
-
-					if (error) {
-						console.error("error in getting group root: ", error)
-					}
-				}
-			} finally {
-				setLoading(false)
-			}
-		} else {
-			console.log("user is already in the group");
-		}
-	}
+	useEffect(() => {
+		if (publicBadges && Object.keys(publicBadges).length === 0)
+			setCollectState(CollectVotingPowerState.No_Badges);
+	}, [collectState, publicBadges]);
 
 	const handleCollect = async () => {
 		//Handle collect functionality here
 		setCollectState(CollectVotingPowerState.Collecting);
 
-		// create bandada anonymous identity if not already present
-		await createIdentity();
-		setCollectState(CollectVotingPowerState.Collected);
+		const message = `Sign this message to generate your Semaphore identity.`;
+		const signature = await signMessageAsync({
+			message: message,
+		});
 
+		// create bandada anonymous identity if not already present
+		await createIdentity(signature);
+
+		const identity = localStorage.getItem(identityLsKey);
+
+		if (!identity || !address) return;
+
+		await storeIdentityMutation({ identity });
+		await storeBadgesMutation({ mainAddress: address, signature });
+
+		setCollectState(CollectVotingPowerState.Collected);
 	};
+
+	const numOfBadgesFunc = (publicBadges: BadgeData) =>
+		Object.keys(publicBadges).filter(el =>
+			Object.keys(badgeTypeMapping).includes(el),
+		).length;
 
 	switch (collectState) {
 		case CollectVotingPowerState.Not_Started:
@@ -105,19 +117,53 @@ const CollectVotingPowerContent = ({
 							Claim your badges to start voting on projects.
 						</p>
 					</div>
-					<div className='py-6 text-center'>
-						<p className='mb-6 text-lg font-semibold'>
+					<div className='my-4 flex flex-col items-center gap-4'>
+						<p className='text-lg font-semibold'>
 							{formatAddress(address!)}
 						</p>
-						{/* add badges here */}
-						<div className='mb-4'>Badges</div>
-						<p className='text-ph'>4 badges found</p>
+						<AdjacentBadges {...publicBadges} size={40} />
+						<p className='text-ph'>
+							{publicBadges ? (
+								`${numOfBadgesFunc(publicBadges)} badges found`
+							) : (
+								<DotsLoader />
+							)}
+						</p>
 					</div>
 					<Button
 						onClick={handleCollect}
 						className='w-full bg-primary'
 					>
 						Collect Voting Power
+					</Button>
+				</div>
+			);
+		case CollectVotingPowerState.No_Badges:
+			return (
+				<div className='px-4 py-6'>
+					<div>
+						<p className='pb-2 text-3xl font-bold'>Claim badges</p>
+						<p className='text-ph'>
+							Oh no, this address does not have any badge to
+							claim. But no worries, you can still play and vote.
+						</p>
+					</div>
+					<div className='my-2 flex flex-col items-center gap-4'>
+						<Image
+							src={'/images/characters/12.png'}
+							alt='No badges character'
+							height={160}
+							width={160}
+						/>
+						<p className='mb-4 text-primary'>No Badges found</p>
+					</div>
+					<Button
+						onClick={() => {
+							setIsClaimDrawerOpen(false);
+						}}
+						className='w-full bg-primary'
+					>
+						Done
 					</Button>
 				</div>
 			);
@@ -133,8 +179,7 @@ const CollectVotingPowerContent = ({
 					<p className='text-lg font-semibold'>
 						{formatAddress(address)}
 					</p>
-					{/* add badges here */}
-					<p>badges</p>
+					<AdjacentBadges {...publicBadges} size={40} />
 					<p className='text-ph'>Collecting Voting Power</p>
 				</div>
 			);
@@ -147,8 +192,8 @@ const CollectVotingPowerContent = ({
 					<p className='text-lg font-semibold'>
 						{formatAddress(address)}
 					</p>
-					{/* add badges here */}
-					<p>badges</p>
+					<AdjacentBadges {...publicBadges} size={40} />
+					<p>Voting Power Collected</p>
 					<Button
 						onClick={() => {
 							setIsClaimDrawerOpen(false);

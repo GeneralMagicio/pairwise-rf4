@@ -7,7 +7,7 @@ import { Routes } from '@/app/constants/Routes';
 import CategoryBadge from './CategoryBadge';
 import { truncate } from '@/app/helpers/text-helpers';
 
-interface ICategoryProps {
+export interface ICategoryProps {
 	category: ICategory;
 	progress?: CollectionProgressStatus;
 	imageNumber?: number;
@@ -15,7 +15,7 @@ interface ICategoryProps {
 
 const CategoryItem = ({ category, progress, imageNumber }: ICategoryProps) => {
 	const router = useRouter();
-	const imgNumber = imageNumber || category.id % 5 + 1;
+	const imgNumber = imageNumber || (category.id % 5) + 1;
 	const imgSrc = `/images/defaults/category/category-${imgNumber}.png`;
 	const onCategoryClick = () => {
 		if (progress) return null;

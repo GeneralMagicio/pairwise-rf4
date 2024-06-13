@@ -44,19 +44,24 @@ const CategoryProjectRankingCard = ({
 			exit='exit'
 			variants={variants}
 		>
-			<div className='w-[324px] rounded-2xl px-3 pb-5 shadow-lg'>
+			<div className='w-[324px] select-none rounded-2xl px-3 pb-5 shadow-lg'>
 				<div className='relative mb-4'>
-					<Image
-						src={
-							project?.image
-								? project?.image
-								: '/images/characters/welcome-character.png'
-						}
-						alt={project.name}
-						width={300}
-						height={300}
-						className='rounded-2xl'
-					/>
+					{project.image ? (
+						<Image
+							src={project.image}
+							alt={project.name}
+							width={300}
+							height={300}
+							className='rounded-2xl'
+						/>
+					) : (
+						<div className='relative h-[300px] w-[300px] rounded-2xl bg-gray-700'>
+							<p className='absolute inset-0 flex items-center justify-center overflow-hidden px-1 text-center text-lg font-bold text-white'>
+								{project.name}
+							</p>
+						</div>
+					)}
+
 					<div
 						className='absolute bottom-[-20px] right-0 rounded-full bg-red-500 p-4'
 						onClick={() => {

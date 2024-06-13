@@ -61,7 +61,7 @@ export const OtpInput: FC<Props> = ({
 		<div className='flex w-full flex-col items-center gap-4'>
 			<div className='mb-4 text-3xl font-bold'>Verify Email</div>
 			<p className='text-center text-gray-500'>
-				Please enter the 4 digit secure code sent to your email
+				Please enter the 6 digit secure code sent to your email
 				<span className='font-bold'> {email} </span>
 				<span className='ml-1 inline-block'>
 					<Edit2 />

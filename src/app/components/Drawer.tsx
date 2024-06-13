@@ -53,7 +53,7 @@ const Drawer: React.FC<DrawerProps> = ({ isOpen, setIsOpen, children }) => {
 					transition={{ duration: 0.3 }} // Synchronize backdrop transition
 				>
 					<motion.div
-						className='fixed bottom-0 left-0 right-0 z-50 overflow-auto rounded-t-2xl bg-white p-4 shadow-xl'
+						className='max-w-mobile mx-auto fixed bottom-0 left-0 right-0 z-50 overflow-auto rounded-t-2xl bg-white p-4 shadow-xl'
 						style={{ maxHeight: '80vh' }}
 						variants={drawerVariants}
 						initial='closed'

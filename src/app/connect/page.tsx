@@ -3,6 +3,9 @@
 import Image from 'next/image';
 import { PwLogo } from 'public/images/icons/PwLogo';
 import React from 'react';
+import { useAccount } from 'wagmi';
+import { Routes } from '../constants/Routes';
+import { useRouter } from 'next/navigation';
 
 const steps = [
 	{
@@ -21,6 +24,9 @@ const steps = [
 ];
 
 const ConnectHomePage = () => {
+	const {isConnected} = useAccount()
+	const router = useRouter();
+	
 	return (
 		<div className='centered-mobile-max-width mt-7'>
 			<div className='text-center'>
@@ -61,6 +67,13 @@ const ConnectHomePage = () => {
 							</div>
 						</div>
 					))}
+					<button
+						onClick={() => router.push(Routes.ConnectOtp)}
+						disabled={!isConnected}
+						className='mx-auto w-full bg-primary py-2 text-white disabled:bg-gray-100 disabled:text-gray-700'
+					>
+						Next
+					</button>
 				</div>
 			</div>
 		</div>
