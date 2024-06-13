@@ -1,27 +1,40 @@
 import Image from 'next/image';
 
+export type MedalTypes = "Bronze" | "Diamond" | "Platnium" | "Gold" | "Silver" | "WHALE"
+
 export type BadgeData = {
 	holderPoints?: number;
 	delegatePoints?: number;
 	recipientsPoints?: 1;
 	badgeholderPoints?: 1;
+	holderAmount?: number;
+	delegateAmount?: number;
+	holderType?: MedalTypes;
+	delegateType?: MedalTypes;
 };
-
-type BadgeType = keyof BadgeData;
 
 interface BadgeCardProps {
 	type: BadgeType;
-	value: number;
+	points: number;
+	medal?: BadgeData['holderType'];
+	amount?: number;
 }
 
-const badgeTypeMapping = {
+export const badgeTypeMapping = {
 	holderPoints: 'Holder',
 	delegatePoints: 'Delegate',
 	recipientsPoints: 'Recipient',
 	badgeholderPoints: 'Badgeholder',
 };
 
-const BadgeCard: React.FC<BadgeCardProps> = ({ type, value }) => {
+type BadgeType = keyof typeof badgeTypeMapping;
+
+const BadgeCard: React.FC<BadgeCardProps> = ({
+	type,
+	points,
+	medal,
+	amount,
+}) => {
 	const handleBadgesImage = () => {
 		switch (type) {
 			case 'holderPoints':
@@ -37,7 +50,7 @@ const BadgeCard: React.FC<BadgeCardProps> = ({ type, value }) => {
 		}
 	};
 
-	const handleBadgeInfo = () => {
+	const handleBadgeInfo = (amount?: number, points?: number) => {
 		switch (type) {
 			case 'holderPoints':
 			case 'delegatePoints':
@@ -51,11 +64,11 @@ const BadgeCard: React.FC<BadgeCardProps> = ({ type, value }) => {
 								alt='token'
 								className='h-4 w-4'
 							/>
-							<p>10M</p>
+							<p>{amount}</p>
 						</div>
 						<div className='flex items-center gap-1 text-sm'>
 							<p>Weight</p>
-							<p className='text-primary'>{value}</p>
+							<p className='text-primary'>{points}</p>
 						</div>
 					</div>
 				);
@@ -87,18 +100,20 @@ const BadgeCard: React.FC<BadgeCardProps> = ({ type, value }) => {
 				<div className='border-b border-b-gray-300 py-2'>
 					<div className='flex justify-between'>
 						<p className='mt-2 text-center font-bold'>BADGE</p>
-						<p className='mt-2 text-center'>
+						<p className='mt-2 text-center text-gray-700'>
 							{badgeTypeMapping[type]}
 						</p>
 					</div>
-					<div className='flex justify-between'>
-						<p className='mt-2 text-center font-bold'>TYPE</p>
-						<p className='mt-2 text-center'>Whale</p>
-					</div>
+					{(type === 'holderPoints' || type === 'delegatePoints') && (
+						<div className='flex justify-between'>
+							<p className='mt-2 text-center font-bold'>TYPE</p>
+							<p className='mt-2 text-center text-gray-700'>{medal}</p>
+						</div>
+					)}
 				</div>
 				<div className='flex flex-col gap-2'>
 					<p className='mt-2 text-xs font-semibold'>BADGE INFO</p>
-					{handleBadgeInfo()}
+					{handleBadgeInfo(amount, points)}
 				</div>
 			</div>
 		</div>
