@@ -18,11 +18,23 @@ const CategoryRankingDone = () => {
 					<IconCheck color='red' />
 				</div>{' '}
 				<p className='mx-auto text-lg font-bold'>Vote submitted</p>
-				<p className='mx-auto text-ph'>
-					Now you can go back and vote on another category.
+				<p className='mx-auto text-ph text-center text-base	px-4 font-medium	'>
+					You have already voted in this category.If
+					 you change your mind,you can update your vote
+					by selecting &ldquo;Edit Vote&rdquo; button below.
 				</p>
 			</div>
 			<div className='border-t border-t-gray-300 px-6 py-6'>
+			<Button
+					onClick={() =>
+						router.push(
+							`${Routes.Categories}`,
+						)
+					}
+					className='w-full font-semibold	leading-5 bg-[#FBFCFE] border border-[#E0E2EB] mb-5 text-black'
+				>
+					Edit Vote
+				</Button>
 				<Button
 					onClick={() =>
 						router.push(
