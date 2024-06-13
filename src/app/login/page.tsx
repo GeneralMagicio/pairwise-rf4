@@ -127,9 +127,7 @@ export default function Home() {
 	if (loggedToPw === LogginToPwBackendState.LoggedIn && !isNewUser) {
 		router.push(Routes.Categories);
 		captureEvent(localStorage.getItem("userId") || "null", 'User Logged In', { loginType: strategy });
-	} else if (
-		loggedToPw === LogginToPwBackendState.LoggedIn &&
-		isNewUser
+	} else if (loggedToPw === LogginToPwBackendState.LoggedIn && isNewUser
 	) {
 		router.push(Routes.Welcome);
 		captureEvent(localStorage.getItem("userId") || "null", 'User Logged In', { loginType: strategy });
