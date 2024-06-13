@@ -18,13 +18,9 @@ import { useUpdateProjectInclusion } from '@/app/features/categories/updateProje
 import { AnimatePresence, motion } from 'framer-motion';
 import { useEffect, useState } from 'react';
 import { useUpdateCategoryMarkFiltered } from '@/app/features/categories/updateCategoryMarkFiltered';
+import CategoryProjectRankingCardWithMetrics from '../../components/CategoryProjectRankingCardWithMetrics';
 
 const ProjectRankingPage = () => {
-	//States for animation
-	const [exitDirection, setExitDirection] = useState(0);
-	const [exitRotation, setExitRotation] = useState(0);
-	const [hasSeenProjectDetails, setHasSeenProjectDetails] = useState(false);
-
 	const router = useRouter();
 	const { categoryId } = useParams();
 	const updateProjectInclusion = useUpdateProjectInclusion({
@@ -66,14 +62,6 @@ const ProjectRankingPage = () => {
 	console.log('isLastProjectInTheList', isLastProjectInTheList);
 
 	const handleProjectInclusion = (state: InclusionState) => {
-		if (state === InclusionState.Excluded) {
-			setExitDirection(-150);
-			setExitRotation(-20);
-		} else if (state === InclusionState.Included) {
-			setExitDirection(150);
-			setExitRotation(20);
-		}
-
 		updateProjectInclusion
 			.mutateAsync({
 				data: {
@@ -83,7 +71,6 @@ const ProjectRankingPage = () => {
 			})
 			.then(() => {
 				if (!isLastProjectInTheList) {
-					setHasSeenProjectDetails(false);
 					setCurrentIndex(curr => curr + 1);
 				} else {
 					updateCategoryMarkFiltered
@@ -110,23 +97,9 @@ const ProjectRankingPage = () => {
 
 	const isRevertDisabled = updatingProject || currentIndex === 0;
 
-	const animationVariants = {
-		hidden: { opacity: 0, x: -50 },
-		show: {
-			opacity: 1,
-			x: 0,
-			transition: {
-				duration: 0.5,
-			},
-		},
-		exit: {
-			opacity: 0,
-			x: exitDirection,
-			rotate: exitRotation,
-			transition: {
-				duration: 0.5,
-			},
-		},
+	const variants = {
+		hidden: { opacity: 0 },
+		visible: { opacity: 1 },
 	};
 
 	useEffect(() => {
@@ -167,8 +140,8 @@ const ProjectRankingPage = () => {
 	}
 	return (
 		<div>
-			<div className='flex min-h-[calc(100dvh)] flex-col  justify-between'>
-				<div className='border-b border-b-gray-300 pb-7 pt-9'>
+			<div className='flex min-h-[calc(100dvh)] flex-col'>
+				<div className='border-b border-b-gray-200 pb-7 pt-9'>
 					<div className='mx-4 flex justify-between gap-6'>
 						<p>{selectedCategory?.name}</p>
 						<Link href={`${Routes.Categories}/${categoryId}`}>
@@ -176,62 +149,62 @@ const ProjectRankingPage = () => {
 						</Link>
 					</div>
 				</div>
-				<div className='mx-8'>
-					<ProgressBar
-						progress={
-							((backendCurrentIndex + 1) / projectsCount) * 100
-						}
-					/>
-					<p className='mt-2 text-sm'>
-						{backendCurrentIndex + 1} of {projectsCount} Projects
-						Selected
-					</p>
+				<div className='border-b border-b-gray-200 pb-7'>
+					<div className='mx-8 mt-6'>
+						<ProgressBar
+							progress={
+								((backendCurrentIndex + 1) / projectsCount) *
+								100
+							}
+						/>
+						<p className='mt-2 text-sm'>
+							{backendCurrentIndex + 1} of {projectsCount}{' '}
+							Projects Selected
+						</p>
+					</div>
 				</div>
 				<AnimatePresence mode='wait'>
 					<motion.div
 						key={currentIndex}
-						variants={animationVariants}
 						initial='hidden'
-						animate='show'
-						exit='exit'
+						animate='visible'
+						exit='hidden'
 					>
-						<div className='mt-7 flex justify-center'>
-							<CategoryProjectRankingCard
+						<div className='flex justify-center border-b  border-b-gray-200'>
+							<CategoryProjectRankingCardWithMetrics
 								project={projects?.data[currentIndex]!}
-								hasSeenProjectDetails={hasSeenProjectDetails}
-								setHasSeenProjectDetails={
-									setHasSeenProjectDetails
-								}
 							/>
 						</div>
 					</motion.div>
 				</AnimatePresence>
-				<div className='mb-3 flex justify-center gap-14 px-6 py-6'>
-					<Button
-						disabled={updatingProject || !hasSeenProjectDetails}
-						onClick={() =>
-							handleProjectInclusion(InclusionState.Excluded)
-						}
-						className={`rounded-full p-4 ${updatingProject || !hasSeenProjectDetails ? 'cursor-not-allowed bg-red-200' : 'bg-red-500'}`}
-					>
-						<IconTrash />
-					</Button>
-					<Button
-						disabled={isRevertDisabled}
-						className={`rounded-full p-4 ${isRevertDisabled && 'cursor-not-allowed '}`}
-						onClick={handleGoBack}
-					>
-						<IconRefresh />
-					</Button>
-					<Button
-						disabled={updatingProject || !hasSeenProjectDetails}
-						className={`rounded-full p-4 ${updatingProject || !hasSeenProjectDetails ? 'cursor-not-allowed bg-green-200' : 'bg-green-600'}`}
-						onClick={() =>
-							handleProjectInclusion(InclusionState.Included)
-						}
-					>
-						<IconCheck />
-					</Button>
+				<div className='bg-red sticky bottom-0 w-full border-t border-gray-200 bg-white py-6'>
+					<div className='mb-3 flex justify-center gap-14 px-6 py-6'>
+						<Button
+							disabled={updatingProject}
+							onClick={() =>
+								handleProjectInclusion(InclusionState.Excluded)
+							}
+							className={`rounded-full p-4 ${updatingProject ? 'cursor-not-allowed bg-red-200' : 'bg-red-500'}`}
+						>
+							<IconTrash />
+						</Button>
+						<Button
+							disabled={isRevertDisabled}
+							className={`rounded-full p-4 ${isRevertDisabled && 'cursor-not-allowed '}`}
+							onClick={handleGoBack}
+						>
+							<IconRefresh />
+						</Button>
+						<Button
+							disabled={updatingProject}
+							className={`rounded-full p-4 ${updatingProject ? 'cursor-not-allowed bg-green-200' : 'bg-green-600'}`}
+							onClick={() =>
+								handleProjectInclusion(InclusionState.Included)
+							}
+						>
+							<IconCheck />
+						</Button>
+					</div>
 				</div>
 			</div>
 		</div>
