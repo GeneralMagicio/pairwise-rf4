@@ -23,6 +23,7 @@ import { formatMetricsNumber } from '@/utils/numbers';
 
 import { truncate } from '@/app/helpers/text-helpers';
 import { getRandomProjectId } from '@/utils/dummy-metrics';
+import posthog from 'posthog-js';
 
 interface IUserSeenRankingFinishedModal {
 	value: string;
@@ -61,11 +62,17 @@ const CategoryPairwiseRankingPage = () => {
 	const totalPairs = pairwisePairs?.data.totalPairs ?? 1;
 	let progressPercentage = 0;
 
+	
+
 	if (totalPairs !== 0) {
 		progressPercentage = (votedPairs / totalPairs / threshold) * 100;
 	}
 
 	const handleVote = async (pickedId: number) => {
+		posthog.capture('Comparing categories',{categories:[firstProject.name,secondProject.name]})
+
+		let attestedCategory = firstProject.id==pickedId ? firstProject.name :secondProject.name;
+		posthog.capture('Attested between categories',{attestedCategory:attestedCategory})
 		mutate({
 			data: {
 				project1Id: firstProject.id,
