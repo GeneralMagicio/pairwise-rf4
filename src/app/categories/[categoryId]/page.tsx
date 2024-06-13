@@ -11,6 +11,7 @@ import { useProjectsByCategoryId } from '@/app/features/categories/getProjectsBy
 import LoadingSpinner from '@/app/components/LoadingSpinner';
 import { useCategoryById } from '@/app/features/categories/getCategoryById';
 import { truncate } from '@/app/helpers/text-helpers';
+import { captureEvent } from '@/utils/postHog';
 
 const CategoryPage = () => {
 	const router = useRouter();
@@ -29,6 +30,9 @@ const CategoryPage = () => {
 
 	if (isProjectsLoading || isCategoryLoading) {
 		return <LoadingSpinner />;
+	}
+	else{
+		captureEvent(localStorage.getItem("userId") || "null", 'User goes to the Categories page', { page: `/categories/${categoryId}` ,categoryName:`${selectedCategory?.name}`});
 	}
 
 	return (

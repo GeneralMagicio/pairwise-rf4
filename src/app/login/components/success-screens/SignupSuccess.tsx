@@ -16,7 +16,7 @@ export const SignupSuccess = () => {
 				Your journey to direct the Superchain <br /> through RetroPGF
 				begins.
 			</h3>
-			<h3 className='text-md text-center'>Hodl! Logging in...</h3>
+			<h3 className='text-md text-center'>Hold! Logging in...</h3>
 		</div>
 	);
 };

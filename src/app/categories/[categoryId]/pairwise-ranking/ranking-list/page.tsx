@@ -14,6 +14,7 @@ import LoadingSpinner from '@/app/components/LoadingSpinner';
 import { useCategoryById } from '@/app/features/categories/getCategoryById';
 import { useUpdateSortingByCategoryId } from '@/app/features/categories/updateSortingByCategoryId';
 import { useUpdatePairwiseFinish } from '@/app/features/categories/updatePairwiseFinish';
+import { captureEvent } from '@/utils/postHog';
 
 const CategoryRankingListPage = () => {
 	const router = useRouter();
@@ -41,6 +42,10 @@ const CategoryRankingListPage = () => {
 
 	const handleSubmitSortedProjects = async () => {
 		try {
+			const filteredProjects = listProjects.filter(project => listProjectsIds.includes(project.id))
+			.map(project => ({ id: project.id, name: project.name }));
+			captureEvent( localStorage.getItem("userId") || "null" , 'Ranked', { rankedCategories: filteredProjects });
+
 			await mutateAsyncUpdateSorting({
 				data: {
 					collectionId: +selectedCategoryId,

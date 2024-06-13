@@ -4,9 +4,12 @@ import React, { ReactNode } from 'react';
 import Button from '../components/Button';
 import { useRouter } from 'next/navigation';
 import { Routes } from '../constants/Routes';
+import { captureEvent } from '@/utils/postHog';
+
 
 const WelcomeLayout = ({ children }: { children: ReactNode }) => {
 	const router = useRouter();
+	captureEvent(localStorage.getItem("userId") || "null", 'Just Landed', { page: `/welcome`});
 	return (
 		<div className='centered-mobile-max-width flex min-h-[calc(100dvh)] flex-col'>
 			<div className='flex flex-grow flex-col justify-center px-6'>

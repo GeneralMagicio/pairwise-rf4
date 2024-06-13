@@ -25,6 +25,9 @@ import { SigninSuccess } from './components/success-screens/SigninSuccess';
 import { Routes } from '../constants/Routes';
 import { LogginToPwBackendState, useAuth } from '@/lib/third-web/AutoConnect';
 import { ErrorBox } from './components/ErrorBox';
+import { captureEvent } from '@/utils/postHog';
+import { isLoggedIn } from '@/utils/auth';
+
 
 enum Step {
 	Main,
@@ -46,6 +49,7 @@ export default function Home() {
 	const [otp, setOtp] = useState('');
 	const { isAutoConnecting, isNewUser, loggedToPw } = useAuth();
 	const router = useRouter();
+	const [strategy, setStrategy] = useState('');
 
 	const disconnectWallet = useDisconnect();
 	const { connect, error } = useConnect();
@@ -58,6 +62,17 @@ export default function Home() {
 
 	const wallet = useActiveWallet();
 	const account = useActiveAccount();
+	
+
+	useEffect(() => {
+		const fetchDataAndCaptureEvent = async () => {
+		  captureEvent(localStorage.getItem("userId") || "null", 'Opened Login Page', { page: '/login' });
+		};
+	
+		fetchDataAndCaptureEvent();
+	  }, []); 
+    
+
 
 	const handleOtpChange = (otp: string) => {
 		setOtpError(false);
@@ -103,15 +118,27 @@ export default function Home() {
 	}, [loggedToPw]);
 
 	useEffect(() => {
-		if (loggedToPw === LogginToPwBackendState.LoggedIn && !isNewUser) {
-			router.push(Routes.Categories);
-		} else if (
-			loggedToPw === LogginToPwBackendState.LoggedIn &&
-			isNewUser
-		) {
-			router.push(Routes.Welcome);
-		}
+	async function setUserId(){
+		const data = await isLoggedIn();
+		localStorage.setItem("userId", JSON.stringify(data));
+	}
+	setUserId();
+		
+	if (loggedToPw === LogginToPwBackendState.LoggedIn && !isNewUser) {
+		router.push(Routes.Categories);
+		captureEvent(localStorage.getItem("userId") || "null", 'User Logged In', { loginType: strategy });
+	} else if (
+		loggedToPw === LogginToPwBackendState.LoggedIn &&
+		isNewUser
+	) {
+		router.push(Routes.Welcome);
+		captureEvent(localStorage.getItem("userId") || "null", 'User Logged In', { loginType: strategy });
+	}
+		
+		
 	}, [step, router, isNewUser, loggedToPw]);
+
+	
 
 	const handleEmailLogin =
 		(email: string, verificationCode: string) => async () => {
@@ -132,6 +159,7 @@ export default function Home() {
 		};
 
 	const handleSocialConnect = (strategy: 'google' | 'apple') => async () => {
+		setStrategy(strategy);
 		setSocialLoading(true);
 		const socialEoa = await createSocialEoa(strategy);
 		setCreatedEOA(true);
@@ -246,7 +274,9 @@ export default function Home() {
 							</span>
 						</button>
 						<button
-							onClick={() => setStep(Step.EnterEmail)}
+							onClick={() => {
+								setStrategy('email');
+								setStep(Step.EnterEmail)}}
 							className='border-color-fg flex w-full justify-center gap-2 rounded-lg border bg-white p-3 text-black shadow-sm'
 						>
 							<Image
