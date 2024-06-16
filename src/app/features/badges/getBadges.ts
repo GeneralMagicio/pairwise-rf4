@@ -1,6 +1,7 @@
 import { useQuery } from '@tanstack/react-query';
 import {axios} from '@/lib/axios';
 import { BadgeData } from '@/app/badges/components/BadgeCard';
+import { Identity } from '@semaphore-protocol/identity';
 
 const getBadges = async () => {
 	const { data } = await axios.get<BadgeData>('/user/badges');
@@ -19,7 +20,7 @@ export const useGetBadges = () => {
 };
 
 const getIdentity = async () => {
-	const { data } = await axios.get<string>('/user/identity');
+	const { data } = await axios.get<Identity>('/user/identity');
 	return data;
 };
 
