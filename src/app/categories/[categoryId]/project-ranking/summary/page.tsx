@@ -78,16 +78,28 @@ const ProjectRankingSummaryPage = () => {
 				</div>
 			</div>
 			<div className='sticky bottom-0 border-t border-b-gray-200 bg-white px-6 py-6'>
-				<Button
-					onClick={() =>
-						router.push(
-							`${Routes.Categories}/${selectedCategory?.id}/pairwise-ranking`,
-						)
-					}
-					className='w-full bg-primary'
-				>
-					Start ranking
-				</Button>
+				<div className='flex justify-between gap-4'>
+					<Button
+						onClick={() =>
+							router.push(
+								`${Routes.Categories}/${selectedCategory?.id}/project-ranking/edit`,
+							)
+						}
+						className='w-full text-black shadow-md'
+					>
+						Edit
+					</Button>
+					<Button
+						onClick={() =>
+							router.push(
+								`${Routes.Categories}/${selectedCategory?.id}/pairwise-ranking`,
+							)
+						}
+						className='w-full bg-primary'
+					>
+						Start ranking
+					</Button>
+				</div>
 			</div>
 		</div>
 	);
