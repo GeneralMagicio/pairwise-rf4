@@ -29,10 +29,7 @@ const Header = () => {
 		}
 
 		if (identity)
-			localStorage.setItem(
-				identityLsKey,
-				identity,
-			);
+			localStorage.setItem(identityLsKey, JSON.stringify(identity));
 	}, [identity]);
 
 	const hasConnected = badges && identity;
