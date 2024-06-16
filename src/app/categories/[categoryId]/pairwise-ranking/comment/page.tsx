@@ -62,6 +62,7 @@ const CategoryRankingComment = () => {
 		const identityString = localStorage.getItem(localStorageTag)
 
 		if (!identityString) {
+			console.error("Identity string is missing!")
 			router.push("/")
 			return
 		}
