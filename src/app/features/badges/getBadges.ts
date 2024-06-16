@@ -18,6 +18,18 @@ export const useGetBadges = () => {
 	});
 };
 
+const getIdentity = async () => {
+	const { data } = await axios.get<string>('/user/identity');
+	return data;
+};
+
+export const useGetIdentity = () => {
+	return useQuery({
+		queryKey: ['identity'],
+		queryFn: getIdentity,
+	});
+};
+
 const getPublicBadges = async (address: string) => {
 	const { data } = await axios.get<BadgeData>('/user/public/badges', {
 		params: {
