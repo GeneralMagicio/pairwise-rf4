@@ -24,11 +24,7 @@ const CategoryRankingDone = () => {
 			</div>
 			<div className='border-t border-t-gray-300 px-6 py-6'>
 				<Button
-					onClick={() =>
-						router.push(
-							`${Routes.Categories}`,
-						)
-					}
+					onClick={() => router.push(`${Routes.Categories}`)}
 					className='w-full bg-primary'
 				>
 					Done
