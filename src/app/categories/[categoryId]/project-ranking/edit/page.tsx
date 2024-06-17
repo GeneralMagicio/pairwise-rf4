@@ -3,8 +3,6 @@
 import CategoryEditProjectItem, {
 	SelectionState,
 } from '@/app/categories/components/CategoryEditProjectItem';
-import CategoryProjectItem from '@/app/categories/components/CategoryProjectItem';
-import { Categories, projects } from '@/app/categories/mockData';
 import { InclusionState, IProject } from '@/app/categories/types';
 import Button from '@/app/components/Button';
 import LoadingSpinner from '@/app/components/LoadingSpinner';
@@ -12,7 +10,6 @@ import TopNavigation from '@/app/components/TopNavigation';
 import { Routes } from '@/app/constants/Routes';
 import { useCategoryById } from '@/app/features/categories/getCategoryById';
 import { useProjectsByCategoryId } from '@/app/features/categories/getProjectsByCategoryId';
-import { useUpdateCategoryMarkFiltered } from '@/app/features/categories/updateCategoryMarkFiltered';
 import { useUpdateProjectInclusionBulk } from '@/app/features/categories/updateProjectInclusionBulk';
 import { useParams, useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
@@ -34,10 +31,6 @@ const ProjectRankingEditPage = () => {
 
 	const { mutateAsync } = useUpdateProjectInclusionBulk({
 		categoryId: +selectedCategoryId,
-	});
-
-	const updateCategoryMarkFiltered = useUpdateCategoryMarkFiltered({
-		categoryId: +categoryId,
 	});
 
 	const selectedCategory = data?.data?.collection;
@@ -79,11 +72,6 @@ const ProjectRankingEditPage = () => {
 				data: {
 					state: InclusionState.Included,
 					ids: includedProjectIds,
-				},
-			});
-			await updateCategoryMarkFiltered.mutateAsync({
-				data: {
-					cid: +selectedCategoryId,
 				},
 			});
 			router.push(

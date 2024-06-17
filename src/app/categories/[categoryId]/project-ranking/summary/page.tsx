@@ -1,7 +1,6 @@
 'use client';
 
 import CategoryProjectItem from '@/app/categories/components/CategoryProjectItem';
-import { Categories, projects } from '@/app/categories/mockData';
 import { InclusionState } from '@/app/categories/types';
 import Button from '@/app/components/Button';
 import LoadingSpinner from '@/app/components/LoadingSpinner';
@@ -9,6 +8,7 @@ import TopNavigation from '@/app/components/TopNavigation';
 import { Routes } from '@/app/constants/Routes';
 import { useCategoryById } from '@/app/features/categories/getCategoryById';
 import { useProjectsByCategoryId } from '@/app/features/categories/getProjectsByCategoryId';
+import { useUpdateCategoryMarkFiltered } from '@/app/features/categories/updateCategoryMarkFiltered';
 import { useParams, useRouter } from 'next/navigation';
 
 const ProjectRankingSummaryPage = () => {
@@ -22,6 +22,12 @@ const ProjectRankingSummaryPage = () => {
 
 	const { data, isLoading: isCategoryLoading } =
 		useCategoryById(+selectedCategoryId);
+
+	const { mutateAsync: markCategoryFiltered } = useUpdateCategoryMarkFiltered(
+		{
+			categoryId: +categoryId,
+		},
+	);
 
 	const selectedCategory = data?.data?.collection;
 
@@ -90,11 +96,14 @@ const ProjectRankingSummaryPage = () => {
 						Edit
 					</Button>
 					<Button
-						onClick={() =>
+						onClick={async () => {
+							await markCategoryFiltered({
+								data: { cid: +selectedCategoryId },
+							});
 							router.push(
 								`${Routes.Categories}/${selectedCategory?.id}/pairwise-ranking`,
-							)
-						}
+							);
+						}}
 						className='w-full bg-primary'
 					>
 						Start ranking
