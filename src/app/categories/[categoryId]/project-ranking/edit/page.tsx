@@ -12,6 +12,8 @@ import TopNavigation from '@/app/components/TopNavigation';
 import { Routes } from '@/app/constants/Routes';
 import { useCategoryById } from '@/app/features/categories/getCategoryById';
 import { useProjectsByCategoryId } from '@/app/features/categories/getProjectsByCategoryId';
+import { useUpdateCategoryMarkFiltered } from '@/app/features/categories/updateCategoryMarkFiltered';
+import { useUpdateProjectInclusionBulk } from '@/app/features/categories/updateProjectInclusionBulk';
 import { useParams, useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 
@@ -29,6 +31,14 @@ const ProjectRankingEditPage = () => {
 
 	const { data, isLoading: isCategoryLoading } =
 		useCategoryById(+selectedCategoryId);
+
+	const { mutateAsync } = useUpdateProjectInclusionBulk({
+		categoryId: +selectedCategoryId,
+	});
+
+	const updateCategoryMarkFiltered = useUpdateCategoryMarkFiltered({
+		categoryId: +categoryId,
+	});
 
 	const selectedCategory = data?.data?.collection;
 
@@ -59,9 +69,29 @@ const ProjectRankingEditPage = () => {
 		console.log('includedProjects', includedProjects);
 	};
 
-	const handleSubmit = () => {
-		const includedProjectIds = includedProjects.map(project => project.id);
-		//Send includedProjectIds to backend
+	const handleSubmit = async () => {
+		try {
+			const includedProjectIds = includedProjects.map(
+				project => project.id,
+			);
+			//Send includedProjectIds to backend
+			await mutateAsync({
+				data: {
+					state: InclusionState.Included,
+					ids: includedProjectIds,
+				},
+			});
+			await updateCategoryMarkFiltered.mutateAsync({
+				data: {
+					cid: +selectedCategoryId,
+				},
+			});
+			router.push(
+				`${Routes.Categories}/${selectedCategoryId}/project-ranking/summary`,
+			);
+		} catch (error) {
+			console.log('Error', error);
+		}
 	};
 
 	useEffect(() => {
