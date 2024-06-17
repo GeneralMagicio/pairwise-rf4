@@ -1,11 +1,10 @@
 'use client';
 
-import { Categories, projects } from '@/app/categories/mockData';
 import { useParams, useRouter } from 'next/navigation';
-import { Reorder } from 'framer-motion';
+
 import { useEffect, useState } from 'react';
 import TopRouteIndicator from '@/app/components/TopRouteIndicator';
-import CategoryRankingListItem from '@/app/categories/components/CategoryRankingListItem';
+
 import Button from '@/app/components/Button';
 import { Routes } from '@/app/constants/Routes';
 import { useProjectsRankingByCategoryId } from '@/app/features/categories/getProjectsRankingByCategoryId';
@@ -13,7 +12,8 @@ import { IProject } from '@/app/categories/types';
 import LoadingSpinner from '@/app/components/LoadingSpinner';
 import { useCategoryById } from '@/app/features/categories/getCategoryById';
 import { useUpdateSortingByCategoryId } from '@/app/features/categories/updateSortingByCategoryId';
-import { useUpdatePairwiseFinish } from '@/app/features/categories/updatePairwiseFinish';
+
+import CategoryRankingBasicListItem from '@/app/categories/components/CategoryRankingBasicListItem';
 
 const CategoryRankingListPage = () => {
 	const router = useRouter();
@@ -82,37 +82,38 @@ const CategoryRankingListPage = () => {
 						<div>Rank</div>
 						<div>Project Name</div>
 					</div>
-					<div>Action</div>
+					{/* <div>Action</div> */}
 				</div>
 				<div>
-					<Reorder.Group
-						axis='y'
-						values={listProjects}
-						onReorder={setListProjects}
-					>
-						{listProjects.map((project, index) => (
-							<CategoryRankingListItem
-								key={project.id}
-								project={project}
-								order={index + 1}
-							/>
-						))}
-					</Reorder.Group>
+					{listProjects.map((project, index) => (
+						<CategoryRankingBasicListItem
+							key={project.id}
+							project={project}
+							order={index + 1}
+						/>
+					))}
 				</div>
 			</div>
 			<div className='sticky bottom-0 w-full border-t border-gray-200 bg-white px-6 py-6'>
-				<Button
-					// onClick={() =>
-					// 	router.push(
-					// 		`${Routes.Categories}/${category?.data?.collection?.id}/pairwise-ranking/comment`,
-					// 	)
-					// }
-					onClick={handleSubmitSortedProjects}
-					className={`w-full bg-primary ${isPending ? 'opacity-50' : ''}`}
-					disabled={isPending}
-				>
-					Submit Vote
-				</Button>
+				<div className='flex justify-between gap-4'>
+					<Button
+						onClick={() =>
+							router.push(
+								`${Routes.Categories}/${categoryId}/pairwise-ranking/ranking-list/edit`,
+							)
+						}
+						className='w-full text-black shadow-md'
+					>
+						Edit
+					</Button>
+					<Button
+						onClick={handleSubmitSortedProjects}
+						className={`w-full bg-primary ${isPending ? 'opacity-50' : ''}`}
+						disabled={isPending}
+					>
+						Submit Vote
+					</Button>
+				</div>
 			</div>
 		</div>
 	);
