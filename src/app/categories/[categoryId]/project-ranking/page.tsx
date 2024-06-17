@@ -2,9 +2,7 @@
 
 import Link from 'next/link';
 import { useParams, useRouter } from 'next/navigation';
-import { Categories, projects } from '../../mockData';
 import { Routes } from '@/app/constants/Routes';
-import CategoryProjectRankingCard from '../../components/CategoryProjectRankingCard';
 import Button from '@/app/components/Button';
 import IconTrash from 'public/images/icons/IconTrash';
 import IconCheck from 'public/images/icons/IconCheck';
@@ -17,17 +15,12 @@ import { InclusionState } from '../../types';
 import { useUpdateProjectInclusion } from '@/app/features/categories/updateProjectInclusion';
 import { AnimatePresence, motion } from 'framer-motion';
 import { useEffect, useState } from 'react';
-import { useUpdateCategoryMarkFiltered } from '@/app/features/categories/updateCategoryMarkFiltered';
 import CategoryProjectRankingCardWithMetrics from '../../components/CategoryProjectRankingCardWithMetrics';
 
 const ProjectRankingPage = () => {
 	const router = useRouter();
 	const { categoryId } = useParams();
 	const updateProjectInclusion = useUpdateProjectInclusion({
-		categoryId: +categoryId,
-	});
-
-	const updateCategoryMarkFiltered = useUpdateCategoryMarkFiltered({
 		categoryId: +categoryId,
 	});
 
@@ -43,8 +36,6 @@ const ProjectRankingPage = () => {
 	const { data, isLoading: isCategoryLoading } =
 		useCategoryById(+selectedCategoryId);
 	const selectedCategory = data?.data?.collection;
-
-	const selectedCategoryProgress = data?.data.progress;
 
 	const projectsCount = projects?.data ? projects?.data.length : 0;
 
@@ -72,18 +63,6 @@ const ProjectRankingPage = () => {
 			.then(() => {
 				if (!isLastProjectInTheList) {
 					setCurrentIndex(curr => curr + 1);
-				} else {
-					updateCategoryMarkFiltered
-						.mutateAsync({
-							data: {
-								cid: +categoryId!,
-							},
-						})
-						.then(() => {
-							router.push(
-								`${Routes.Categories}/${categoryId}/project-ranking/done`,
-							);
-						});
 				}
 			});
 	};
@@ -103,28 +82,12 @@ const ProjectRankingPage = () => {
 	};
 
 	useEffect(() => {
-		if (selectedCategoryProgress === 'Filtered') {
+		if (backendCurrentIndex === -1) {
 			router.push(
-				`${Routes.Categories}/${categoryId}/project-ranking/summary`,
+				`${Routes.Categories}/${categoryId}/project-ranking/done`,
 			);
 		}
-		if (
-			backendCurrentIndex === -1 &&
-			selectedCategoryProgress === 'Filtering'
-		) {
-			updateCategoryMarkFiltered
-				.mutateAsync({
-					data: {
-						cid: +categoryId!,
-					},
-				})
-				.then(() => {
-					router.push(
-						`${Routes.Categories}/${categoryId}/project-ranking/done`,
-					);
-				});
-		}
-	}, [backendCurrentIndex]);
+	}, [backendCurrentIndex, router, categoryId]);
 
 	useEffect(() => {
 		setCurrentIndex(backendCurrentIndex);
