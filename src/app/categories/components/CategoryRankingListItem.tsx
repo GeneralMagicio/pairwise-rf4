@@ -4,15 +4,19 @@ import IconMove from 'public/images/icons/IconMove';
 import { IProject } from '../types';
 import Image from 'next/image';
 import { Reorder, useDragControls } from 'framer-motion';
+import { truncate } from '@/app/helpers/text-helpers';
+import IconTrash from 'public/images/icons/IconTrash';
 
 interface ICategoryRankingListItemProps {
 	project: IProject;
 	order: number;
+	handleRemoveFromSelected: (projectId: number) => void;
 }
 
 const CategoryRankingListItem = ({
 	project,
 	order,
+	handleRemoveFromSelected,
 }: ICategoryRankingListItemProps) => {
 	const controls = useDragControls();
 
@@ -22,9 +26,15 @@ const CategoryRankingListItem = ({
 			dragListener={false}
 			dragControls={controls}
 		>
-			{' '}
 			<div className=' flex select-none items-center justify-between border-b border-b-gray-200 bg-white px-4 py-3'>
-				<div className='flex items-center gap-8'>
+				<div className='flex items-center gap-2'>
+					<div
+						style={{ touchAction: 'none' }}
+						className='cursor-pointer'
+						onPointerDown={e => controls.start(e)}
+					>
+						<IconMove />
+					</div>
 					<div>#{order}</div>
 					<div className='mx-4 flex items-center gap-4'>
 						{project.image ? (
@@ -43,16 +53,12 @@ const CategoryRankingListItem = ({
 							</div>
 						)}
 						<p className='font-bold text-gray-700'>
-							{project.name}
+							{truncate(project.name, 25)}
 						</p>
 					</div>
 				</div>
-				<div
-					style={{ touchAction: 'none' }}
-					className='cursor-pointer'
-					onPointerDown={e => controls.start(e)}
-				>
-					<IconMove />
+				<div onClick={() => handleRemoveFromSelected(project.id)}>
+					<IconTrash color='#9195A6' />
 				</div>
 			</div>
 		</Reorder.Item>
