@@ -22,14 +22,12 @@ import { cn } from '@/app/helpers/cn';
 import { formatMetricsNumber } from '@/utils/numbers';
 
 import { truncate } from '@/app/helpers/text-helpers';
+import { getRandomProjectId } from '@/utils/dummy-metrics';
 
 interface IUserSeenRankingFinishedModal {
 	value: string;
 	categoryId: string;
 }
-
-const project1Id = 'UF36qYsUzfwX6GDNuWgpDXrqsmrLcK4Rw5D4hZY5Pxc=';
-const project2Id = 'Q8XI5uvgwOT41A1eWKKVRoQdzjDvYXRtVLpT6n7KVrg=';
 
 const CategoryPairwiseRankingPage = () => {
 	const router = useRouter();
@@ -63,6 +61,9 @@ const CategoryPairwiseRankingPage = () => {
 	const totalPairs = pairwisePairs?.data.totalPairs ?? 1;
 	let progressPercentage = 0;
 
+	const metric1Id = getRandomProjectId(firstProject.name);
+	const metric2Id = getRandomProjectId(secondProject.name);
+
 	if (totalPairs !== 0) {
 		progressPercentage = (votedPairs / totalPairs / threshold) * 100;
 	}
@@ -93,8 +94,8 @@ const CategoryPairwiseRankingPage = () => {
 			const processedMap = processProjectMetricsCSV(data);
 			const formatted = compareProjects(
 				processedMap,
-				project1Id,
-				project2Id,
+				metric1Id,
+				metric2Id,
 			);
 			setFormattedMetrics(formatted);
 			console.log('compareProjects', formatted);
