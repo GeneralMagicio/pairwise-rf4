@@ -54,15 +54,12 @@ const CategoryPairwiseRankingPage = () => {
 		isFetching: isFetchingPairwise,
 	} = useGetPairwisePairs(+selectedCategoryId);
 	console.log('PairwiseData', pairwisePairs);
-	const [firstProject, secondProject] = pairwisePairs?.data.pairs[0] ?? [];
+	const [firstProject, secondProject] = pairwisePairs?.data.pairs[0] || [];
 
 	const threshold = pairwisePairs?.data.threshold ?? 0;
 	const votedPairs = pairwisePairs?.data.votedPairs ?? 0;
 	const totalPairs = pairwisePairs?.data.totalPairs ?? 1;
 	let progressPercentage = 0;
-
-	const metric1Id = getRandomProjectId(firstProject.name);
-	const metric2Id = getRandomProjectId(secondProject.name);
 
 	if (totalPairs !== 0) {
 		progressPercentage = (votedPairs / totalPairs / threshold) * 100;
@@ -86,7 +83,7 @@ const CategoryPairwiseRankingPage = () => {
 	};
 
 	const isLoading = isVotingPending || isFetchingPairwise;
-
+	
 	const fetchMetrics = async () => {
 		try {
 			const response = await fetch('/data/cleaned_metrics.csv');
@@ -94,8 +91,8 @@ const CategoryPairwiseRankingPage = () => {
 			const processedMap = processProjectMetricsCSV(data);
 			const formatted = compareProjects(
 				processedMap,
-				metric1Id,
-				metric2Id,
+				getRandomProjectId(firstProject.name),
+				getRandomProjectId(secondProject.name),
 			);
 			setFormattedMetrics(formatted);
 			console.log('compareProjects', formatted);
@@ -105,8 +102,8 @@ const CategoryPairwiseRankingPage = () => {
 	};
 
 	useEffect(() => {
-		fetchMetrics();
-	}, []);
+		if (firstProject && secondProject) fetchMetrics();
+	}, [firstProject, secondProject]);
 
 	useEffect(() => {
 		const hasUserSeenRankingFinishedModal = localStorage.getItem(
