@@ -27,9 +27,8 @@ const CategoryRankingDone = () => {
 			<div className='border-t border-t-gray-300 px-6 py-6'>
 			<Button
 					onClick={() =>
-						router.push(
-							`${Routes.Categories}`,
-						)
+						router.push(`${Routes.Categories}/${categoryId}/pairwise-ranking/ranking-list/edit`,)
+
 					}
 					className='w-full font-semibold	leading-5 bg-[#FBFCFE] border border-[#E0E2EB] mb-5 text-black'
 				>
