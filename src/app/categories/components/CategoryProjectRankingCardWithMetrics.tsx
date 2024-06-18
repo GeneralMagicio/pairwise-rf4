@@ -14,6 +14,7 @@ import {
 	processProjectMetricsCSV,
 } from '@/utils/getMetrics';
 import { formatMetricsNumber } from '@/utils/numbers';
+import { getRandomProjectId } from '@/utils/dummy-metrics';
 
 interface ICategoryProjectRankingCardWithMetricsProps {
 	project: IProject;
@@ -30,7 +31,7 @@ const CategoryProjectRankingCardWithMetrics = ({
 
 	const projectMetrics = getProjectMetrics(
 		metricsMap,
-		'SaXSYwJ5Gr4V4mwVN-b3nS6NbRYbY0zufdVVBje99J4=', //sample project ID
+		getRandomProjectId(project.name), //sample project ID
 	);
 	console.log('projectMetrics:', projectMetrics);
 
