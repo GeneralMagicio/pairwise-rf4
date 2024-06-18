@@ -13,6 +13,7 @@ import {
 	Metric,
 	processProjectMetricsCSV,
 } from '@/utils/getMetrics';
+import { formatMetricsNumber } from '@/utils/numbers';
 
 interface ICategoryProjectRankingCardWithMetricsProps {
 	project: IProject;
@@ -128,7 +129,9 @@ const CategoryProjectRankingCardWithMetrics = ({
 														{metric.description}
 													</p>
 													<p className='font-medium'>
-														{metric.value}
+														{formatMetricsNumber(
+															metric.value,
+														) ?? '--'}
 													</p>
 												</div>
 											);
