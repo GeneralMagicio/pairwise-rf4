@@ -67,12 +67,12 @@ const CategoryPairwiseRankingPage = () => {
 	if (totalPairs !== 0) {
 		progressPercentage = (votedPairs / totalPairs / threshold) * 100;
 	}
-
+	
 	const handleVote = async (pickedId: number) => {
-		posthog.capture('Comparing categories',{categories:[firstProject.name,secondProject.name]})
+		posthog.capture('Comparing Projects',{categories:[firstProject.name,secondProject.name]})
 
-		let attestedCategory = firstProject.id==pickedId ? firstProject.name :secondProject.name;
-		posthog.capture('Attested between categories',{attestedCategory:attestedCategory})
+		let selectedProject = firstProject.id==pickedId ? firstProject.name :secondProject.name;
+		posthog.capture('Selected Project for more Funding',{selectedProject:selectedProject})
 		mutate({
 			data: {
 				project1Id: firstProject.id,

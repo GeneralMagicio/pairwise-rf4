@@ -2,7 +2,7 @@
 
 import TopNavigation from '@/app/components/TopNavigation';
 import { useParams, useRouter } from 'next/navigation';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Routes } from '@/app/constants/Routes';
 import CategoryBadge from '../components/CategoryBadge';
 import CategoryProjectItem from '../components/CategoryProjectItem';
@@ -28,10 +28,12 @@ const CategoryPage = () => {
 	const selectedCategory = data?.data?.collection;
 	const selectedCategoryProgress = data?.data.progress;
 
+	useEffect(() => {
+		posthog.capture('User goes to the Categories page', {categoryName:`${selectedCategory?.name}`});
+	  },[]);
+	  
 	if (isProjectsLoading || isCategoryLoading) {
 		return <LoadingSpinner />;
-	}else{
-		posthog.capture('User goes to the Categories page', {categoryName:`${selectedCategory?.name}`});
 	}
 
 	return (
