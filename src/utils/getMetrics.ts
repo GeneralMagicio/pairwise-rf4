@@ -1,6 +1,6 @@
 // Type definitions for project metric data
 export type Metric = {
-	value: number | boolean;
+	value: number;
 	description: string;
 };
 
@@ -35,7 +35,7 @@ export type CategoryMetricData = {
 		trustedRecurringUsers: Metric;
 		powerUserAddresses: Metric;
 	};
-	checkOssRequirements: Metric;
+	// checkOssRequirements: Metric;
 };
 
 // Helper function to parse a string as a float, handling commas and optional quotes
@@ -57,6 +57,20 @@ export const processProjectMetricsCSV = (
 		if (cells.length === headers.length) {
 			const projectId = cells[0];
 			const metricData = {
+				NetworkGrowth: {
+					dailyActiveAddresses: {
+						value: parseNumber(cells[7]),
+						description: 'Daily Active Users (DAU)',
+					},
+					monthlyActiveAddresses: {
+						value: parseNumber(cells[9]),
+						description: 'Monthly Active Users',
+					},
+					recurringAddresses: {
+						value: parseNumber(cells[11]),
+						description: 'Recurring Addresses',
+					},
+				},
 				NetworkQuality: {
 					gasFees: {
 						value: parseNumber(cells[2]),
@@ -73,20 +87,6 @@ export const processProjectMetricsCSV = (
 					trustedTransactionShare: {
 						value: parseNumber(cells[5]),
 						description: 'Trusted Transaction Share',
-					},
-				},
-				NetworkGrowth: {
-					dailyActiveAddresses: {
-						value: parseNumber(cells[7]),
-						description: 'Daily Active Users (DAU)',
-					},
-					monthlyActiveAddresses: {
-						value: parseNumber(cells[9]),
-						description: 'Monthly Active Users',
-					},
-					recurringAddresses: {
-						value: parseNumber(cells[11]),
-						description: 'Recurring Addresses',
 					},
 				},
 
@@ -114,10 +114,10 @@ export const processProjectMetricsCSV = (
 						description: 'Power User Addresses',
 					},
 				},
-				checkOssRequirements: {
-					value: cells[1].toUpperCase() === 'TRUE',
-					description: 'Check OSS Requirements',
-				},
+				// checkOssRequirements: {
+				// 	value: cells[1].toUpperCase() === 'TRUE',
+				// 	description: 'Check OSS Requirements',
+				// },
 			};
 			metricsMap.set(projectId, metricData);
 		}

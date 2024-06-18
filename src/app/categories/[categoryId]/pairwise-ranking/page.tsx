@@ -245,7 +245,7 @@ const CategoryPairwiseRankingPage = () => {
 						<div className='flex justify-between'>
 							<div
 								className={cn(
-									'flex items-center justify-center gap-2 rounded-lg bg-white px-4 py-2 font-semibold shadow-md',
+									'flex w-40 items-center justify-center gap-2 rounded-lg bg-white px-4 py-2 font-semibold shadow-md',
 									{
 										'cursor-not-allowed opacity-50':
 											isLoading,
@@ -273,11 +273,11 @@ const CategoryPairwiseRankingPage = () => {
 										</div>
 									)}
 								</div>
-								<div>{truncate(firstProject.name, 12)}</div>
+								<div>{truncate(firstProject.name, 6)}</div>
 							</div>
 							<div
 								className={cn(
-									'flex items-center justify-center gap-2 rounded-lg bg-white px-4 py-2 font-semibold shadow-md',
+									'flex w-40 items-center justify-center gap-2 rounded-lg bg-white px-4 py-2 font-semibold shadow-md',
 									{
 										'cursor-not-allowed opacity-50':
 											isLoading,
@@ -304,7 +304,7 @@ const CategoryPairwiseRankingPage = () => {
 										</div>
 									)}
 								</div>
-								{truncate(secondProject.name, 12)}
+								{truncate(secondProject.name, 6)}
 							</div>
 						</div>
 					</div>
