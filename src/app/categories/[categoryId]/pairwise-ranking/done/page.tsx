@@ -36,11 +36,7 @@ const CategoryRankingDone = () => {
 					Edit Vote
 				</Button>
 				<Button
-					onClick={() =>
-						router.push(
-							`${Routes.Categories}`,
-						)
-					}
+					onClick={() => router.push(`${Routes.Categories}`)}
 					className='w-full bg-primary'
 				>
 					Done

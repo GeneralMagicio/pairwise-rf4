@@ -1,24 +1,27 @@
 'use client';
 
+import { Categories, projects } from '@/app/categories/mockData';
 import { useParams, useRouter } from 'next/navigation';
-
+import { Reorder } from 'framer-motion';
 import { useEffect, useState } from 'react';
 import TopRouteIndicator from '@/app/components/TopRouteIndicator';
-
+import CategoryRankingListItem from '@/app/categories/components/CategoryRankingListItem';
 import Button from '@/app/components/Button';
 import { Routes } from '@/app/constants/Routes';
 import { useProjectsRankingByCategoryId } from '@/app/features/categories/getProjectsRankingByCategoryId';
-import { IProject } from '@/app/categories/types';
+import { InclusionState, IProject } from '@/app/categories/types';
 import LoadingSpinner from '@/app/components/LoadingSpinner';
 import { useCategoryById } from '@/app/features/categories/getCategoryById';
 import { useUpdateSortingByCategoryId } from '@/app/features/categories/updateSortingByCategoryId';
+import { useUpdatePairwiseFinish } from '@/app/features/categories/updatePairwiseFinish';
+import { useProjectsByCategoryId } from '@/app/features/categories/getProjectsByCategoryId';
+import CategoryRankingNotSelectedListItem from '@/app/categories/components/CategoryRankingNotSelectedListItem';
 
-import CategoryRankingBasicListItem from '@/app/categories/components/CategoryRankingBasicListItem';
-
-const CategoryRankingListPage = () => {
+const CategoryRankingListEditPage = () => {
 	const router = useRouter();
 	const { categoryId } = useParams();
 	const [listProjects, setListProjects] = useState<IProject[]>([]);
+	const [excludedProjects, setExcludedProjects] = useState<IProject[]>([]);
 	const {
 		mutateAsync: mutateAsyncUpdateSorting,
 		isPending: isSortingPending,
@@ -27,6 +30,9 @@ const CategoryRankingListPage = () => {
 	});
 	const selectedCategoryId =
 		typeof categoryId === 'string' ? categoryId : categoryId[0];
+
+	const { data: categoryAllProjects } =
+		useProjectsByCategoryId(+selectedCategoryId);
 
 	const listProjectsIds = listProjects.map(project => project.id);
 	console.log('listProjectsIds', listProjectsIds);
@@ -56,11 +62,39 @@ const CategoryRankingListPage = () => {
 		}
 	};
 
+	const handleAddFromNotSelected = (projectId: number) => {
+		const project = excludedProjects?.find(
+			project => project.id === projectId,
+		);
+		if (project) {
+			project.inclusionState = InclusionState.Included;
+			setListProjects(prevProjects => [...prevProjects, project]);
+			setExcludedProjects(prevProjects =>
+				prevProjects.filter(p => p.id !== projectId),
+			);
+		}
+	};
+
+	const handleRemoveFromSelected = (projectId: number) => {
+		const project = listProjects.find(project => project.id === projectId);
+		if (project) {
+			project.inclusionState = InclusionState.Excluded;
+			setExcludedProjects(prevProjects => [...prevProjects, project]);
+			setListProjects(prevProjects =>
+				prevProjects.filter(p => p.id !== projectId),
+			);
+		}
+	};
+
 	useEffect(() => {
 		if (projectsRanking?.data.ranking) {
 			setListProjects(projectsRanking?.data.ranking);
 		}
-	}, [projectsRanking?.data.ranking]);
+		const _excludedProjects = categoryAllProjects?.data.filter(
+			project => project.inclusionState === InclusionState.Excluded,
+		);
+		setExcludedProjects(_excludedProjects || []);
+	}, [projectsRanking?.data.ranking, categoryAllProjects?.data]);
 
 	if (isProjectsRankingLoading || isCategoryLoading) {
 		return <LoadingSpinner />;
@@ -77,41 +111,66 @@ const CategoryRankingListPage = () => {
 						you can create list or continue ranking other projects.
 					</p>
 				</div>
-				<div className='mt-6 flex justify-between bg-gray-100 p-2 text-ph'>
+				<p className='mb-2 mt-6 font-semibold text-ph'>
+					Ranked ({listProjects?.length})
+				</p>
+				<div className='flex justify-between bg-gray-100 p-2 text-ph'>
 					<div className='flex gap-8'>
 						<div>Rank</div>
 						<div>Project Name</div>
 					</div>
-					{/* <div>Action</div> */}
+					<div>Action</div>
 				</div>
 				<div>
-					{listProjects.map((project, index) => (
-						<CategoryRankingBasicListItem
-							key={project.id}
+					<Reorder.Group
+						axis='y'
+						values={listProjects}
+						onReorder={setListProjects}
+					>
+						{listProjects.map((project, index) => (
+							<CategoryRankingListItem
+								key={project.id}
+								project={project}
+								order={index + 1}
+								handleRemoveFromSelected={
+									handleRemoveFromSelected
+								}
+							/>
+						))}
+					</Reorder.Group>
+				</div>
+				<p className='mb-2 mt-6 font-semibold text-ph'>
+					Not Selected ({excludedProjects?.length})
+				</p>
+				<div>
+					{excludedProjects?.map((project, index) => (
+						<CategoryRankingNotSelectedListItem
 							project={project}
-							order={index + 1}
+							key={project.id}
+							handleAddFromNotSelected={handleAddFromNotSelected}
 						/>
 					))}
 				</div>
 			</div>
+
 			<div className='sticky bottom-0 w-full border-t border-gray-200 bg-white px-6 py-6'>
 				<div className='flex justify-between gap-4'>
 					<Button
 						onClick={() =>
 							router.push(
-								`${Routes.Categories}/${categoryId}/pairwise-ranking/ranking-list/edit`,
+								`${Routes.Categories}/${categoryId}/pairwise-ranking/ranking-list`,
 							)
 						}
 						className='w-full text-black shadow-md'
 					>
-						Edit
+						Discard Changes
 					</Button>
 					<Button
 						onClick={handleSubmitSortedProjects}
 						className={`w-full bg-primary ${isPending ? 'opacity-50' : ''}`}
 						disabled={isPending}
 					>
-						Submit Vote
+						Save Changes
 					</Button>
 				</div>
 			</div>
@@ -119,4 +178,4 @@ const CategoryRankingListPage = () => {
 	);
 };
 
-export default CategoryRankingListPage;
+export default CategoryRankingListEditPage;
