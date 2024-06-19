@@ -26,11 +26,9 @@ const CategoryRankingComment = () => {
 	const { data: ranking, isLoading } = useCategoryRankings();
 
 	const [comment, setComment] = useState('');
-	const [commentError, setCommentError] = useState(false);
 	const [attestUnderway, setAttestUnderway] = useState(false);
 
 	const onCommentChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-		if (commentError) setCommentError(false);
 		setComment(e.target.value);
 	};
 
@@ -38,10 +36,6 @@ const CategoryRankingComment = () => {
 	const signer = useSigner();
 
 	const attest = async () => {
-		if (comment.length < 100) {
-			setCommentError(true);
-			return;
-		}
 		if (!ranking) return;
 
 		setAttestUnderway(true);
@@ -152,11 +146,6 @@ const CategoryRankingComment = () => {
 						placeholder='Add comments to describe reason for your voting and ranking.'
 						className={`mt-1 block h-[100px] w-full resize-none rounded-md border border-gray-300 px-3 py-2 shadow-sm`}
 					></textarea>
-					<p
-						className={`mt-2 text-sm ${commentError ? `text-red-500` : `text-gray-500`}`}
-					>
-						Min 100 characters
-					</p>
 				</div>
 			</div>
 
