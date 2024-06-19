@@ -8,6 +8,7 @@ import './globals.css';
 import { Thirdweb5Provider } from '@/lib/third-web/provider';
 import { AuthGuard } from '@/utils/AuthGuard';
 import { ConnectProvider } from './providers/ConnectProvider';
+import ConnectDrawers from './components/ConnectDrawers';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -30,6 +31,7 @@ export default function RootLayout({
 							<AuthGuard>
 								<ConnectProvider>
 									<div>{children}</div>
+									<ConnectDrawers />
 								</ConnectProvider>
 							</AuthGuard>
 						</Thirdweb5Provider>
