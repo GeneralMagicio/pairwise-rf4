@@ -16,6 +16,7 @@ export const useGetBadges = () => {
 	return useQuery({
 		queryKey: ['badges'],
 		queryFn: getBadges,
+		refetchOnWindowFocus: "always",
 	});
 };
 
@@ -28,6 +29,7 @@ export const useGetIdentity = () => {
 	return useQuery({
 		queryKey: ['identity'],
 		queryFn: getIdentity,
+		refetchOnWindowFocus: "always",
 	});
 };
 
