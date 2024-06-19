@@ -1,3 +1,5 @@
+'use client';
+
 import React from 'react';
 import { useConnect } from '../providers/ConnectProvider';
 import CollectVotingPowerContent from './CollectVotingPowerContent';
