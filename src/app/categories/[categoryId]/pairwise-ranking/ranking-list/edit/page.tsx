@@ -16,15 +16,22 @@ import { useUpdateSortingByCategoryId } from '@/app/features/categories/updateSo
 import { useUpdatePairwiseFinish } from '@/app/features/categories/updatePairwiseFinish';
 import { useProjectsByCategoryId } from '@/app/features/categories/getProjectsByCategoryId';
 import CategoryRankingNotSelectedListItem from '@/app/categories/components/CategoryRankingNotSelectedListItem';
+import { MinimumIncludedProjectsModal } from '@/app/components/MinimumIncludedProjectsModal';
+import { MinimumModalState } from '@/utils/types';
 
 const CategoryRankingListEditPage = () => {
 	const router = useRouter();
 	const { categoryId } = useParams();
 	const [listProjects, setListProjects] = useState<IProject[]>([]);
 	const [excludedProjects, setExcludedProjects] = useState<IProject[]>([]);
+	const [minimumModal, setMinimumModal] = useState<MinimumModalState>(
+		MinimumModalState.False,
+	);
+
 	const {
 		mutateAsync: mutateAsyncUpdateSorting,
 		isPending: isSortingPending,
+		error: sortingError
 	} = useUpdateSortingByCategoryId({
 		categoryId: +categoryId,
 	});
@@ -87,6 +94,23 @@ const CategoryRankingListEditPage = () => {
 	};
 
 	useEffect(() => {
+		if (
+			minimumModal === MinimumModalState.False &&
+			sortingError &&
+			// @ts-ignore
+			sortingError.response &&
+			// @ts-ignore
+			sortingError.response.data
+		) {
+			// @ts-ignore
+			const errorResponse = sortingError.response.data;
+			if (errorResponse.pwCode === 'pw1000') {
+				setMinimumModal(MinimumModalState.True);
+			}
+		}
+	}, [sortingError, minimumModal]);
+
+	useEffect(() => {
 		if (projectsRanking?.data.ranking) {
 			setListProjects(projectsRanking?.data.ranking);
 		}
@@ -102,6 +126,12 @@ const CategoryRankingListEditPage = () => {
 
 	return (
 		<div className='relative flex min-h-[calc(100dvh)] flex-col '>
+			<MinimumIncludedProjectsModal
+				close={() => setMinimumModal(MinimumModalState.Shown)}
+				isOpen={minimumModal === MinimumModalState.True}
+				// @ts-ignore
+				minimum={sortingError?.response?.data.minimum || 2}
+			/>
 			<div className='flex flex-grow flex-col'>
 				<TopRouteIndicator name={category?.data?.collection.name} />
 				<div className='mx-4'>

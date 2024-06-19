@@ -17,12 +17,7 @@ import { AnimatePresence, motion } from 'framer-motion';
 import { useEffect, useState } from 'react';
 import CategoryProjectRankingCardWithMetrics from '../../components/CategoryProjectRankingCardWithMetrics';
 import { MinimumIncludedProjectsModal } from '@/app/components/MinimumIncludedProjectsModal';
-
-export enum MinimumModalState {
-	Shown,
-	False,
-	True,
-}
+import { MinimumModalState } from '@/utils/types';
 
 const ProjectRankingPage = () => {
 	const router = useRouter();
@@ -34,7 +29,6 @@ const ProjectRankingPage = () => {
 	const [minimumModal, setMinimumModal] = useState<MinimumModalState>(
 		MinimumModalState.False,
 	);
-	const [minimum, setMinimum] = useState();
 
 	const selectedCategoryId =
 		typeof categoryId === 'string' ? categoryId : categoryId[0];
@@ -115,7 +109,6 @@ const ProjectRankingPage = () => {
 			const errorResponse = updateProjectInclusion.error.response.data;
 			if (errorResponse.pwCode === 'pw1000') {
 				setMinimumModal(MinimumModalState.True);
-				setMinimum(errorResponse.minimum);
 			}
 		}
 	}, [updateProjectInclusion.isError, updateProjectInclusion, minimumModal]);
@@ -137,7 +130,8 @@ const ProjectRankingPage = () => {
 			<MinimumIncludedProjectsModal
 				close={() => setMinimumModal(MinimumModalState.Shown)}
 				isOpen={minimumModal === MinimumModalState.True}
-				minimum={minimum || 0}
+				// @ts-ignore
+				minimum={updateProjectInclusion?.error?.response?.data?.minimum || 2}
 			/>
 			<div className='flex min-h-[calc(100dvh)] flex-col'>
 				<div className='border-b border-b-gray-200 pb-7 pt-9'>

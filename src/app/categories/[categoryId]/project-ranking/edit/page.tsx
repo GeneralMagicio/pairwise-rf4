@@ -13,8 +13,8 @@ import { useProjectsByCategoryId } from '@/app/features/categories/getProjectsBy
 import { useUpdateProjectInclusionBulk } from '@/app/features/categories/updateProjectInclusionBulk';
 import { useParams, useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
-import { MinimumModalState } from '../page';
 import { MinimumIncludedProjectsModal } from '@/app/components/MinimumIncludedProjectsModal';
+import { MinimumModalState } from '@/utils/types';
 
 const ProjectRankingEditPage = () => {
 	const router = useRouter();
@@ -26,7 +26,6 @@ const ProjectRankingEditPage = () => {
 	const [minimumModal, setMinimumModal] = useState<MinimumModalState>(
 		MinimumModalState.False,
 	);
-	const [minimum, setMinimum] = useState();
 
 	const selectedCategoryId =
 		typeof categoryId === 'string' ? categoryId : categoryId[0];
@@ -116,7 +115,6 @@ const ProjectRankingEditPage = () => {
 			const errorResponse = error.response.data;
 			if (errorResponse.pwCode === 'pw1000') {
 				setMinimumModal(MinimumModalState.True);
-				setMinimum(errorResponse.minimum);
 			}
 		}
 	}, [error, minimumModal]);
@@ -129,7 +127,8 @@ const ProjectRankingEditPage = () => {
 			<MinimumIncludedProjectsModal
 				close={() => setMinimumModal(MinimumModalState.Shown)}
 				isOpen={minimumModal === MinimumModalState.True}
-				minimum={minimum || 0}
+				// @ts-ignore
+				minimum={error?.response?.data.minimum || 2}
 			/>
 			<div>
 				<div>
