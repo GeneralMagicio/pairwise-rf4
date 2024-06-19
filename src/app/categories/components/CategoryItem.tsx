@@ -8,6 +8,7 @@ import CategoryBadge from './CategoryBadge';
 import { truncate } from '@/app/helpers/text-helpers';
 import { useGetBadges, useGetIdentity } from '@/app/features/badges/getBadges';
 import { useConnect } from '@/app/providers/ConnectProvider';
+import { useAccount } from 'wagmi';
 
 export interface ICategoryProps {
 	category: ICategory;
@@ -21,7 +22,8 @@ const CategoryItem = ({ category, progress, imageNumber }: ICategoryProps) => {
 	const { data: badges } = useGetBadges();
 	const { data: identity } = useGetIdentity();
 
-	const { handleConnect } = useConnect();
+	const { handleConnect, setIsConnectDrawerOpen } = useConnect();
+	const { isConnected } = useAccount();
 
 	const imgNumber = imageNumber || (category.id % 5) + 1;
 	const imgSrc = `/images/defaults/category/category-${imgNumber}.png`;
@@ -62,6 +64,8 @@ const CategoryItem = ({ category, progress, imageNumber }: ICategoryProps) => {
 	const checkConnectionThenRedirect = () => {
 		if (badges && identity) {
 			onCategoryClick();
+		} else if (!isConnected) {
+			setIsConnectDrawerOpen(true);
 		} else {
 			handleConnect();
 		}
