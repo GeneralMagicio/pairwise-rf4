@@ -66,6 +66,9 @@ const CollectVotingPowerContent = ({
 			queryClient.refetchQueries({
 				queryKey: ['badges'],
 			});
+			queryClient.refetchQueries({
+				queryKey: ['identity'],
+			});
 		},
 	});
 

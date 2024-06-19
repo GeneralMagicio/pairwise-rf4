@@ -9,18 +9,14 @@ import { useRouter } from 'next/navigation';
 import { AdjacentBadges } from '../badges/components/AdjacentBadges';
 import { useGetBadges, useGetIdentity } from '../features/badges/getBadges';
 import { identityLsKey } from '../hooks/useCreateIdentity';
+import { useConnect } from '../providers/ConnectProvider';
 
 const Header = () => {
 	const router = useRouter();
 	const { data: badges } = useGetBadges();
 	const { data: identity } = useGetIdentity();
 
-	const [isConnectDrawerOpen, setIsConnectDrawerOpen] = useState(false);
-	const [isClaimDrawerOpen, setIsClaimDrawerOpen] = useState(false);
-	const handleConnect = () => {
-		setIsConnectDrawerOpen(false);
-		setIsClaimDrawerOpen(true);
-	};
+	const { setIsConnectDrawerOpen } = useConnect();
 
 	useEffect(() => {
 		if (!identityLsKey) {
@@ -56,18 +52,6 @@ const Header = () => {
 					Connect
 				</button>
 			)}
-
-			<Drawer
-				setIsOpen={setIsConnectDrawerOpen}
-				isOpen={isConnectDrawerOpen}
-			>
-				<ConnectWalletContent onConnect={handleConnect} />
-			</Drawer>
-			<Drawer setIsOpen={setIsClaimDrawerOpen} isOpen={isClaimDrawerOpen}>
-				<CollectVotingPowerContent
-					setIsClaimDrawerOpen={setIsClaimDrawerOpen}
-				/>
-			</Drawer>
 		</header>
 	);
 };
