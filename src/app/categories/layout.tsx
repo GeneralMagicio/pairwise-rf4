@@ -10,13 +10,7 @@ import { useConnect } from '../providers/ConnectProvider';
 
 const CategoriesLayout = ({ children }: { children: ReactNode }) => {
 	const params = useParams();
-	const {
-		handleConnect,
-		isClaimDrawerOpen,
-		setIsClaimDrawerOpen,
-		isConnectDrawerOpen,
-		setIsConnectDrawerOpen,
-	} = useConnect();
+	
 
 	console.log('params', params);
 
@@ -24,17 +18,6 @@ const CategoriesLayout = ({ children }: { children: ReactNode }) => {
 		<div className='centered-mobile-max-width'>
 			{!params.categoryId && <Header />}
 			{children}
-			<Drawer
-				setIsOpen={setIsConnectDrawerOpen}
-				isOpen={isConnectDrawerOpen}
-			>
-				<ConnectWalletContent onConnect={handleConnect} />
-			</Drawer>
-			<Drawer setIsOpen={setIsClaimDrawerOpen} isOpen={isClaimDrawerOpen}>
-				<CollectVotingPowerContent
-					setIsClaimDrawerOpen={setIsClaimDrawerOpen}
-				/>
-			</Drawer>
 		</div>
 	);
 };
