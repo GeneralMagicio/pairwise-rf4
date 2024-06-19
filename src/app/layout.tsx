@@ -3,6 +3,7 @@ import { Inter } from 'next/font/google';
 import './globals.css';
 import TanstackProvider from './providers/TanstackProvider';
 import WagmiAppProvider from './providers/WagmiAppProvider';
+import PHProvider from './providers/PostHogProvider';
 import './globals.css';
 import './globals.css';
 import { Thirdweb5Provider } from '@/lib/third-web/provider';
@@ -29,10 +30,12 @@ export default function RootLayout({
 					<TanstackProvider>
 						<Thirdweb5Provider>
 							<AuthGuard>
-								<ConnectProvider>
-									<div>{children}</div>
-									<ConnectDrawers />
-								</ConnectProvider>
+								<PHProvider>
+									<ConnectProvider>
+										<div>{children}</div>
+										<ConnectDrawers />
+									</ConnectProvider>
+								</PHProvider>
 							</AuthGuard>
 						</Thirdweb5Provider>
 					</TanstackProvider>
