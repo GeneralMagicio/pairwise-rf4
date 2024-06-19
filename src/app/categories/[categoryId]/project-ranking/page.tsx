@@ -16,6 +16,13 @@ import { useUpdateProjectInclusion } from '@/app/features/categories/updateProje
 import { AnimatePresence, motion } from 'framer-motion';
 import { useEffect, useState } from 'react';
 import CategoryProjectRankingCardWithMetrics from '../../components/CategoryProjectRankingCardWithMetrics';
+import { MinimumIncludedProjectsModal } from '@/app/components/MinimumIncludedProjectsModal';
+
+export enum MinimumModalState {
+	Shown,
+	False,
+	True,
+}
 
 const ProjectRankingPage = () => {
 	const router = useRouter();
@@ -23,6 +30,11 @@ const ProjectRankingPage = () => {
 	const updateProjectInclusion = useUpdateProjectInclusion({
 		categoryId: +categoryId,
 	});
+
+	const [minimumModal, setMinimumModal] = useState<MinimumModalState>(
+		MinimumModalState.False,
+	);
+	const [minimum, setMinimum] = useState();
 
 	const selectedCategoryId =
 		typeof categoryId === 'string' ? categoryId : categoryId[0];
@@ -90,6 +102,25 @@ const ProjectRankingPage = () => {
 	}, [backendCurrentIndex, router, categoryId]);
 
 	useEffect(() => {
+		if (
+			minimumModal === MinimumModalState.False &&
+			updateProjectInclusion &&
+			updateProjectInclusion.error &&
+			// @ts-ignore
+			updateProjectInclusion.error.response &&
+			// @ts-ignore
+			updateProjectInclusion.error.response.data
+		) {
+			// @ts-ignore
+			const errorResponse = updateProjectInclusion.error.response.data;
+			if (errorResponse.pwCode === 'pw1000') {
+				setMinimumModal(MinimumModalState.True);
+				setMinimum(errorResponse.minimum);
+			}
+		}
+	}, [updateProjectInclusion.isError, updateProjectInclusion, minimumModal]);
+
+	useEffect(() => {
 		setCurrentIndex(backendCurrentIndex);
 	}, [backendCurrentIndex]);
 
@@ -103,6 +134,11 @@ const ProjectRankingPage = () => {
 	}
 	return (
 		<div>
+			<MinimumIncludedProjectsModal
+				close={() => setMinimumModal(MinimumModalState.Shown)}
+				isOpen={minimumModal === MinimumModalState.True}
+				minimum={minimum || 0}
+			/>
 			<div className='flex min-h-[calc(100dvh)] flex-col'>
 				<div className='border-b border-b-gray-200 pb-7 pt-9'>
 					<div className='mx-4 flex justify-between gap-6'>
@@ -144,9 +180,10 @@ const ProjectRankingPage = () => {
 					<div className='mb-3 flex justify-center gap-14 px-6 py-6'>
 						<Button
 							disabled={updatingProject}
-							onClick={() =>
-								handleProjectInclusion(InclusionState.Excluded)
-							}
+							onClick={() => {
+								setMinimumModal(MinimumModalState.False);
+								handleProjectInclusion(InclusionState.Excluded);
+							}}
 							className={`rounded-full p-4 ${updatingProject ? 'cursor-not-allowed bg-red-200' : 'bg-red-500'}`}
 						>
 							<IconTrash />
@@ -154,16 +191,20 @@ const ProjectRankingPage = () => {
 						<Button
 							disabled={isRevertDisabled}
 							className={`rounded-full p-4 ${isRevertDisabled && 'cursor-not-allowed '}`}
-							onClick={handleGoBack}
+							onClick={() => {
+								setMinimumModal(MinimumModalState.False);
+								handleGoBack();
+							}}
 						>
 							<IconRefresh />
 						</Button>
 						<Button
 							disabled={updatingProject}
 							className={`rounded-full p-4 ${updatingProject ? 'cursor-not-allowed bg-green-200' : 'bg-green-600'}`}
-							onClick={() =>
-								handleProjectInclusion(InclusionState.Included)
-							}
+							onClick={() => {
+								setMinimumModal(MinimumModalState.False);
+								handleProjectInclusion(InclusionState.Included);
+							}}
 						>
 							<IconCheck />
 						</Button>

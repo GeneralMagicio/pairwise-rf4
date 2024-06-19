@@ -13,6 +13,8 @@ import { useProjectsByCategoryId } from '@/app/features/categories/getProjectsBy
 import { useUpdateProjectInclusionBulk } from '@/app/features/categories/updateProjectInclusionBulk';
 import { useParams, useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
+import { MinimumModalState } from '../page';
+import { MinimumIncludedProjectsModal } from '@/app/components/MinimumIncludedProjectsModal';
 
 const ProjectRankingEditPage = () => {
 	const router = useRouter();
@@ -20,6 +22,11 @@ const ProjectRankingEditPage = () => {
 
 	const [includedProjects, setIncludedProjects] = useState<IProject[]>([]);
 	const [excludedProjects, setExcludedProjects] = useState<IProject[]>([]);
+
+	const [minimumModal, setMinimumModal] = useState<MinimumModalState>(
+		MinimumModalState.False,
+	);
+	const [minimum, setMinimum] = useState();
 
 	const selectedCategoryId =
 		typeof categoryId === 'string' ? categoryId : categoryId[0];
@@ -29,7 +36,7 @@ const ProjectRankingEditPage = () => {
 	const { data, isLoading: isCategoryLoading } =
 		useCategoryById(+selectedCategoryId);
 
-	const { mutateAsync } = useUpdateProjectInclusionBulk({
+	const { mutateAsync, error } = useUpdateProjectInclusionBulk({
 		categoryId: +selectedCategoryId,
 	});
 
@@ -63,6 +70,7 @@ const ProjectRankingEditPage = () => {
 	};
 
 	const handleSubmit = async () => {
+		setMinimumModal(MinimumModalState.False);
 		try {
 			const includedProjectIds = includedProjects.map(
 				project => project.id,
@@ -95,11 +103,34 @@ const ProjectRankingEditPage = () => {
 		);
 	}, [projects]);
 
+	useEffect(() => {
+		if (
+			minimumModal === MinimumModalState.False &&
+			error &&
+			// @ts-ignore
+			error.response &&
+			// @ts-ignore
+			error.response.data
+		) {
+			// @ts-ignore
+			const errorResponse = error.response.data;
+			if (errorResponse.pwCode === 'pw1000') {
+				setMinimumModal(MinimumModalState.True);
+				setMinimum(errorResponse.minimum);
+			}
+		}
+	}, [error, minimumModal]);
+
 	if (isProjectsLoading || isCategoryLoading) {
 		return <LoadingSpinner />;
 	}
 	return (
 		<div className='flex min-h-[calc(100dvh)] flex-col  justify-between'>
+			<MinimumIncludedProjectsModal
+				close={() => setMinimumModal(MinimumModalState.Shown)}
+				isOpen={minimumModal === MinimumModalState.True}
+				minimum={minimum || 0}
+			/>
 			<div>
 				<div>
 					<TopNavigation
@@ -146,11 +177,12 @@ const ProjectRankingEditPage = () => {
 			<div className='sticky bottom-0 border-t border-b-gray-200 bg-white px-6 py-6'>
 				<div className='flex justify-between gap-4'>
 					<Button
-						onClick={() =>
+						onClick={() => {
+							setMinimumModal(MinimumModalState.False);
 							router.push(
 								`${Routes.Categories}/${selectedCategory?.id}/project-ranking/summary`,
-							)
-						}
+							);
+						}}
 						className='w-full text-black shadow-md'
 					>
 						Discard Changes
