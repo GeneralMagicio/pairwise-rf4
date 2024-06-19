@@ -4,7 +4,7 @@ import { BadgeData } from '@/app/badges/components/BadgeCard';
 import { Identity } from '@semaphore-protocol/identity';
 
 const getBadges = async () => {
-	const { data } = await axios.get<BadgeData>('/user/badges');
+	const { data } = await axios.get<BadgeData | null>('/user/badges');
 	return data;
 };
 
@@ -20,7 +20,7 @@ export const useGetBadges = () => {
 };
 
 const getIdentity = async () => {
-	const { data } = await axios.get<Identity>('/user/identity');
+	const { data } = await axios.get<Identity | null>('/user/identity');
 	return data;
 };
 
