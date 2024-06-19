@@ -3,3 +3,9 @@ export interface User {
   address: string;
   isBadgeholder: boolean;
 }
+
+export enum MinimumModalState {
+	Shown,
+	False,
+	True,
+}
