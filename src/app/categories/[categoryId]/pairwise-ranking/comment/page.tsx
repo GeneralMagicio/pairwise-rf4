@@ -129,7 +129,7 @@ const CategoryRankingComment = () => {
 			// generate proof of vote
 			const groupId = process.env.NEXT_PUBLIC_BANDADA_GROUP_ID!
 			const users = await getMembersGroup(groupId)
-			if (users) {
+			if (users && identityString !== "{}") {
 
 				const merkleTreeDepth = 16
 				const group = new Group(groupId, merkleTreeDepth, users)

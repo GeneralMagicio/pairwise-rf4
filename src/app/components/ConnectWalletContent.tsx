@@ -9,12 +9,14 @@ import { useGetOtp } from '../features/user/getOtp';
 import useCopyToClipboard from '../hooks/useCopyToClipboard';
 import { useRouter } from 'next/navigation';
 import { Routes } from '../constants/Routes';
+import { useContinueGuest } from '../features/badges/getBadges';
 
 interface IConnectWalletContentProps {
 	onConnect?: () => void;
+	closeDrawer: () => void;
 }
 
-const ConnectWalletContent = ({ onConnect }: IConnectWalletContentProps) => {
+const ConnectWalletContent = ({ onConnect, closeDrawer }: IConnectWalletContentProps) => {
 	const { connectors, connectAsync } = useConnect();
 	const { address, isConnected } = useAccount();
 	const router = useRouter();
@@ -22,8 +24,16 @@ const ConnectWalletContent = ({ onConnect }: IConnectWalletContentProps) => {
 	const { disconnect } = useDisconnect();
 	const [copiedText, copy] = useCopyToClipboard();
 
-	console.log('Connectors', connectors);
-	console.log('OtpData', OtpData?.data);
+	const { mutateAsync: continueAsGuest, isPending } = useContinueGuest();
+
+	const handleConnect = async () => {
+		try {
+			await continueAsGuest();
+			closeDrawer()
+		} catch (e) {
+			console.error(e);
+		}
+	};
 
 	useEffect(() => {
 		if (isConnected) {
@@ -82,7 +92,11 @@ const ConnectWalletContent = ({ onConnect }: IConnectWalletContentProps) => {
 				<span className='text-ph'>
 					You can still collect voting power from your wallet by
 					copying the code and following instructions on the{'\u00A0'}
-					<a className='inline-block font-bold' href='/connect' target='_blank'>
+					<a
+						className='inline-block font-bold'
+						href='/connect'
+						target='_blank'
+					>
 						[website]
 					</a>
 				</span>
@@ -100,13 +114,25 @@ const ConnectWalletContent = ({ onConnect }: IConnectWalletContentProps) => {
 
 				<Button
 					onClick={() => router.push(Routes.Connect)}
-					className='border border-gray-200 bg-white text-black shadow-md'
+					className='border border-gray-200 bg-primary shadow-md'
 				>
 					Collect Voting Power
 				</Button>
-				<p className='text-ph'>
-					You will be redirected to another page outside the app.
+				<Button
+					isLoading={isPending}
+					onClick={handleConnect}
+					className='w-full border border-gray-200 bg-white text-black text-ph'
+				>
+					Continue as Guest
+				</Button>
+				<p>
+					{' '}
+					Keep in mind that as guests, your votes will not be
+					considered.
 				</p>
+				{/* <p className='text-ph'>
+					You will be redirected to another page outside the app.
+				</p> */}
 			</div>
 		</div>
 	);
