@@ -43,11 +43,13 @@ const CategoriesPage = () => {
 					imageNumber={(index % 5) + 1}
 				/>
 			))}
-			<div className='sticky top-0 z-10 flex items-center justify-between border-b border-gray-300 bg-white p-4'>
+			<div className='flex  justify-end border-b border-gray-300 bg-white pt-4'>
 				<div></div>
 				<a target="_blank" href='https://github.com/GeneralMagicio/pairwise-RPGF4/issues'>
-			<button className='right rounded-full m-2 bg-primary px-4 py-2 text-sm text-white'>
-				Report a Bug</button></a>
+				<button className='right rounded-full  bg-primary px-4 py-2 text-sm text-white'>
+				Report a Bug
+				</button>
+			</a>
 			</div>
 			
 		</div>
