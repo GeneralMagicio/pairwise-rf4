@@ -61,4 +61,4 @@ export const EASNetworks: Record<number, Config> = {
 };
 
 export const SCHEMA_UID =
-  '0x3e3e2172aebb902cf7aa6e1820809c5b469af139e7a4265442b1c22b97c6b2a5'
+  '0x8c12749f56c911dbc13a6a6685b6964c3ea03023f246137e9c53ba97974e4b75'
