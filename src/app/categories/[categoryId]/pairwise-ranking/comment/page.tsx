@@ -19,7 +19,6 @@ import { EASNetworks, SCHEMA_UID, useSigner } from '@/utils/eas';
 import { useParams, useRouter } from 'next/navigation';
 import { useActiveWallet } from 'thirdweb/react';
 import { useProjectsRankingByCategoryId } from '@/app/features/categories/getProjectsRankingByCategoryId';
-import { optimismSepolia } from 'thirdweb/chains';
 import { useState } from 'react';
 import { axios } from '@/lib/axios';
 import { Identity } from '@semaphore-protocol/identity';
@@ -35,6 +34,7 @@ import {
 	getGroup,
 } from '@/app/connect/anonvote/utils/bandadaApi';
 import supabase from '@/app/connect/anonvote/utils/supabaseClient';
+import { activeChain } from '@/lib/third-web/constants';
 
 const CategoryRankingComment = () => {
 	const router = useRouter();
@@ -79,7 +79,7 @@ const CategoryRankingComment = () => {
 
 		setAttestUnderway(true);
 
-		const chainId = optimismSepolia.id;
+		const chainId = activeChain.id;
 		const easConfig = EASNetworks[chainId];
 		const address = wallet?.getAccount()?.address;
 

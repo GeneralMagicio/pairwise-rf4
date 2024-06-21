@@ -7,6 +7,7 @@ import TopRouteIndicator from '@/app/components/TopRouteIndicator';
 import { getGroup, getMembersGroup } from '@/app/connect/anonvote/utils/bandadaApi';
 import supabase from '@/app/connect/anonvote/utils/supabaseClient';
 import { useCategoryRankings } from '@/app/features/categories/getCategoryRankings';
+import { activeChain } from '@/lib/third-web/constants';
 import {
 	convertRankingToAttestationFormat,
 	getPrevAttestationIds,
@@ -26,7 +27,6 @@ import {
 } from "ethers"
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
-import { optimismSepolia } from 'thirdweb/chains';
 import { useActiveWallet } from 'thirdweb/react';
 
 const CategoryRankingComment = () => {
@@ -60,7 +60,7 @@ const CategoryRankingComment = () => {
 
 		setAttestUnderway(true);
 
-		const chainId = optimismSepolia.id;
+		const chainId = activeChain.id;
 		const easConfig = EASNetworks[chainId];
 		const address = wallet?.getAccount()?.address;
 
