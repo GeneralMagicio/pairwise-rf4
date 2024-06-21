@@ -1,16 +1,17 @@
 import { useState, useEffect } from 'react';
 import { optimismSepolia } from 'thirdweb/chains';
 import { type Address } from 'viem';
-import { ethers6Adapter } from "thirdweb/adapters/ethers6";
+import { ethers6Adapter } from 'thirdweb/adapters/ethers6';
 import { useActiveWallet } from 'thirdweb/react';
 import { client } from '@/lib/third-web/provider';
+import { activeChain } from '@/lib/third-web/constants';
 
 export type EASConfig = {
 	EASDeployment: Address;
 	SchemaRegistry: Address;
 };
 
-type Signer = Awaited<ReturnType<typeof ethers6Adapter.signer.toEthers>>
+type Signer = Awaited<ReturnType<typeof ethers6Adapter.signer.toEthers>>;
 
 export function useSigner() {
 	const wallet = useActiveWallet();
@@ -19,16 +20,16 @@ export function useSigner() {
 
 	useEffect(() => {
 		async function getSigner() {
-      if (!wallet) return;
+			if (!wallet) return;
 
-      const account = wallet.getAccount()
-      if (!account) return;
+			const account = wallet.getAccount();
+			if (!account) return;
 
-      const ethersSigner = await ethers6Adapter.signer.toEthers({
-        client,
-        chain: optimismSepolia,
-        account,
-      });
+			const ethersSigner = await ethers6Adapter.signer.toEthers({
+				client,
+				chain: activeChain,
+				account,
+			});
 
 			setSigner(ethersSigner);
 		}
@@ -51,7 +52,7 @@ export const EASNetworks: Record<number, Config> = {
 		explorer: 'https://optimism.easscan.org',
 		gqlUrl: 'https://optimism.easscan.org/graphql',
 	},
-  // Optimism Sepolia
+	// Optimism Sepolia
 	[optimismSepolia.id]: {
 		EASDeployment: '0x4200000000000000000000000000000000000021',
 		SchemaRegistry: '0x4200000000000000000000000000000000000020',
@@ -61,4 +62,5 @@ export const EASNetworks: Record<number, Config> = {
 };
 
 export const SCHEMA_UID =
-  '0x3e3e2172aebb902cf7aa6e1820809c5b469af139e7a4265442b1c22b97c6b2a5'
+	process.env.NEXT_PUBLIC_EAS_SCHEMA_UID ||
+	'0x8c12749f56c911dbc13a6a6685b6964c3ea03023f246137e9c53ba97974e4b75';

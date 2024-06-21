@@ -19,19 +19,22 @@ import { EASNetworks, SCHEMA_UID, useSigner } from '@/utils/eas';
 import { useParams, useRouter } from 'next/navigation';
 import { useActiveWallet } from 'thirdweb/react';
 import { useProjectsRankingByCategoryId } from '@/app/features/categories/getProjectsRankingByCategoryId';
-import { optimismSepolia } from 'thirdweb/chains';
 import { useState } from 'react';
 import { axios } from '@/lib/axios';
-import { Identity } from "@semaphore-protocol/identity"
-import { Group } from "@semaphore-protocol/group"
-import { generateProof, verifyProof } from "@semaphore-protocol/proof"
-import { getMembersGroup, addMemberByApiKey, getGroup } from "@/app/connect/anonvote/utils/bandadaApi"
-import supabase from "@/app/connect/anonvote/utils/supabaseClient"
+import { Identity } from '@semaphore-protocol/identity';
+import { Group } from '@semaphore-protocol/group';
+import { generateProof, verifyProof } from '@semaphore-protocol/proof';
 import {
 	encodeBytes32String,
 	toBigInt,
 } from "ethers"
 import posthog from 'posthog-js';
+import {
+	getMembersGroup,
+	getGroup,
+} from '@/app/connect/anonvote/utils/bandadaApi';
+import supabase from '@/app/connect/anonvote/utils/supabaseClient';
+import { activeChain } from '@/lib/third-web/constants';
 
 const CategoryRankingComment = () => {
 	const router = useRouter();
@@ -62,19 +65,21 @@ const CategoryRankingComment = () => {
 		const localStorageTag = process.env.NEXT_PUBLIC_LOCAL_STORAGE_TAG!
 		const identityString = localStorage.getItem(localStorageTag)
 
+
 		if (!identityString) {
 			console.error("Identity string is missing!")
 			router.push("/")
 			return
 		}
+			
 
-		const identity = new Identity(identityString)
+		const identity = new Identity(identityString);
 
 		if (!ranking) return;
 
 		setAttestUnderway(true);
 
-		const chainId = optimismSepolia.id;
+		const chainId = activeChain.id;
 		const easConfig = EASNetworks[chainId];
 		const address = wallet?.getAccount()?.address;
 
@@ -98,6 +103,7 @@ const CategoryRankingComment = () => {
 		schemaRegistry.connect(signer as any);
 		const schema = await schemaRegistry.getSchema({ uid: SCHEMA_UID });
 		const schemaEncoder = new SchemaEncoder(schema.schema);
+		let proof = [''];
 		// setProgress(ProgressState.Creating);
 		try {
 			const item = await convertRankingToAttestationFormat(
@@ -108,11 +114,6 @@ const CategoryRankingComment = () => {
 
 			const schemaData = [
 				{ name: 'listName', type: 'string', value: item.listName },
-				{
-					name: 'listMetadataPtrType',
-					type: 'uint256',
-					value: item.listMetadataPtrType,
-				},
 				{
 					name: 'listMetadataPtr',
 					type: 'string',
@@ -127,50 +128,60 @@ const CategoryRankingComment = () => {
 			};
 
 			// generate proof of vote
-			const groupId = process.env.NEXT_PUBLIC_BANDADA_GROUP_ID!
-			const users = await getMembersGroup(groupId)
-			if (users) {
+			const groupId = process.env.NEXT_PUBLIC_BANDADA_GROUP_ID!;
+			const users = await getMembersGroup(groupId);
+			if (users && identityString !== "{}") {
 
 				const merkleTreeDepth = 16
 				const group = new Group(groupId, merkleTreeDepth, users)
 				console.log("going to encode signalData: ")
 				console.log(signalData)
 				const signal = toBigInt(encodeBytes32String(signalData.toString())).toString()
-				const { proof, merkleTreeRoot, nullifierHash } = await generateProof(
+				const { proof: tempProof, merkleTreeRoot, nullifierHash } = await generateProof(
 					identity,
 					group,
 					groupId,
 					signal
 				)
 				console.log("generated proof of vote: ", proof);
+				proof = tempProof;
 
-				const { data: currentMerkleRoot, error: errorRootHistory } = await supabase
-					.from("root_history")
-					.select()
-					.order("created_at", { ascending: false })
-					.limit(1)
+				const { data: currentMerkleRoot, error: errorRootHistory } =
+					await supabase
+						.from('root_history')
+						.select()
+						.order('created_at', { ascending: false })
+						.limit(1);
 
 				if (errorRootHistory) {
-					console.log(errorRootHistory)
+					console.log(errorRootHistory);
 				}
 
 				if (!currentMerkleRoot) {
-					console.error("Wrong currentMerkleRoot")
+					console.error('Wrong currentMerkleRoot');
 				}
 
-				if (currentMerkleRoot == null || merkleTreeRoot !== currentMerkleRoot[0].root) {
+				if (
+					currentMerkleRoot == null ||
+					merkleTreeRoot !== currentMerkleRoot[0].root
+				) {
 					// compare merkle tree roots
-					const { data: dataMerkleTreeRoot, error: errorMerkleTreeRoot } =
-						await supabase.from("root_history").select().eq("root", merkleTreeRoot)
+					const {
+						data: dataMerkleTreeRoot,
+						error: errorMerkleTreeRoot,
+					} = await supabase
+						.from('root_history')
+						.select()
+						.eq('root', merkleTreeRoot);
 
 					if (errorMerkleTreeRoot) {
-						console.log(errorMerkleTreeRoot)
+						console.log(errorMerkleTreeRoot);
 					}
 
 					if (!dataMerkleTreeRoot) {
-						console.error("Wrong dataMerkleTreeRoot")
+						console.error('Wrong dataMerkleTreeRoot');
 					} else if (dataMerkleTreeRoot.length === 0) {
-						console.log("Merkle Root is not part of the group")
+						console.log('Merkle Root is not part of the group');
 					}
 
 					console.log("dataMerkleTreeRoot", dataMerkleTreeRoot)
@@ -180,53 +191,66 @@ const CategoryRankingComment = () => {
 					if (
 						dataMerkleTreeRoot &&
 						Date.now() >
-						Date.parse(dataMerkleTreeRoot[0].created_at) + merkleTreeRootDuration
+							Date.parse(dataMerkleTreeRoot[0].created_at) +
+								merkleTreeRootDuration
 					) {
-						console.log("Merkle Tree Root is expired")
+						console.log('Merkle Tree Root is expired');
 					}
 				}
 
-				const { data: nullifier, error: errorNullifierHash } = await supabase
-					.from("nullifier_hash")
-					.select("nullifier")
-					.eq("nullifier", nullifierHash)
+				const { data: nullifier, error: errorNullifierHash } =
+					await supabase
+						.from('nullifier_hash')
+						.select('nullifier')
+						.eq('nullifier', nullifierHash);
 
 				if (errorNullifierHash) {
-					console.log(errorNullifierHash)
+					console.log(errorNullifierHash);
 				}
 
 				if (!nullifier) {
-					console.log("Wrong nullifier")
+					console.log('Wrong nullifier');
 				} else if (nullifier.length > 0) {
-					console.log("You are using the same nullifier twice")
+					console.log('You are using the same nullifier twice');
 				}
 
 				const { error: errorNullifier } = await supabase
-					.from("nullifier_hash")
-					.insert([{ nullifier: nullifierHash }])
+					.from('nullifier_hash')
+					.insert([{ nullifier: nullifierHash }]);
 
 				if (errorNullifier) {
-					console.error(errorNullifier)
+					console.error(errorNullifier);
 				}
 
-				const { data: dataFeedback, error: errorFeedback } = await supabase
-					.from("feedback")
-					.insert([{ signal: schemaData }])
-					.select()
-					.order("created_at", { ascending: false })
+				const { data: dataFeedback, error: errorFeedback } =
+					await supabase
+						.from('feedback')
+						.insert([{ signal: schemaData }])
+						.select()
+						.order('created_at', { ascending: false });
 
 				if (errorFeedback) {
-					console.error(errorFeedback)
+					console.error(errorFeedback);
 				}
 
 				if (!dataFeedback) {
-					console.error("Wrong dataFeedback")
+					console.error('Wrong dataFeedback');
 				}
 
 				// TODO everything is good so add the proof in attestation : Mahdi
 			}
 
-			const encodedData = schemaEncoder.encodeData(schemaData);
+			const schemaDataWithProof = [
+				...schemaData,
+				{
+					name: 'proof',
+					type: 'string[]',
+					value: proof,
+				},
+			];
+
+			console.log('sdwp', schemaDataWithProof);
+			const encodedData = schemaEncoder.encodeData(schemaDataWithProof);
 
 			const prevAttestations = await getPrevAttestationIds(
 				address,

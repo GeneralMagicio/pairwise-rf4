@@ -17,19 +17,20 @@ enum CollectVotingPowerState {
 	No_Badges,
 	Collecting,
 	Collected,
+	Error,
 }
 
 interface ICollectionsVotingPowerContentProps {
 	setIsClaimDrawerOpen: (isOpen: boolean) => void;
 }
 
-const storeIdentity = async ({ identity }: { identity: string }) => {
+export const storeIdentity = async ({ identity }: { identity: string }) => {
 	return axios.post('/user/store-identity', {
 		identity,
 	});
 };
 
-const storeBadges = async ({
+export const storeBadges = async ({
 	mainAddress,
 	signature,
 }: {
@@ -77,30 +78,38 @@ const CollectVotingPowerContent = ({
 	);
 
 	useEffect(() => {
-		if (publicBadges && Object.keys(publicBadges).length === 0)
+		if (
+			publicBadges &&
+			Object.keys(publicBadges).length === 0 &&
+			collectState === CollectVotingPowerState.Not_Started
+		)
 			setCollectState(CollectVotingPowerState.No_Badges);
 	}, [collectState, publicBadges]);
 
 	const handleCollect = async () => {
-		//Handle collect functionality here
-		setCollectState(CollectVotingPowerState.Collecting);
-
-		const message = `Sign this message to generate your Semaphore identity.`;
-		const signature = await signMessageAsync({
-			message: message,
-		});
-
-		// create bandada anonymous identity if not already present
-		await createIdentity(signature);
-
-		const identity = localStorage.getItem(identityLsKey);
-
-		if (!identity || !address) return;
-
-		await storeIdentityMutation({ identity });
-		await storeBadgesMutation({ mainAddress: address, signature });
-
-		setCollectState(CollectVotingPowerState.Collected);
+		try {
+			//Handle collect functionality here
+			setCollectState(CollectVotingPowerState.Collecting);
+	
+			const message = `Sign this message to generate your Semaphore identity.`;
+			const signature = await signMessageAsync({
+				message: message,
+			});
+	
+			// create bandada anonymous identity if not already present
+			await createIdentity(signature);
+	
+			const identity = localStorage.getItem(identityLsKey);
+	
+			if (!identity || !address) return;
+	
+			await storeIdentityMutation({ identity });
+			await storeBadgesMutation({ mainAddress: address, signature });
+	
+			setCollectState(CollectVotingPowerState.Collected);
+		} catch (e) {
+			setCollectState(CollectVotingPowerState.Error)
+		}
 	};
 
 	const numOfBadgesFunc = (publicBadges: BadgeData) =>
@@ -141,6 +150,31 @@ const CollectVotingPowerContent = ({
 					</Button>
 				</div>
 			);
+		case CollectVotingPowerState.Error:
+			return (
+				<div className='px-4 py-6'>
+					<div>
+						<p className='pb-2 text-3xl font-bold'>:(</p>
+						<p className='text-ph'>
+							An error occurred. Please try again later.
+						</p>
+					</div>
+					<div className='my-2 flex flex-col items-center gap-4'>
+						<Image
+							src={'/images/characters/11.png'}
+							alt='No badges character'
+							height={200}
+							width={200}
+						/>
+					</div>
+					<Button
+						onClick={() => setIsClaimDrawerOpen(false)}
+						className='w-full bg-primary'
+					>
+						Done
+					</Button>
+				</div>
+			);
 		case CollectVotingPowerState.No_Badges:
 			return (
 				<div className='px-4 py-6'>
@@ -161,9 +195,7 @@ const CollectVotingPowerContent = ({
 						<p className='mb-4 text-primary'>No Badges found</p>
 					</div>
 					<Button
-						onClick={() => {
-							setIsClaimDrawerOpen(false);
-						}}
+						onClick={handleCollect}
 						className='w-full bg-primary'
 					>
 						Done

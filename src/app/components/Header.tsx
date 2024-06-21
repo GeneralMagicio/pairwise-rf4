@@ -1,10 +1,7 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import Image from 'next/image'; // Make sure to install 'next/image'
-import Drawer from './Drawer';
-import ConnectWalletContent from './ConnectWalletContent';
-import CollectVotingPowerContent from './CollectVotingPowerContent';
 import { useRouter } from 'next/navigation';
 import { AdjacentBadges } from '../badges/components/AdjacentBadges';
 import { useGetBadges, useGetIdentity } from '../features/badges/getBadges';
@@ -40,7 +37,7 @@ const Header = () => {
 					height={40}
 				/>
 			</div>
-			{hasConnected && Object.keys(badges).length > 0 ? (
+			{hasConnected ? (
 				<div onClick={() => router.push('/badges')}>
 					<AdjacentBadges {...badges} size={25} />
 				</div>

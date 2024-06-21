@@ -20,7 +20,7 @@ const ConnectDrawers = () => {
 				setIsOpen={setIsConnectDrawerOpen}
 				isOpen={isConnectDrawerOpen}
 			>
-				<ConnectWalletContent onConnect={handleConnect} />
+				<ConnectWalletContent onConnect={handleConnect} closeDrawer={() => setIsConnectDrawerOpen(false)} />
 			</Drawer>
 			<Drawer setIsOpen={setIsClaimDrawerOpen} isOpen={isClaimDrawerOpen}>
 				<CollectVotingPowerContent
