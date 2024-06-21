@@ -24,13 +24,13 @@ interface ICollectionsVotingPowerContentProps {
 	setIsClaimDrawerOpen: (isOpen: boolean) => void;
 }
 
-const storeIdentity = async ({ identity }: { identity: string }) => {
+export const storeIdentity = async ({ identity }: { identity: string }) => {
 	return axios.post('/user/store-identity', {
 		identity,
 	});
 };
 
-const storeBadges = async ({
+export const storeBadges = async ({
 	mainAddress,
 	signature,
 }: {

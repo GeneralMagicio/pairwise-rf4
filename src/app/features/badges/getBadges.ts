@@ -1,7 +1,31 @@
-import { useQuery } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import {axios} from '@/lib/axios';
 import { BadgeData } from '@/app/badges/components/BadgeCard';
 import { Identity } from '@semaphore-protocol/identity';
+
+const continueGuest = async () => {
+	await axios.post('/user/continue-guest');
+};
+
+/**
+ * 
+ * @returns badges stored in the Pairwise database for a given smart wallet addresss
+ */
+export const useContinueGuest = () => {
+	const queryClient = useQueryClient();
+	
+	return useMutation({
+		mutationFn: continueGuest,
+		onSuccess: () => {
+			queryClient.refetchQueries({
+				queryKey: ['badges'],
+			});
+			queryClient.refetchQueries({
+				queryKey: ['identity'],
+			});
+		},
+	});
+};
 
 const getBadges = async () => {
 	const { data } = await axios.get<BadgeData | null>('/user/badges');
