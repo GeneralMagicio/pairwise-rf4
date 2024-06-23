@@ -62,17 +62,22 @@ const CategoryPairwiseRankingPage = () => {
 	const totalPairs = pairwisePairs?.data.totalPairs ?? 1;
 	let progressPercentage = 0;
 
-	
-
 	if (totalPairs !== 0) {
 		progressPercentage = (votedPairs / totalPairs / threshold) * 100;
 	}
-	
-	const handleVote = async (pickedId: number) => {
-		posthog.capture('Comparing Projects',{categories:[firstProject.name,secondProject.name]})
 
-		let selectedProject = firstProject.id==pickedId ? firstProject.name :secondProject.name;
-		posthog.capture('Selected Project for more Funding',{selectedProject:selectedProject})
+	const handleVote = async (pickedId: number) => {
+		posthog.capture('Comparing Projects', {
+			categories: [firstProject.name, secondProject.name],
+		});
+
+		let selectedProject =
+			firstProject.id == pickedId
+				? firstProject.name
+				: secondProject.name;
+		posthog.capture('Selected Project for more Funding', {
+			selectedProject: selectedProject,
+		});
 		mutate({
 			data: {
 				project1Id: firstProject.id,
@@ -90,7 +95,7 @@ const CategoryPairwiseRankingPage = () => {
 	};
 
 	const isLoading = isVotingPending || isFetchingPairwise;
-	
+
 	const fetchMetrics = async () => {
 		try {
 			const response = await fetch('/data/cleaned_metrics.csv');
@@ -246,8 +251,10 @@ const CategoryPairwiseRankingPage = () => {
 							})}
 						</div>
 					)}
-					<div className='sticky bottom-5 px-6 py-6'>
-						<div className='flex justify-between'>
+					<div className='sticky bottom-5 z-0 px-6 py-6'>
+						<div className='absolute inset-0 bg-white bg-opacity-50'></div>{' '}
+						{/* Faux background layer */}
+						<div className='relative z-10 flex justify-between'>
 							<div
 								className={cn(
 									'flex w-40 items-center justify-center gap-2 rounded-lg bg-white px-4 py-2 font-semibold shadow-md',
