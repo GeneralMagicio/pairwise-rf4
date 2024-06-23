@@ -18,7 +18,7 @@ const CategoryRankingItem = ({ category }: ICategoryProps) => {
 			<Image
 				className='rounded-full'
 				src={
-					category.image !== ''
+					category.image && category.image !== ''
 						? category.image
 						: '/images/characters/welcome-character.png'
 				}

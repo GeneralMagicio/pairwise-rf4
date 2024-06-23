@@ -18,6 +18,7 @@ import {
 import axios from 'axios';
 import { API_URL } from '@/app/config';
 import { BadgeData } from '@/app/badges/components/BadgeCard';
+import OtpIcon from 'public/images/icons/iconOTP';
 
 const storeIdentity = async ({
 	identity,
@@ -89,7 +90,7 @@ const ConnectOTPPage = () => {
 		try {
 			if (otp) {
 				const res = await mutateAsync({ data: { otp } });
-				setOtpState(OtpState.Valid)
+				setOtpState(OtpState.Valid);
 
 				const token = res.data;
 				const message = `Sign this message to generate your Semaphore identity.`;
@@ -103,14 +104,20 @@ const ConnectOTPPage = () => {
 
 				if (!identity || !address) return;
 
-				await storeIdentityMutation({ identity, token })
-				await storeBadgesMutation({ mainAddress: address, signature, token })
+				await storeIdentityMutation({ identity, token });
+				await storeBadgesMutation({
+					mainAddress: address,
+					signature,
+					token,
+				});
 
 				router.push(Routes.ConnectSuccess);
 			}
 		} catch (error) {
 			setOtpState(OtpState.Invalid);
-			setError('Not able to connect you to a user. Please try again later');
+			setError(
+				'Not able to connect you to a user. Please try again later',
+			);
 		}
 	};
 
@@ -151,7 +158,13 @@ const ConnectOTPPage = () => {
 				<p className='text-xl font-semibold'>
 					Paste the OTP from Pairwise.
 				</p>
-				<p className='mb-6 mt-2 text-primary'>How to get OTP?</p>
+				<div
+					className='flex gap-1 items-center justify-start mb-6 mt-2 w-fit'
+					title={`Go to the Pairwise WebApp and click on connect. You'll get the code. Use it here if you don't have your wallet on the other device`}
+				>
+					<p className='text-primary'>How to get OTP?</p>
+					<OtpIcon />
+				</div>
 				<div>
 					<ConnectOTPInput
 						otp={otp}

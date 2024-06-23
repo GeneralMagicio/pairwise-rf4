@@ -7,7 +7,7 @@ export interface ICategory {
 	contributionDescription: null | string;
 	RPGF4Id: null | number;
 	parentId: null | number;
-	image: string;
+	image: string | null;
 	metadataUrl: null | string;
 	created_at: string;
 	type: string;
