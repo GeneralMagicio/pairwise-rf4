@@ -27,11 +27,12 @@ const CategoryRankingListEditPage = () => {
 	const [minimumModal, setMinimumModal] = useState<MinimumModalState>(
 		MinimumModalState.False,
 	);
+	const [hasChanges, setHasChanges] = useState(false);
 
 	const {
 		mutateAsync: mutateAsyncUpdateSorting,
 		isPending: isSortingPending,
-		error: sortingError
+		error: sortingError,
 	} = useUpdateSortingByCategoryId({
 		categoryId: +categoryId,
 	});
@@ -79,6 +80,7 @@ const CategoryRankingListEditPage = () => {
 			setExcludedProjects(prevProjects =>
 				prevProjects.filter(p => p.id !== projectId),
 			);
+			setHasChanges(true); // Update hasChanges state
 		}
 	};
 
@@ -90,6 +92,7 @@ const CategoryRankingListEditPage = () => {
 			setListProjects(prevProjects =>
 				prevProjects.filter(p => p.id !== projectId),
 			);
+			setHasChanges(true); // Update hasChanges state
 		}
 	};
 
@@ -197,8 +200,8 @@ const CategoryRankingListEditPage = () => {
 					</Button>
 					<Button
 						onClick={handleSubmitSortedProjects}
-						className={`w-full bg-primary ${isPending ? 'opacity-50' : ''}`}
-						disabled={isPending}
+						className={`w-full bg-primary ${isPending || !hasChanges ? 'opacity-50' : ''}`}
+						disabled={isPending || !hasChanges}
 					>
 						Save Changes
 					</Button>
