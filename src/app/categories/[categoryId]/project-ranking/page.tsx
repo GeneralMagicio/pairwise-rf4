@@ -19,6 +19,14 @@ import CategoryProjectRankingCardWithMetrics from '../../components/CategoryProj
 import { MinimumIncludedProjectsModal } from '@/app/components/MinimumIncludedProjectsModal';
 import { MinimumModalState } from '@/utils/types';
 
+interface ErrorResponse {
+	response?: {
+		data?: {
+			pwCode?: string;
+		};
+	};
+}
+
 const ProjectRankingPage = () => {
 	const router = useRouter();
 	const { categoryId } = useParams();
@@ -96,22 +104,17 @@ const ProjectRankingPage = () => {
 	}, [backendCurrentIndex, router, categoryId]);
 
 	useEffect(() => {
+		const errorResponse = updateProjectInclusion.error as ErrorResponse;
+		const pwCode = errorResponse.response?.data?.pwCode;
+
 		if (
 			minimumModal === MinimumModalState.False &&
 			updateProjectInclusion &&
-			updateProjectInclusion.error &&
-			// @ts-ignore
-			updateProjectInclusion.error.response &&
-			// @ts-ignore
-			updateProjectInclusion.error.response.data
+			pwCode === 'pw1000'
 		) {
-			const errorResponse = (updateProjectInclusion.error as any).response
-				.data;
-			if (errorResponse.pwCode === 'pw1000') {
-				setMinimumModal(MinimumModalState.True);
-			}
+			setMinimumModal(MinimumModalState.True);
 		}
-	}, [updateProjectInclusion.isError, updateProjectInclusion, minimumModal]);
+	}, [updateProjectInclusion, minimumModal]);
 
 	useEffect(() => {
 		setCurrentIndex(backendCurrentIndex);
