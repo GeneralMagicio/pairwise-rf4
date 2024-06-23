@@ -22,7 +22,8 @@ import { MinimumModalState } from '@/utils/types';
 interface ErrorResponse {
 	response?: {
 		data?: {
-			pwCode?: string;
+			pwCode?: string | undefined;
+			minimum?: number;
 		};
 	};
 }
@@ -105,7 +106,7 @@ const ProjectRankingPage = () => {
 
 	useEffect(() => {
 		const errorResponse = updateProjectInclusion.error as ErrorResponse;
-		const pwCode = errorResponse.response?.data?.pwCode;
+		const pwCode = errorResponse?.response?.data?.pwCode;
 
 		if (
 			minimumModal === MinimumModalState.False &&
@@ -135,7 +136,8 @@ const ProjectRankingPage = () => {
 				isOpen={minimumModal === MinimumModalState.True}
 				// @ts-ignore
 				minimum={
-					updateProjectInclusion?.error?.response?.data?.minimum || 2
+					(updateProjectInclusion?.error as ErrorResponse)?.response
+						?.data?.minimum || 2
 				}
 			/>
 			<div className='flex min-h-[calc(100dvh)] flex-col justify-between'>
