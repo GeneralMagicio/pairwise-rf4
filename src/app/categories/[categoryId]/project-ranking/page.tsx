@@ -196,7 +196,6 @@ const ProjectRankingPage = () => {
 							disabled={isRevertDisabled}
 							className={`rounded-full p-4 ${isRevertDisabled && 'cursor-not-allowed '}`}
 							onClick={() => {
-								setMinimumModal(MinimumModalState.False);
 								handleGoBack();
 							}}
 						>
