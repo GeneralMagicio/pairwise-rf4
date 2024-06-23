@@ -105,8 +105,8 @@ const ProjectRankingPage = () => {
 			// @ts-ignore
 			updateProjectInclusion.error.response.data
 		) {
-			// @ts-ignore
-			const errorResponse = updateProjectInclusion.error.response.data;
+			const errorResponse = (updateProjectInclusion.error as any).response
+				.data;
 			if (errorResponse.pwCode === 'pw1000') {
 				setMinimumModal(MinimumModalState.True);
 			}
