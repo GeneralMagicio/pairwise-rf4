@@ -131,47 +131,52 @@ const ProjectRankingPage = () => {
 				close={() => setMinimumModal(MinimumModalState.Shown)}
 				isOpen={minimumModal === MinimumModalState.True}
 				// @ts-ignore
-				minimum={updateProjectInclusion?.error?.response?.data?.minimum || 2}
+				minimum={
+					updateProjectInclusion?.error?.response?.data?.minimum || 2
+				}
 			/>
-			<div className='flex min-h-[calc(100dvh)] flex-col'>
-				<div className='border-b border-b-gray-200 pb-7 pt-9'>
-					<div className='mx-4 flex justify-between gap-6'>
-						<p>{selectedCategory?.name}</p>
-						<Link href={`${Routes.Categories}/${categoryId}`}>
-							✕
-						</Link>
-					</div>
-				</div>
-				<div className='border-b border-b-gray-200 pb-7'>
-					<div className='mx-8 mt-6'>
-						<ProgressBar
-							progress={
-								((backendCurrentIndex + 1) / projectsCount) *
-								100
-							}
-						/>
-						<p className='mt-2 text-sm'>
-							{backendCurrentIndex + 1} of {projectsCount}{' '}
-							Projects Selected
-						</p>
-					</div>
-				</div>
-				<AnimatePresence mode='wait'>
-					<motion.div
-						key={currentIndex}
-						initial='hidden'
-						animate='visible'
-						exit='hidden'
-					>
-						<div className='flex justify-center border-b  border-b-gray-200'>
-							<CategoryProjectRankingCardWithMetrics
-								project={projects?.data[currentIndex]!}
-							/>
+			<div className='flex min-h-[calc(100dvh)] flex-col justify-between'>
+				<div>
+					<div className='border-b border-b-gray-200 pb-7 pt-9'>
+						<div className='mx-4 flex justify-between gap-6'>
+							<p>{selectedCategory?.name}</p>
+							<Link href={`${Routes.Categories}/${categoryId}`}>
+								✕
+							</Link>
 						</div>
-					</motion.div>
-				</AnimatePresence>
-				<div className='bg-red sticky bottom-0 w-full border-t border-gray-200 bg-white py-6'>
-					<div className='mb-3 flex justify-center gap-14 px-6 py-6'>
+					</div>
+					<div className='border-b border-b-gray-200 pb-7'>
+						<div className='mx-8 mt-6'>
+							<ProgressBar
+								progress={
+									((backendCurrentIndex + 1) /
+										projectsCount) *
+									100
+								}
+							/>
+							<p className='mt-2 text-sm'>
+								{backendCurrentIndex + 1} of {projectsCount}{' '}
+								Projects Selected
+							</p>
+						</div>
+					</div>
+					<AnimatePresence mode='wait'>
+						<motion.div
+							key={currentIndex}
+							initial='hidden'
+							animate='visible'
+							exit='hidden'
+						>
+							<div className='flex justify-center border-b  border-b-gray-200'>
+								<CategoryProjectRankingCardWithMetrics
+									project={projects?.data[currentIndex]!}
+								/>
+							</div>
+						</motion.div>
+					</AnimatePresence>
+				</div>
+				<div className='bg-red sticky bottom-0 w-full border-t border-gray-200 bg-white py-4'>
+					<div className='mb-3 flex justify-center gap-14 px-6'>
 						<Button
 							disabled={updatingProject}
 							onClick={() => {
