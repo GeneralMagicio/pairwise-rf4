@@ -58,10 +58,12 @@ const CollectVotingPowerContent = ({
 
 	const { data: publicBadges } = useGetPublicBadges(address || '');
 
+	const [noBadgeConnecting, setNoBadgeConnecting] = useState(false);
+
 	const { mutateAsync: storeIdentityMutation } = useMutation({
 		mutationFn: storeIdentity,
 	});
-	const { mutateAsync: storeBadgesMutation, data: badges } = useMutation({
+	const { mutateAsync: storeBadgesMutation } = useMutation({
 		mutationFn: storeBadges,
 		onSuccess: () => {
 			queryClient.refetchQueries({
@@ -86,29 +88,53 @@ const CollectVotingPowerContent = ({
 			setCollectState(CollectVotingPowerState.No_Badges);
 	}, [collectState, publicBadges]);
 
-	const handleCollect = async () => {
+	const handleCollectNoBadge = async () => {
 		try {
-			//Handle collect functionality here
-			setCollectState(CollectVotingPowerState.Collecting);
-	
+			setNoBadgeConnecting(true);
 			const message = `Sign this message to generate your Semaphore identity.`;
 			const signature = await signMessageAsync({
 				message: message,
 			});
-	
+
 			// create bandada anonymous identity if not already present
 			await createIdentity(signature);
-	
+
 			const identity = localStorage.getItem(identityLsKey);
-	
+
 			if (!identity || !address) return;
-	
+
 			await storeIdentityMutation({ identity });
 			await storeBadgesMutation({ mainAddress: address, signature });
-	
+			setNoBadgeConnecting(false);
+			setIsClaimDrawerOpen(false);
+		} catch (e) {
+			setCollectState(CollectVotingPowerState.Error);
+		}
+	};
+
+	const handleCollect = async () => {
+		try {
+			//Handle collect functionality here
+			setCollectState(CollectVotingPowerState.Collecting);
+
+			const message = `Sign this message to generate your Semaphore identity.`;
+			const signature = await signMessageAsync({
+				message: message,
+			});
+
+			// create bandada anonymous identity if not already present
+			await createIdentity(signature);
+
+			const identity = localStorage.getItem(identityLsKey);
+
+			if (!identity || !address) return;
+
+			await storeIdentityMutation({ identity });
+			await storeBadgesMutation({ mainAddress: address, signature });
+
 			setCollectState(CollectVotingPowerState.Collected);
 		} catch (e) {
-			setCollectState(CollectVotingPowerState.Error)
+			setCollectState(CollectVotingPowerState.Error);
 		}
 	};
 
@@ -195,7 +221,8 @@ const CollectVotingPowerContent = ({
 						<p className='mb-4 text-primary'>No Badges found</p>
 					</div>
 					<Button
-						onClick={handleCollect}
+						onClick={handleCollectNoBadge}
+						isLoading={noBadgeConnecting}
 						className='w-full bg-primary'
 					>
 						Done
