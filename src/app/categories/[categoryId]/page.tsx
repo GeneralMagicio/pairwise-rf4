@@ -29,9 +29,11 @@ const CategoryPage = () => {
 	const selectedCategoryProgress = data?.data.progress;
 
 	useEffect(() => {
-		posthog.capture('User goes to the Categories page', {categoryName:`${selectedCategory?.name}`});
-	  },[]);
-	  
+		posthog.capture('User goes to the Categories page', {
+			categoryName: `${selectedCategory?.name}`,
+		});
+	}, []);
+
 	if (isProjectsLoading || isCategoryLoading) {
 		return <LoadingSpinner />;
 	}
@@ -73,7 +75,7 @@ const CategoryPage = () => {
 					))}
 				</div>
 			</div>
-			<div className='px-6 py-6'>
+			<div className='sticky bottom-0 mt-4 border-t border-b-gray-200 bg-white px-6 py-6'>
 				<Button
 					className='w-full bg-primary'
 					onClick={() =>
