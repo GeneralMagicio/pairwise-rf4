@@ -4,7 +4,12 @@ import React, { ReactNode } from 'react';
 import { WagmiProvider } from 'wagmi';
 import { http, createConfig } from 'wagmi';
 import { mainnet, sepolia } from 'wagmi/chains';
-import { walletConnect } from 'wagmi/connectors';
+import {
+	coinbaseWallet,
+	injected,
+	metaMask,
+	walletConnect,
+} from 'wagmi/connectors';
 
 export const projectId = process.env.NEXT_PUBLIC_WALLET_CONNECT_ID!;
 
@@ -13,6 +18,12 @@ const config = createConfig({
 	connectors: [
 		walletConnect({
 			projectId,
+		}),
+		injected({ target: 'metaMask' }),
+		metaMask(),
+		coinbaseWallet({
+			appName: 'Pairwise',
+			appLogoUrl: '/images/logo.png',
 		}),
 	],
 	transports: {

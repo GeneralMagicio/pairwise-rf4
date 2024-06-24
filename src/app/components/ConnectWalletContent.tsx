@@ -10,13 +10,17 @@ import useCopyToClipboard from '../hooks/useCopyToClipboard';
 import { useRouter } from 'next/navigation';
 import { Routes } from '../constants/Routes';
 import { useContinueGuest } from '../features/badges/getBadges';
+import { walletsLogos } from '../constants/WalletIcons';
 
 interface IConnectWalletContentProps {
 	onConnect?: () => void;
 	closeDrawer: () => void;
 }
 
-const ConnectWalletContent = ({ onConnect, closeDrawer }: IConnectWalletContentProps) => {
+const ConnectWalletContent = ({
+	onConnect,
+	closeDrawer,
+}: IConnectWalletContentProps) => {
 	const { connectors, connectAsync } = useConnect();
 	const { address, isConnected } = useAccount();
 	const router = useRouter();
@@ -26,10 +30,17 @@ const ConnectWalletContent = ({ onConnect, closeDrawer }: IConnectWalletContentP
 
 	const { mutateAsync: continueAsGuest, isPending } = useContinueGuest();
 
+	const hasMetaMaskIO = connectors.some(
+		connector => connector.id === 'io.metamask',
+	);
+	const filteredConnectors = hasMetaMaskIO
+		? connectors.filter(connector => connector.id !== 'metaMask')
+		: connectors;
+
 	const handleConnect = async () => {
 		try {
 			await continueAsGuest();
-			closeDrawer()
+			closeDrawer();
 		} catch (e) {
 			console.error(e);
 		}
@@ -51,39 +62,46 @@ const ConnectWalletContent = ({ onConnect, closeDrawer }: IConnectWalletContentP
 					<button onClick={() => disconnect()}>Disconnect</button>
 				) : (
 					<div className='flex w-full flex-col gap-2'>
-						{connectors.map(connector => (
-							<div
-								className='flex w-full cursor-pointer items-center gap-2 rounded-xl bg-gray-100 p-2 transition-colors duration-200 ease-in-out'
-								key={connector.id}
-								onClick={() =>
-									connectAsync({ connector }).then(() => {
-										console.log('Connected to wallet');
-										onConnect?.();
-									})
-								}
-							>
-								<div className='overflow-hidden rounded-full'>
-									{connector.icon &&
-									connector.id !== 'walletConnect' ? (
-										<Image
-											src={connector.icon}
-											width={40}
-											height={40}
-											alt={connector.name}
-											unoptimized
-										/>
-									) : (
-										<Image
-											src='/images/wallets/walletconnect-logo.png'
-											width={40}
-											height={40}
-											alt={connector.name}
-										/>
-									)}
+						{filteredConnectors
+							.filter(connector => connector.id !== 'metaMaskSDK')
+							.map(connector => (
+								<div
+									className='flex w-full cursor-pointer items-center gap-2 rounded-xl bg-gray-100 p-2 transition-colors duration-200 ease-in-out'
+									key={connector.id}
+									onClick={() =>
+										connectAsync({ connector }).then(() => {
+											console.log('Connected to wallet');
+											onConnect?.();
+										})
+									}
+								>
+									<div className='overflow-hidden rounded-full'>
+										{connector.icon &&
+										connector.id !== 'walletConnect' ? (
+											<Image
+												src={connector.icon}
+												width={40}
+												height={40}
+												alt={connector.name}
+												unoptimized
+											/>
+										) : (
+											<Image
+												src={
+													walletsLogos[
+														connector.id ||
+															'walletConnect'
+													]
+												}
+												width={40}
+												height={40}
+												alt={connector.name}
+											/>
+										)}
+									</div>
+									{connector.name}
 								</div>
-								{connector.name}
-							</div>
-						))}
+							))}
 					</div>
 				)}
 			</div>

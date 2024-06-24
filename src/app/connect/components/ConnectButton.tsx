@@ -7,12 +7,22 @@ import { useAccount, useConnect, useDisconnect } from 'wagmi';
 import Image from 'next/image';
 import { useState } from 'react';
 import { formatAddress } from '@/app/helpers/text-helpers';
+import { walletsLogos } from '@/app/constants/WalletIcons';
 
 const ConnectButton = () => {
 	const { connectors, connectAsync } = useConnect();
 	const { address } = useAccount();
 	const { disconnect } = useDisconnect();
 	const [isConnectDrawerOpen, setIsConnectDrawerOpen] = useState(false);
+
+	const hasMetaMaskIO = connectors.some(
+		connector => connector.id === 'io.metamask',
+	);
+	const filteredConnectors = hasMetaMaskIO
+		? connectors.filter(connector => connector.id !== 'metaMask')
+		: connectors;
+
+	console.log('connectors', connectors);
 
 	return (
 		<div>
@@ -43,37 +53,50 @@ const ConnectButton = () => {
 								Connect Wallet
 							</p>
 							<div className='flex w-full flex-col gap-2'>
-								{connectors.map(connector => (
-									<div
-										className='flex w-full cursor-pointer select-none items-center gap-2 rounded-xl bg-gray-100 p-2 transition-colors duration-200 ease-in-out'
-										key={connector.id}
-										onClick={async () => {
-											setIsConnectDrawerOpen(false)
-											await connectAsync({ connector });
-										}}
-									>
-										<div className='overflow-hidden rounded-full'>
-											{connector.icon &&
-											connector.id !== 'walletConnect' ? (
-												<Image
-													src={connector.icon}
-													width={40}
-													height={40}
-													alt={connector.name}
-													unoptimized
-												/>
-											) : (
-												<Image
-													src='/images/wallets/walletconnect-logo.png'
-													width={40}
-													height={40}
-													alt={connector.name}
-												/>
-											)}
+								{filteredConnectors
+									.filter(
+										connector =>
+											connector.id !== 'metaMaskSDK',
+									)
+									.map(connector => (
+										<div
+											className='flex w-full cursor-pointer select-none items-center gap-2 rounded-xl bg-gray-100 p-2 transition-colors duration-200 ease-in-out'
+											key={connector.id}
+											onClick={async () => {
+												setIsConnectDrawerOpen(false);
+												await connectAsync({
+													connector,
+												});
+											}}
+										>
+											<div className='overflow-hidden rounded-full'>
+												{connector.icon &&
+												connector.id !==
+													'walletConnect' ? (
+													<Image
+														src={connector.icon}
+														width={40}
+														height={40}
+														alt={connector.name}
+														unoptimized
+													/>
+												) : (
+													<Image
+														src={
+															walletsLogos[
+																connector.id ||
+																	'walletConnect'
+															]
+														}
+														width={40}
+														height={40}
+														alt={connector.name}
+													/>
+												)}
+											</div>
+											{connector.name}
 										</div>
-										{connector.name}
-									</div>
-								))}
+									))}
 							</div>
 						</div>
 					</Drawer>
