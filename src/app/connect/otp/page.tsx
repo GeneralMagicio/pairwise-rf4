@@ -6,7 +6,7 @@ import { useState } from 'react';
 import Button from '@/app/components/Button';
 import { badgesImages } from '@/app/constants/BadgesData';
 import { useUpdateOtp } from '@/app/features/user/updateOtp';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { Routes } from '@/app/constants/Routes';
 import { queryClient } from '@/lib/react-query';
 import { useMutation } from '@tanstack/react-query';
@@ -68,7 +68,11 @@ const storeBadges = async ({
 };
 
 const ConnectOTPPage = () => {
-	const [otp, setOtp] = useState('');
+	const searchParams = useSearchParams();
+	const currentParams = new URLSearchParams(searchParams);
+	const otpParam = currentParams.get('otp') || ''
+	const [otp, setOtp] = useState(otpParam);
+
 	const [otpState, setOtpState] = useState<OtpState>(OtpState.Ready);
 	const [error, setError] = useState<string | false>(false);
 	const { mutateAsync, isPending } = useUpdateOtp();

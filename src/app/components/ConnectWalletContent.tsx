@@ -96,19 +96,29 @@ const ConnectWalletContent = ({
 				</p>
 				<span className='text-ph'>
 					You can still collect voting power from your wallet by
-					copying the code and following instructions on the{'\u00A0'}
-					<a
+					following instructions on the website below:
+					{/* <a
 						className='inline-block font-bold'
 						href='/connect'
 						target='_blank'
 					>
 						[website]
-					</a>
+					</a> */}
 				</span>
-				<div className='flex justify-between rounded-md bg-gray-100 px-4 py-2'>
-					<p className='font-bold'>
-						{isOtpLoading ? '-' : OtpData?.data}
-					</p>
+				<div className='flex justify-between rounded-md bg-gray-100 px-4 py-2 text-primary'>
+					<a
+						target='_blank'
+						href={
+							isOtpLoading && window
+								? undefined
+								: `${window.location.origin}/connect?otp=${OtpData?.data}`
+						}
+						className='font-bold'
+					>
+						{isOtpLoading && window
+							? '-'
+							: `${window.location.origin}/connect?otp=${OtpData?.data}`}
+					</a>
 					<div
 						onClick={() => copy(OtpData?.data || '')}
 						className='cursor-pointer'
@@ -117,12 +127,12 @@ const ConnectWalletContent = ({
 					</div>
 				</div>
 
-				<Button
+				{/* <Button
 					onClick={() => router.push(Routes.Connect)}
 					className='border border-gray-200 bg-primary shadow-md'
 				>
 					Collect Voting Power
-				</Button>
+				</Button> */}
 				<Button
 					isLoading={isPending}
 					onClick={handleConnect}
