@@ -2,7 +2,7 @@
 
 import Image from 'next/image';
 import ConnectOTPInput, { OtpState } from '../components/ConnectOtpInput';
-import { useState } from 'react';
+import { Suspense, useState } from 'react';
 import Button from '@/app/components/Button';
 import { badgesImages } from '@/app/constants/BadgesData';
 import { useUpdateOtp } from '@/app/features/user/updateOtp';
@@ -70,7 +70,7 @@ const storeBadges = async ({
 const ConnectOTPPage = () => {
 	const searchParams = useSearchParams();
 	const currentParams = new URLSearchParams(searchParams);
-	const otpParam = currentParams.get('otp') || ''
+	const otpParam = currentParams.get('otp') || '';
 	const [otp, setOtp] = useState(otpParam);
 
 	const [otpState, setOtpState] = useState<OtpState>(OtpState.Ready);
@@ -163,7 +163,7 @@ const ConnectOTPPage = () => {
 					Paste the OTP from Pairwise.
 				</p>
 				<div
-					className='flex gap-1 items-center justify-start mb-6 mt-2 w-fit'
+					className='mb-6 mt-2 flex w-fit items-center justify-start gap-1'
 					title={`Go to the Pairwise WebApp and click on connect. You'll get the code. Use it here if you don't have your wallet on the other device`}
 				>
 					<p className='text-primary'>How to get OTP?</p>
@@ -192,4 +192,10 @@ const ConnectOTPPage = () => {
 	);
 };
 
-export default ConnectOTPPage;
+const SuspenseConnectOTPPage = () => {
+	<Suspense>
+		<ConnectOTPPage />
+	</Suspense>;
+};
+
+export default SuspenseConnectOTPPage;
