@@ -62,44 +62,46 @@ const ConnectWalletContent = ({
 					<button onClick={() => disconnect()}>Disconnect</button>
 				) : (
 					<div className='flex w-full flex-col gap-2'>
-						{filteredConnectors.map(connector => (
-							<div
-								className='flex w-full cursor-pointer items-center gap-2 rounded-xl bg-gray-100 p-2 transition-colors duration-200 ease-in-out'
-								key={connector.id}
-								onClick={() =>
-									connectAsync({ connector }).then(() => {
-										console.log('Connected to wallet');
-										onConnect?.();
-									})
-								}
-							>
-								<div className='overflow-hidden rounded-full'>
-									{connector.icon &&
-									connector.id !== 'walletConnect' ? (
-										<Image
-											src={connector.icon}
-											width={40}
-											height={40}
-											alt={connector.name}
-											unoptimized
-										/>
-									) : (
-										<Image
-											src={
-												walletsLogos[
-													connector.id ||
-														'walletConnect'
-												]
-											}
-											width={40}
-											height={40}
-											alt={connector.name}
-										/>
-									)}
+						{filteredConnectors
+							.filter(connector => connector.id !== 'metaMaskSDK')
+							.map(connector => (
+								<div
+									className='flex w-full cursor-pointer items-center gap-2 rounded-xl bg-gray-100 p-2 transition-colors duration-200 ease-in-out'
+									key={connector.id}
+									onClick={() =>
+										connectAsync({ connector }).then(() => {
+											console.log('Connected to wallet');
+											onConnect?.();
+										})
+									}
+								>
+									<div className='overflow-hidden rounded-full'>
+										{connector.icon &&
+										connector.id !== 'walletConnect' ? (
+											<Image
+												src={connector.icon}
+												width={40}
+												height={40}
+												alt={connector.name}
+												unoptimized
+											/>
+										) : (
+											<Image
+												src={
+													walletsLogos[
+														connector.id ||
+															'walletConnect'
+													]
+												}
+												width={40}
+												height={40}
+												alt={connector.name}
+											/>
+										)}
+									</div>
+									{connector.name}
 								</div>
-								{connector.name}
-							</div>
-						))}
+							))}
 					</div>
 				)}
 			</div>
