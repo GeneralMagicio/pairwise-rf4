@@ -2,11 +2,11 @@
 
 import Image from 'next/image';
 import ConnectOTPInput, { OtpState } from '../components/ConnectOtpInput';
-import { useState } from 'react';
+import { Suspense, useEffect, useState } from 'react';
 import Button from '@/app/components/Button';
 import { badgesImages } from '@/app/constants/BadgesData';
 import { useUpdateOtp } from '@/app/features/user/updateOtp';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { Routes } from '@/app/constants/Routes';
 import { queryClient } from '@/lib/react-query';
 import { useMutation } from '@tanstack/react-query';
@@ -69,6 +69,7 @@ const storeBadges = async ({
 
 const ConnectOTPPage = () => {
 	const [otp, setOtp] = useState('');
+
 	const [otpState, setOtpState] = useState<OtpState>(OtpState.Ready);
 	const [error, setError] = useState<string | false>(false);
 	const { mutateAsync, isPending } = useUpdateOtp();
@@ -85,6 +86,12 @@ const ConnectOTPPage = () => {
 	const { signMessageAsync } = useSignMessage();
 
 	const router = useRouter();
+
+	useEffect(() => {
+		const currentParams = new URLSearchParams(window.location.search);
+		const otp = currentParams.get('otp') 
+		if (otp) setOtp(otp)
+	}, [])
 
 	const handleSubmitOtp = async () => {
 		try {
@@ -159,7 +166,7 @@ const ConnectOTPPage = () => {
 					Paste the OTP from Pairwise.
 				</p>
 				<div
-					className='flex gap-1 items-center justify-start mb-6 mt-2 w-fit'
+					className='mb-6 mt-2 flex w-fit items-center justify-start gap-1'
 					title={`Go to the Pairwise WebApp and click on connect. You'll get the code. Use it here if you don't have your wallet on the other device`}
 				>
 					<p className='text-primary'>How to get OTP?</p>
@@ -187,5 +194,6 @@ const ConnectOTPPage = () => {
 		</div>
 	);
 };
+
 
 export default ConnectOTPPage;

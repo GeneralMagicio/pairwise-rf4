@@ -2,10 +2,10 @@
 
 import Image from 'next/image';
 import { PwLogo } from 'public/images/icons/PwLogo';
-import React from 'react';
+import React, { Suspense, useEffect } from 'react';
 import { useAccount } from 'wagmi';
 import { Routes } from '../constants/Routes';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 
 const steps = [
 	{
@@ -24,9 +24,15 @@ const steps = [
 ];
 
 const ConnectHomePage = () => {
-	const {isConnected} = useAccount()
+	const { isConnected } = useAccount();
 	const router = useRouter();
-	
+
+	const handleNavigation = () => {
+		const currentParams = new URLSearchParams(window.location.search);
+
+		router.push(`${Routes.ConnectOtp}?${currentParams.toString()}`);
+	};
+
 	return (
 		<div className='centered-mobile-max-width mt-7'>
 			<div className='text-center'>
@@ -68,7 +74,7 @@ const ConnectHomePage = () => {
 						</div>
 					))}
 					<button
-						onClick={() => router.push(Routes.ConnectOtp)}
+						onClick={handleNavigation}
 						disabled={!isConnected}
 						className='mx-auto w-full bg-primary py-2 text-white disabled:bg-gray-100 disabled:text-gray-700'
 					>
@@ -79,5 +85,6 @@ const ConnectHomePage = () => {
 		</div>
 	);
 };
+
 
 export default ConnectHomePage;
