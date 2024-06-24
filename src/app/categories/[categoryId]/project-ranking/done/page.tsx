@@ -34,7 +34,7 @@ const ProjectRankingDonePage = () => {
 					height={250}
 				/>
 				<p className='mx-auto text-lg font-bold'>Filtering done!</p>
-				<p className='mx-auto text-ph'>Now they battle to the DEATH!</p>
+				<p className='mx-auto text-ph'>Let&apos;s find out which projects come out on top!</p>
 			</div>
 			<div className='border-t border-t-gray-300 px-6 py-6'>
 				<Button
@@ -56,7 +56,7 @@ const ProjectRankingDonePage = () => {
 					// disabled={updateCategoryMarkFiltered.isPending}
 					className='w-full bg-primary'
 				>
-					View summary
+					Start Pairwise Assesment
 				</Button>
 			</div>
 		</div>

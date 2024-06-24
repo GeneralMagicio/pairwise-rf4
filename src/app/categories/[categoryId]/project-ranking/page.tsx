@@ -161,7 +161,7 @@ const ProjectRankingPage = () => {
 							/>
 							<p className='mt-2 text-sm'>
 								{backendCurrentIndex + 1} of {projectsCount}{' '}
-								Projects Selected
+								Projects filtered
 							</p>
 						</div>
 					</div>
