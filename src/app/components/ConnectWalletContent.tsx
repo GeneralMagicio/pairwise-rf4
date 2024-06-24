@@ -4,7 +4,7 @@ import Image from 'next/image';
 import IconCopy from 'public/images/icons/IconCopy';
 import { useAccount, useConnect, useDisconnect } from 'wagmi';
 import Button from './Button';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useGetOtp } from '../features/user/getOtp';
 import useCopyToClipboard from '../hooks/useCopyToClipboard';
 import { useRouter } from 'next/navigation';
@@ -16,9 +16,19 @@ interface IConnectWalletContentProps {
 	closeDrawer: () => void;
 }
 
-const ConnectWalletContent = ({ onConnect, closeDrawer }: IConnectWalletContentProps) => {
-	const { connectors, connectAsync } = useConnect();
+const ConnectWalletContent = ({
+	onConnect,
+	closeDrawer,
+}: IConnectWalletContentProps) => {
+	const { connectors, connectAsync } = useConnect({
+		mutation: {
+			onError(error, variables, context) {
+				console.error('error', { error, variables, context });
+			},
+		},
+	});
 	const { address, isConnected } = useAccount();
+	const [loading, setLoading] = useState(false);
 	const router = useRouter();
 	const { data: OtpData, isLoading: isOtpLoading } = useGetOtp();
 	const { disconnect } = useDisconnect();
@@ -29,11 +39,15 @@ const ConnectWalletContent = ({ onConnect, closeDrawer }: IConnectWalletContentP
 	const handleConnect = async () => {
 		try {
 			await continueAsGuest();
-			closeDrawer()
+			closeDrawer();
 		} catch (e) {
 			console.error(e);
 		}
 	};
+
+	useEffect(() => {
+		console.log(loading);
+	}, [loading]);
 
 	useEffect(() => {
 		if (isConnected) {
@@ -44,7 +58,7 @@ const ConnectWalletContent = ({ onConnect, closeDrawer }: IConnectWalletContentP
 	return (
 		<div className='w-full'>
 			<p className='mb-4 border-b border-gray-200 py-4 text-center text-lg font-bold '>
-				Connect Wallet
+				{`Connect Wallettt ${loading ? 'loading...' : ''}`}
 			</p>
 			<div className='mt-4 border-b border-gray-200 py-4'>
 				{address ? (
@@ -55,12 +69,20 @@ const ConnectWalletContent = ({ onConnect, closeDrawer }: IConnectWalletContentP
 							<div
 								className='flex w-full cursor-pointer items-center gap-2 rounded-xl bg-gray-100 p-2 transition-colors duration-200 ease-in-out'
 								key={connector.id}
-								onClick={() =>
-									connectAsync({ connector }).then(() => {
+								onClick={async () => {
+									try {
+										console.log('Clicked!!!');
+										setLoading(true);
+										await connectAsync({ connector });
+
 										console.log('Connected to wallet');
 										onConnect?.();
-									})
-								}
+									} catch (e) {
+										console.error(e);
+									}
+
+									setLoading(false);
+								}}
 							>
 								<div className='overflow-hidden rounded-full'>
 									{connector.icon &&
