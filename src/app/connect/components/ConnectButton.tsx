@@ -7,12 +7,20 @@ import { useAccount, useConnect, useDisconnect } from 'wagmi';
 import Image from 'next/image';
 import { useState } from 'react';
 import { formatAddress } from '@/app/helpers/text-helpers';
+import { walletsLogos } from '@/app/constants/WalletIcons';
 
 const ConnectButton = () => {
 	const { connectors, connectAsync } = useConnect();
 	const { address } = useAccount();
 	const { disconnect } = useDisconnect();
 	const [isConnectDrawerOpen, setIsConnectDrawerOpen] = useState(false);
+
+	const hasMetaMaskIO = connectors.some(
+		connector => connector.id === 'io.metamask',
+	);
+	const filteredConnectors = hasMetaMaskIO
+		? connectors.filter(connector => connector.id !== 'metaMaskSDK')
+		: connectors;
 
 	return (
 		<div>
@@ -43,12 +51,12 @@ const ConnectButton = () => {
 								Connect Wallet
 							</p>
 							<div className='flex w-full flex-col gap-2'>
-								{connectors.map(connector => (
+								{filteredConnectors.map(connector => (
 									<div
 										className='flex w-full cursor-pointer select-none items-center gap-2 rounded-xl bg-gray-100 p-2 transition-colors duration-200 ease-in-out'
 										key={connector.id}
 										onClick={async () => {
-											setIsConnectDrawerOpen(false)
+											setIsConnectDrawerOpen(false);
 											await connectAsync({ connector });
 										}}
 									>
@@ -64,7 +72,12 @@ const ConnectButton = () => {
 												/>
 											) : (
 												<Image
-													src='/images/wallets/walletconnect-logo.png'
+													src={
+														walletsLogos[
+															connector.id ||
+																'walletConnect'
+														]
+													}
 													width={40}
 													height={40}
 													alt={connector.name}
