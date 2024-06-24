@@ -16,7 +16,10 @@ interface IConnectWalletContentProps {
 	closeDrawer: () => void;
 }
 
-const ConnectWalletContent = ({ onConnect, closeDrawer }: IConnectWalletContentProps) => {
+const ConnectWalletContent = ({
+	onConnect,
+	closeDrawer,
+}: IConnectWalletContentProps) => {
 	const { connectors, connectAsync } = useConnect();
 	const { address, isConnected } = useAccount();
 	const router = useRouter();
@@ -29,7 +32,7 @@ const ConnectWalletContent = ({ onConnect, closeDrawer }: IConnectWalletContentP
 	const handleConnect = async () => {
 		try {
 			await continueAsGuest();
-			closeDrawer()
+			closeDrawer();
 		} catch (e) {
 			console.error(e);
 		}
@@ -88,7 +91,9 @@ const ConnectWalletContent = ({ onConnect, closeDrawer }: IConnectWalletContentP
 				)}
 			</div>
 			<div className='mb-10 flex flex-col gap-4 lg:hidden'>
-				<p className='mt-4 font-bold'>Don’t want to connect wallet?</p>
+				<p className='mt-4 font-bold'>
+					Is your wallet on a different device?
+				</p>
 				<span className='text-ph'>
 					You can still collect voting power from your wallet by
 					copying the code and following instructions on the{'\u00A0'}
@@ -123,7 +128,7 @@ const ConnectWalletContent = ({ onConnect, closeDrawer }: IConnectWalletContentP
 					onClick={handleConnect}
 					className='w-full border border-gray-200 bg-white text-black text-ph'
 				>
-					Continue as Guest
+					{`Don't Connect Wallet`}
 				</Button>
 				<p>
 					{' '}
