@@ -158,7 +158,10 @@ const CategoryRankingListEditPage = () => {
 					<Reorder.Group
 						axis='y'
 						values={listProjects}
-						onReorder={setListProjects}
+						onReorder={list => {
+							setListProjects(list);
+							setHasChanges(true);
+						}}
 					>
 						{listProjects.map((project, index) => (
 							<CategoryRankingListItem
