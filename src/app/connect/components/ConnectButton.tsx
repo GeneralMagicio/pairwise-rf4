@@ -19,8 +19,10 @@ const ConnectButton = () => {
 		connector => connector.id === 'io.metamask',
 	);
 	const filteredConnectors = hasMetaMaskIO
-		? connectors.filter(connector => connector.id !== 'metaMaskSDK')
+		? connectors.filter(connector => connector.id !== 'metaMask')
 		: connectors;
+
+	console.log('connectors', connectors);
 
 	return (
 		<div>
