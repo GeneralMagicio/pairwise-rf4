@@ -2,7 +2,7 @@
 
 import Image from 'next/image';
 import ConnectOTPInput, { OtpState } from '../components/ConnectOtpInput';
-import { Suspense, useState } from 'react';
+import { Suspense, useEffect, useState } from 'react';
 import Button from '@/app/components/Button';
 import { badgesImages } from '@/app/constants/BadgesData';
 import { useUpdateOtp } from '@/app/features/user/updateOtp';
@@ -68,10 +68,7 @@ const storeBadges = async ({
 };
 
 const ConnectOTPPage = () => {
-	const searchParams = useSearchParams();
-	const currentParams = new URLSearchParams(searchParams);
-	const otpParam = currentParams.get('otp') || '';
-	const [otp, setOtp] = useState(otpParam);
+	const [otp, setOtp] = useState('');
 
 	const [otpState, setOtpState] = useState<OtpState>(OtpState.Ready);
 	const [error, setError] = useState<string | false>(false);
@@ -89,6 +86,12 @@ const ConnectOTPPage = () => {
 	const { signMessageAsync } = useSignMessage();
 
 	const router = useRouter();
+
+	useEffect(() => {
+		const currentParams = new URLSearchParams(window.location.search);
+		const otp = currentParams.get('otp') 
+		if (otp) setOtp(otp)
+	}, [])
 
 	const handleSubmitOtp = async () => {
 		try {
@@ -192,10 +195,5 @@ const ConnectOTPPage = () => {
 	);
 };
 
-const SuspenseConnectOTPPage = () => {
-	<Suspense>
-		<ConnectOTPPage />
-	</Suspense>;
-};
 
-export default SuspenseConnectOTPPage;
+export default ConnectOTPPage;

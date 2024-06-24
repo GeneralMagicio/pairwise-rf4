@@ -2,7 +2,7 @@
 
 import Image from 'next/image';
 import { PwLogo } from 'public/images/icons/PwLogo';
-import React, { Suspense } from 'react';
+import React, { Suspense, useEffect } from 'react';
 import { useAccount } from 'wagmi';
 import { Routes } from '../constants/Routes';
 import { useRouter, useSearchParams } from 'next/navigation';
@@ -27,10 +27,8 @@ const ConnectHomePage = () => {
 	const { isConnected } = useAccount();
 	const router = useRouter();
 
-	const searchParams = useSearchParams();
-
 	const handleNavigation = () => {
-		const currentParams = new URLSearchParams(searchParams);
+		const currentParams = new URLSearchParams(window.location.search);
 
 		router.push(`${Routes.ConnectOtp}?${currentParams.toString()}`);
 	};
@@ -88,10 +86,5 @@ const ConnectHomePage = () => {
 	);
 };
 
-const SuspenseConnectHomePage = () => {
-	<Suspense>
-		<ConnectHomePage />
-	</Suspense>;
-};
 
-export default SuspenseConnectHomePage;
+export default ConnectHomePage;

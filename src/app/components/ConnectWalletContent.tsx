@@ -44,6 +44,10 @@ const ConnectWalletContent = ({
 		}
 	}, [isConnected]);
 
+	const targetUrl = window && !isOtpLoading
+		? `${window.location.origin}/connect?otp=${OtpData?.data}`
+		: '';
+
 	return (
 		<div className='w-full'>
 			<p className='mb-4 border-b border-gray-200 py-4 text-center text-lg font-bold '>
@@ -108,19 +112,13 @@ const ConnectWalletContent = ({
 				<div className='flex justify-between rounded-md bg-gray-100 px-4 py-2 text-primary'>
 					<a
 						target='_blank'
-						href={
-							isOtpLoading && window
-								? undefined
-								: `${window.location.origin}/connect?otp=${OtpData?.data}`
-						}
+						href={targetUrl || undefined}
 						className='font-bold'
 					>
-						{isOtpLoading && window
-							? '-'
-							: `${window.location.origin}/connect?otp=${OtpData?.data}`}
+						{targetUrl}
 					</a>
 					<div
-						onClick={() => copy(OtpData?.data || '')}
+						onClick={() => copy(targetUrl)}
 						className='cursor-pointer'
 					>
 						<IconCopy />
