@@ -255,7 +255,7 @@ const CollectVotingPowerContent = ({
 						{formatAddress(address)}
 					</p>
 					<AdjacentBadges {...publicBadges} size={40} />
-					<p>Voting Power Collected</p>
+					<p>{`You're connected`}</p>
 					<Button
 						onClick={() => {
 							setIsClaimDrawerOpen(false);

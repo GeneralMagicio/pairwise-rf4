@@ -89,9 +89,9 @@ const ConnectOTPPage = () => {
 
 	useEffect(() => {
 		const currentParams = new URLSearchParams(window.location.search);
-		const otp = currentParams.get('otp') 
-		if (otp) setOtp(otp)
-	}, [])
+		const otp = currentParams.get('otp');
+		if (otp) setOtp(otp);
+	}, []);
 
 	const handleSubmitOtp = async () => {
 		try {
@@ -123,7 +123,7 @@ const ConnectOTPPage = () => {
 		} catch (error) {
 			setOtpState(OtpState.Invalid);
 			setError(
-				'Not able to connect you to a user. Please try again later',
+				'Please try again.',
 			);
 		}
 	};
@@ -163,7 +163,7 @@ const ConnectOTPPage = () => {
 			</div>
 			<div className='border-1 mb-10 rounded-lg border border-gray-200 p-6'>
 				<p className='text-xl font-semibold'>
-					Paste the OTP from Pairwise.
+					Paste the OTP from your other device.
 				</p>
 				<div
 					className='mb-6 mt-2 flex w-fit items-center justify-start gap-1'
@@ -188,12 +188,11 @@ const ConnectOTPPage = () => {
 					className={`mt-6 w-full ${!disabled ? 'bg-primary' : 'cursor-not-allowed bg-gray-200'}`}
 					disabled={disabled}
 				>
-					Delegate
+					Connect
 				</Button>
 			</div>
 		</div>
 	);
 };
-
 
 export default ConnectOTPPage;
