@@ -1,6 +1,6 @@
 // Type definitions for project metric data
 export type Metric = {
-	value: number;
+	value: number | 'NA';
 	description: string;
 };
 
@@ -8,8 +8,8 @@ export interface ComparisonResult {
 	[key: string]: {
 		[key: string]: {
 			description: string;
-			value1: number;
-			value2: number;
+			value1: number | 'NA';
+			value2: number | 'NA';
 		};
 	};
 }
@@ -38,10 +38,63 @@ export type CategoryMetricData = {
 	// checkOssRequirements: Metric;
 };
 
+const defaultMetricData: CategoryMetricData = {
+	NetworkGrowth: {
+		dailyActiveAddresses: {
+			value: 'NA',
+			description: 'Daily Active Users (DAU)',
+		},
+		monthlyActiveAddresses: {
+			value: 'NA',
+			description: 'Monthly Active Users',
+		},
+		recurringAddresses: {
+			value: 'NA',
+			description: 'Recurring Addresses',
+		},
+	},
+	NetworkQuality: {
+		gasFees: { value: 'NA', description: 'Gas Fees' },
+		transactionCount: { value: 'NA', description: 'Transaction Count' },
+		trustedTransactionCount: {
+			value: 'NA',
+			description: 'Trusted Transaction Count',
+		},
+		trustedTransactionShare: {
+			value: 'NA',
+			description: 'Trusted Transaction Share',
+		},
+	},
+	UserGrowth: {
+		trustedUsersOnboarded: {
+			value: 'NA',
+			description: 'Trusted Users Onboarded',
+		},
+	},
+	UserQuality: {
+		trustedDailyActiveUsers: {
+			value: 'NA',
+			description: 'Trusted Daily Active Users',
+		},
+		trustedMonthlyActiveUsers: {
+			value: 'NA',
+			description: 'Trusted Monthly Active Users',
+		},
+		trustedRecurringUsers: {
+			value: 'NA',
+			description: 'Trusted Recurring Users',
+		},
+		powerUserAddresses: {
+			value: 'NA',
+			description: 'Power User Addresses',
+		},
+	},
+};
+
 // Helper function to parse a string as a float, handling commas and optional quotes
-const parseNumber = (value: string): number => {
-	// Remove quotes if present and then replace commas
-	return parseFloat(value.replace(/"/g, '').replace(/,/g, ''));
+const parseNumber = (value: string): number | 'NA' => {
+	const cleanedValue = value.replace(/"/g, '').replace(/,/g, '');
+	return cleanedValue ? parseFloat(cleanedValue) || 'NA' : 'NA';
 };
 
 // Function to process CSV content and return a Map of CategoryMetricData
@@ -131,8 +184,8 @@ export const processProjectMetricsCSV = (
 export const getProjectMetrics = (
 	metricsMap: Map<string, CategoryMetricData>,
 	projectId: string,
-): CategoryMetricData | undefined => {
-	return metricsMap.get(projectId);
+): CategoryMetricData => {
+	return metricsMap.get(projectId) || defaultMetricData;
 };
 
 export const compareProjects = (
@@ -140,9 +193,10 @@ export const compareProjects = (
 	projectId1: string,
 	projectId2: string,
 ): ComparisonResult => {
-	const project1Metrics = metricsMap.get(projectId1);
-	const project2Metrics = metricsMap.get(projectId2);
-
+	const project1Metrics = getProjectMetrics(metricsMap, projectId1);
+	const project2Metrics = getProjectMetrics(metricsMap, projectId2);
+	console.log('Project 1 Metrics:', project1Metrics);
+	console.log('Project 2 Metrics:', project2Metrics);
 	if (!project1Metrics || !project2Metrics) {
 		return {};
 	}
