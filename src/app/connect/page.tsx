@@ -1,11 +1,11 @@
 'use client';
 
 import Image from 'next/image';
-import { PwLogo } from 'public/images/icons/PwLogo';
-import React from 'react';
+import { BandadaLogo } from 'public/images/icons/BandadaLogo';
+import React, { Suspense, useEffect } from 'react';
 import { useAccount } from 'wagmi';
 import { Routes } from '../constants/Routes';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 
 const steps = [
 	{
@@ -18,15 +18,21 @@ const steps = [
 	},
 	{ title: 'Sign', description: 'Sign with your connected wallet' },
 	{
-		title: 'Delegate your voting power',
-		description: 'You have now successfully delegated your voting power',
+		title: 'Connect your OP Account',
+		description: 'Success! Your OP account is now secretly connected to the account you will vote with on Pairwise',
 	},
 ];
 
 const ConnectHomePage = () => {
-	const {isConnected} = useAccount()
+	const { isConnected } = useAccount();
 	const router = useRouter();
-	
+
+	const handleNavigation = () => {
+		const currentParams = new URLSearchParams(window.location.search);
+
+		router.push(`${Routes.ConnectOtp}?${currentParams.toString()}`);
+	};
+
 	return (
 		<div className='centered-mobile-max-width mt-7'>
 			<div className='text-center'>
@@ -38,13 +44,13 @@ const ConnectHomePage = () => {
 					className='mx-auto'
 				/>
 				<div className='mb-3 mt-4 text-2xl font-bold lg:text-3xl'>
-					<p>Delegate your Voting Power</p>
-					<p className='text-primary'>Anonymously</p>
+					<p>Connect your OP Account</p>
+					<p className='text-primary'>Pseudonymously</p>
 				</div>
 				<p className='mb-6'>Secured by zk-proof technology</p>
 				<div className='flex items-center justify-center gap-2'>
 					<span className='text-sm'>Powered by</span>
-					<PwLogo />
+					<BandadaLogo />
 				</div>
 				<div className='mx-auto max-w-[343px]'>
 					{steps.map((step, index) => (
@@ -68,7 +74,7 @@ const ConnectHomePage = () => {
 						</div>
 					))}
 					<button
-						onClick={() => router.push(Routes.ConnectOtp)}
+						onClick={handleNavigation}
 						disabled={!isConnected}
 						className='mx-auto w-full bg-primary py-2 text-white disabled:bg-gray-100 disabled:text-gray-700'
 					>
@@ -79,5 +85,6 @@ const ConnectHomePage = () => {
 		</div>
 	);
 };
+
 
 export default ConnectHomePage;

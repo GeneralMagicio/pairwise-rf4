@@ -23,9 +23,8 @@ export const CategoryPairwiseModal: React.FC<Props> = ({
 			<div className='p-5'>
 				<p className='mb-4 text-center font-bold text-large'>Category Voting</p>
 				<p className='mb-6 text-center text-ph'>
-					Congratulations! You have completed voting for minimum of 2
-					category of projects. You can now vote for the category that
-					you would like to support the most.
+				Congratulations! You&apos;ve successfully voted in at least two categories.
+				 Now, it&apos;s time to vote for the categories that overall had more impact!
 				</p>
 				<Button
 					onClick={handleSubmit}

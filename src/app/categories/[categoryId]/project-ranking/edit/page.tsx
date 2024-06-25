@@ -22,6 +22,7 @@ const ProjectRankingEditPage = () => {
 
 	const [includedProjects, setIncludedProjects] = useState<IProject[]>([]);
 	const [excludedProjects, setExcludedProjects] = useState<IProject[]>([]);
+	const [hasChanges, setHasChanges] = useState(false);
 
 	const [minimumModal, setMinimumModal] = useState<MinimumModalState>(
 		MinimumModalState.False,
@@ -35,7 +36,11 @@ const ProjectRankingEditPage = () => {
 	const { data, isLoading: isCategoryLoading } =
 		useCategoryById(+selectedCategoryId);
 
-	const { mutateAsync, error } = useUpdateProjectInclusionBulk({
+	const {
+		mutateAsync,
+		error,
+		isPending: isUpdatingPending,
+	} = useUpdateProjectInclusionBulk({
 		categoryId: +selectedCategoryId,
 	});
 
@@ -51,6 +56,7 @@ const ProjectRankingEditPage = () => {
 			setExcludedProjects(prevProjects =>
 				prevProjects.filter(p => p.id !== projectId),
 			);
+			setHasChanges(true);
 		}
 	};
 
@@ -64,6 +70,7 @@ const ProjectRankingEditPage = () => {
 			setIncludedProjects(prevProjects =>
 				prevProjects.filter(p => p.id !== projectId),
 			);
+			setHasChanges(true);
 		}
 		console.log('includedProjects', includedProjects);
 	};
@@ -188,7 +195,8 @@ const ProjectRankingEditPage = () => {
 					</Button>
 					<Button
 						onClick={handleSubmit}
-						className='w-full bg-primary'
+						className={`w-full bg-primary ${!hasChanges || isUpdatingPending ? 'cursor-not-allowed opacity-50' : ''}`}
+						disabled={!hasChanges || isUpdatingPending} // Disable button if no changes or update is pending
 					>
 						Save Changes
 					</Button>

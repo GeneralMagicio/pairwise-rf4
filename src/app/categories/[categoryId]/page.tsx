@@ -29,12 +29,18 @@ const CategoryPage = () => {
 	const selectedCategoryProgress = data?.data.progress;
 
 	useEffect(() => {
-		posthog.capture('User goes to the Categories page', {categoryName:`${selectedCategory?.name}`});
-	  },[]);
-	  
+		posthog.capture('User goes to the Categories page', {
+			categoryName: `${selectedCategory?.name}`,
+		});
+	}, []);
+
 	if (isProjectsLoading || isCategoryLoading) {
 		return <LoadingSpinner />;
 	}
+
+	const minimumProjects = projects?.data?.length
+		? Math.ceil(projects?.data?.length * 0.21)
+		: 2;
 
 	return (
 		<div className='flex min-h-[calc(100dvh)] flex-col  justify-between'>
@@ -60,7 +66,7 @@ const CategoryPage = () => {
 					</div>
 				</div>
 				<p className='mx-4 my-4 font-bold text-red-800'>
-					Important: You must at least choose 2 projects.
+					{`Important: You must at least choose ${minimumProjects} projects.`}
 				</p>
 				<p className='mx-4 font-bold text-gray-600'>
 					Projects ({projects?.data?.length})
@@ -73,7 +79,7 @@ const CategoryPage = () => {
 					))}
 				</div>
 			</div>
-			<div className='px-6 py-6'>
+			<div className='sticky bottom-0 mt-4 border-t border-b-gray-200 bg-white px-6 py-6'>
 				<Button
 					className='w-full bg-primary'
 					onClick={() =>

@@ -2,11 +2,11 @@
 
 import Image from 'next/image';
 import ConnectOTPInput, { OtpState } from '../components/ConnectOtpInput';
-import { useState } from 'react';
+import { Suspense, useEffect, useState } from 'react';
 import Button from '@/app/components/Button';
 import { badgesImages } from '@/app/constants/BadgesData';
 import { useUpdateOtp } from '@/app/features/user/updateOtp';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { Routes } from '@/app/constants/Routes';
 import { queryClient } from '@/lib/react-query';
 import { useMutation } from '@tanstack/react-query';
@@ -18,6 +18,7 @@ import {
 import axios from 'axios';
 import { API_URL } from '@/app/config';
 import { BadgeData } from '@/app/badges/components/BadgeCard';
+import OtpIcon from 'public/images/icons/iconOTP';
 
 const storeIdentity = async ({
 	identity,
@@ -68,6 +69,7 @@ const storeBadges = async ({
 
 const ConnectOTPPage = () => {
 	const [otp, setOtp] = useState('');
+
 	const [otpState, setOtpState] = useState<OtpState>(OtpState.Ready);
 	const [error, setError] = useState<string | false>(false);
 	const { mutateAsync, isPending } = useUpdateOtp();
@@ -85,11 +87,17 @@ const ConnectOTPPage = () => {
 
 	const router = useRouter();
 
+	useEffect(() => {
+		const currentParams = new URLSearchParams(window.location.search);
+		const otp = currentParams.get('otp') 
+		if (otp) setOtp(otp)
+	}, [])
+
 	const handleSubmitOtp = async () => {
 		try {
 			if (otp) {
 				const res = await mutateAsync({ data: { otp } });
-				setOtpState(OtpState.Valid)
+				setOtpState(OtpState.Valid);
 
 				const token = res.data;
 				const message = `Sign this message to generate your Semaphore identity.`;
@@ -103,14 +111,20 @@ const ConnectOTPPage = () => {
 
 				if (!identity || !address) return;
 
-				await storeIdentityMutation({ identity, token })
-				await storeBadgesMutation({ mainAddress: address, signature, token })
+				await storeIdentityMutation({ identity, token });
+				await storeBadgesMutation({
+					mainAddress: address,
+					signature,
+					token,
+				});
 
 				router.push(Routes.ConnectSuccess);
 			}
 		} catch (error) {
 			setOtpState(OtpState.Invalid);
-			setError('Not able to connect you to a user. Please try again later');
+			setError(
+				'Not able to connect you to a user. Please try again later',
+			);
 		}
 	};
 
@@ -151,7 +165,13 @@ const ConnectOTPPage = () => {
 				<p className='text-xl font-semibold'>
 					Paste the OTP from Pairwise.
 				</p>
-				<p className='mb-6 mt-2 text-primary'>How to get OTP?</p>
+				<div
+					className='mb-6 mt-2 flex w-fit items-center justify-start gap-1'
+					title={`Go to the Pairwise WebApp and click on connect. You'll get the code. Use it here if you don't have your wallet on the other device`}
+				>
+					<p className='text-primary'>How to get OTP?</p>
+					<OtpIcon />
+				</div>
 				<div>
 					<ConnectOTPInput
 						otp={otp}
@@ -174,5 +194,6 @@ const ConnectOTPPage = () => {
 		</div>
 	);
 };
+
 
 export default ConnectOTPPage;
