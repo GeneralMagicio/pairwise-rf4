@@ -58,28 +58,28 @@ const defaultMetricData: CategoryMetricData = {
 		},
 		openrankTrustedUsersCount: {
 			value: 'NA',
-			description: 'OpenRank Trusted Users Count',
+			description: 'OpenRank Trusted Users',
 		},
 	},
 	NetworkQuality: {
 		gasFees: { value: 'NA', description: 'Gas Fees' },
-		transactionCount: { value: 'NA', description: 'Transaction Count' },
+		transactionCount: { value: 'NA', description: 'Transactions' },
 		trustedTransactionCount: {
 			value: 'NA',
-			description: 'Trusted Transaction Count',
+			description: 'Trusted Transactions',
 		},
 		trustedTransactionShare: {
 			value: 'NA',
 			description: 'Trusted Transaction Share',
 		},
-		logGasFees: { value: 'NA', description: 'Log Gas Fees' },
+		logGasFees: { value: 'NA', description: 'Gas Fees (Log scale)' },
 		logTransactionCount: {
 			value: 'NA',
-			description: 'Log Transaction Count',
+			description: 'Transaction (Log scale)',
 		},
 		logTrustedTransactionCount: {
 			value: 'NA',
-			description: 'Log Trusted Transaction Count',
+			description: 'Trusted transactions (Log scale)',
 		},
 	},
 	UserGrowth: {
@@ -142,7 +142,7 @@ export const processProjectMetricsCSV = (
 					},
 					openrankTrustedUsersCount: {
 						value: parseNumber(cells[14]),
-						description: 'OpenRank Trusted Users Count',
+						description: 'OpenRank Trusted Users',
 					},
 				},
 				NetworkQuality: {
@@ -152,11 +152,11 @@ export const processProjectMetricsCSV = (
 					},
 					transactionCount: {
 						value: parseNumber(cells[3]),
-						description: 'Transaction Count',
+						description: 'Transactions',
 					},
 					trustedTransactionCount: {
 						value: parseNumber(cells[4]),
-						description: 'Trusted Transaction Count',
+						description: 'Trusted Transactions',
 					},
 					trustedTransactionShare: {
 						value: parseNumber(cells[5]),
@@ -164,15 +164,15 @@ export const processProjectMetricsCSV = (
 					},
 					logGasFees: {
 						value: parseNumber(cells[16]),
-						description: 'Log Gas Fees',
+						description: 'Gas Fees (Log scale)',
 					},
 					logTransactionCount: {
 						value: parseNumber(cells[17]),
-						description: 'Log Transaction Count',
+						description: 'Transaction (Log scale)',
 					},
 					logTrustedTransactionCount: {
 						value: parseNumber(cells[18]),
-						description: 'Log Trusted Transaction Count',
+						description: 'Trusted transactions (Log scale)',
 					},
 				},
 				UserGrowth: {
