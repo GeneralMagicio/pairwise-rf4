@@ -4,13 +4,14 @@ import Image from 'next/image';
 import IconCopy from 'public/images/icons/IconCopy';
 import { useAccount, useConnect, useDisconnect } from 'wagmi';
 import Button from './Button';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useGetOtp } from '../features/user/getOtp';
 import useCopyToClipboard from '../hooks/useCopyToClipboard';
 import { useRouter } from 'next/navigation';
 import { Routes } from '../constants/Routes';
 import { useContinueGuest } from '../features/badges/getBadges';
 import { walletsLogos } from '../constants/WalletIcons';
+import { SuccessBox } from '../login/components/SuccessBox';
 
 interface IConnectWalletContentProps {
 	onConnect?: () => void;
@@ -27,6 +28,11 @@ const ConnectWalletContent = ({
 	const { data: OtpData, isLoading: isOtpLoading } = useGetOtp();
 	const { disconnect } = useDisconnect();
 	const [copiedText, copy] = useCopyToClipboard();
+	const [copied, setCopied] = useState(false);
+
+	useEffect(() => {
+		if (copied) setTimeout(() => setCopied(false), 1000);
+	}, [copied]);
 
 	const { mutateAsync: continueAsGuest, isPending } = useContinueGuest();
 
@@ -52,15 +58,18 @@ const ConnectWalletContent = ({
 		}
 	}, [isConnected]);
 
-	const targetUrl = window && !isOtpLoading
-		? `${window.location.origin}/connect?otp=${OtpData?.data}`
-		: '';
+	const targetUrl =
+		window && !isOtpLoading
+			? `${window.location.origin}/connect?otp=${OtpData?.data}`
+			: '';
 
 	return (
 		<div className='w-full'>
 			<p className='mb-4 border-b border-gray-200 py-4 text-center text-lg font-bold '>
 				Connect Wallet
 			</p>
+			<div className='h-4 w-full flex justify-center'>{copied && <SuccessBox message='Copied' />}</div>
+
 			<div className='mt-4 border-b border-gray-200 py-4'>
 				{address ? (
 					<button onClick={() => disconnect()}>Disconnect</button>
@@ -124,7 +133,7 @@ const ConnectWalletContent = ({
 						[website]
 					</a> */}
 				</span>
-				<div className='flex justify-between rounded-md bg-gray-100 px-4 py-2 text-primary'>
+				<div className='flex justify-between rounded-md bg-gray-100 px-4 py-2'>
 					<a
 						target='_blank'
 						href={targetUrl || undefined}
@@ -133,7 +142,10 @@ const ConnectWalletContent = ({
 						{targetUrl}
 					</a>
 					<div
-						onClick={() => copy(targetUrl)}
+						onClick={() => {
+							copy(targetUrl);
+							setCopied(true);
+						}}
 						className='cursor-pointer'
 					>
 						<IconCopy />
