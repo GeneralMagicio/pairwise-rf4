@@ -19,12 +19,16 @@ export type CategoryMetricData = {
 		dailyActiveAddresses: Metric;
 		monthlyActiveAddresses: Metric;
 		recurringAddresses: Metric;
+		openrankTrustedUsersCount: Metric;
 	};
 	NetworkQuality: {
 		gasFees: Metric;
 		transactionCount: Metric;
 		trustedTransactionCount: Metric;
 		trustedTransactionShare: Metric;
+		logGasFees: Metric;
+		logTransactionCount: Metric;
+		logTrustedTransactionCount: Metric;
 	};
 	UserGrowth: {
 		trustedUsersOnboarded: Metric;
@@ -35,9 +39,9 @@ export type CategoryMetricData = {
 		trustedRecurringUsers: Metric;
 		powerUserAddresses: Metric;
 	};
-	// checkOssRequirements: Metric;
 };
 
+// Initial default values
 const defaultMetricData: CategoryMetricData = {
 	NetworkGrowth: {
 		dailyActiveAddresses: {
@@ -52,6 +56,10 @@ const defaultMetricData: CategoryMetricData = {
 			value: 'NA',
 			description: 'Recurring Addresses',
 		},
+		openrankTrustedUsersCount: {
+			value: 'NA',
+			description: 'OpenRank Trusted Users Count',
+		},
 	},
 	NetworkQuality: {
 		gasFees: { value: 'NA', description: 'Gas Fees' },
@@ -63,6 +71,15 @@ const defaultMetricData: CategoryMetricData = {
 		trustedTransactionShare: {
 			value: 'NA',
 			description: 'Trusted Transaction Share',
+		},
+		logGasFees: { value: 'NA', description: 'Log Gas Fees' },
+		logTransactionCount: {
+			value: 'NA',
+			description: 'Log Transaction Count',
+		},
+		logTrustedTransactionCount: {
+			value: 'NA',
+			description: 'Log Trusted Transaction Count',
 		},
 	},
 	UserGrowth: {
@@ -123,6 +140,10 @@ export const processProjectMetricsCSV = (
 						value: parseNumber(cells[11]),
 						description: 'Recurring Addresses',
 					},
+					openrankTrustedUsersCount: {
+						value: parseNumber(cells[14]),
+						description: 'OpenRank Trusted Users Count',
+					},
 				},
 				NetworkQuality: {
 					gasFees: {
@@ -141,8 +162,19 @@ export const processProjectMetricsCSV = (
 						value: parseNumber(cells[5]),
 						description: 'Trusted Transaction Share',
 					},
+					logGasFees: {
+						value: parseNumber(cells[16]),
+						description: 'Log Gas Fees',
+					},
+					logTransactionCount: {
+						value: parseNumber(cells[17]),
+						description: 'Log Transaction Count',
+					},
+					logTrustedTransactionCount: {
+						value: parseNumber(cells[18]),
+						description: 'Log Trusted Transaction Count',
+					},
 				},
-
 				UserGrowth: {
 					trustedUsersOnboarded: {
 						value: parseNumber(cells[6]),
@@ -167,10 +199,6 @@ export const processProjectMetricsCSV = (
 						description: 'Power User Addresses',
 					},
 				},
-				// checkOssRequirements: {
-				// 	value: cells[1].toUpperCase() === 'TRUE',
-				// 	description: 'Check OSS Requirements',
-				// },
 			};
 			metricsMap.set(projectId, metricData);
 		}
