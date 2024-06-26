@@ -86,6 +86,7 @@ const ProjectRankingEditPage = () => {
 				data: {
 					state: InclusionState.Included,
 					ids: includedProjectIds,
+					collectionId: +selectedCategoryId,
 				},
 			});
 			router.push(
