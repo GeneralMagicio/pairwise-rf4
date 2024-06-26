@@ -16,26 +16,26 @@ export interface ComparisonResult {
 
 export type CategoryMetricData = {
 	NetworkGrowth: {
+		gasFees: Metric;
+		logGasFees: Metric;
 		dailyActiveAddresses: Metric;
 		monthlyActiveAddresses: Metric;
 		recurringAddresses: Metric;
-		openrankTrustedUsersCount: Metric;
 	};
 	NetworkQuality: {
-		gasFees: Metric;
 		transactionCount: Metric;
 		trustedTransactionCount: Metric;
 		trustedTransactionShare: Metric;
-		logGasFees: Metric;
 		logTransactionCount: Metric;
 		logTrustedTransactionCount: Metric;
 	};
 	UserGrowth: {
 		trustedUsersOnboarded: Metric;
-	};
-	UserQuality: {
 		trustedDailyActiveUsers: Metric;
 		trustedMonthlyActiveUsers: Metric;
+		openrankTrustedUsersCount: Metric;
+	};
+	UserQuality: {
 		trustedRecurringUsers: Metric;
 		powerUserAddresses: Metric;
 	};
@@ -44,6 +44,8 @@ export type CategoryMetricData = {
 // Initial default values
 const defaultMetricData: CategoryMetricData = {
 	NetworkGrowth: {
+		gasFees: { value: 'NA', description: 'Gas Fees' },
+		logGasFees: { value: 'NA', description: 'Gas Fees (Log scale)' },
 		dailyActiveAddresses: {
 			value: 'NA',
 			description: 'Daily Active Addresses',
@@ -56,13 +58,8 @@ const defaultMetricData: CategoryMetricData = {
 			value: 'NA',
 			description: 'Recurring Addresses',
 		},
-		openrankTrustedUsersCount: {
-			value: 'NA',
-			description: 'OpenRank Trusted Users',
-		},
 	},
 	NetworkQuality: {
-		gasFees: { value: 'NA', description: 'Gas Fees' },
 		transactionCount: { value: 'NA', description: 'Transactions' },
 		trustedTransactionCount: {
 			value: 'NA',
@@ -72,7 +69,6 @@ const defaultMetricData: CategoryMetricData = {
 			value: 'NA',
 			description: 'Trusted Transaction Share',
 		},
-		logGasFees: { value: 'NA', description: 'Gas Fees (Log scale)' },
 		logTransactionCount: {
 			value: 'NA',
 			description: 'Transaction (Log scale)',
@@ -87,8 +83,10 @@ const defaultMetricData: CategoryMetricData = {
 			value: 'NA',
 			description: 'Trusted Users Onboarded',
 		},
-	},
-	UserQuality: {
+		openrankTrustedUsersCount: {
+			value: 'NA',
+			description: 'OpenRank Trusted Users',
+		},
 		trustedDailyActiveUsers: {
 			value: 'NA',
 			description: 'Trusted Daily Active Users',
@@ -97,6 +95,8 @@ const defaultMetricData: CategoryMetricData = {
 			value: 'NA',
 			description: 'Trusted Monthly Active Users',
 		},
+	},
+	UserQuality: {
 		trustedRecurringUsers: {
 			value: 'NA',
 			description: 'Trusted Recurring Users',
@@ -130,8 +130,16 @@ export const processProjectMetricsCSV = (
 		console.log('Cells:', cells);
 		if (cells.length === headers.length) {
 			const projectId = cells[0];
-			const metricData = {
+			const metricData: CategoryMetricData = {
 				NetworkGrowth: {
+					gasFees: {
+						value: parseNumber(cells[2]),
+						description: 'Gas Fees',
+					},
+					logGasFees: {
+						value: parseNumber(cells[15]),
+						description: 'Gas Fees (Log scale)',
+					},
 					dailyActiveAddresses: {
 						value: parseNumber(cells[7]),
 						description: 'Daily Active Addresses',
@@ -144,16 +152,8 @@ export const processProjectMetricsCSV = (
 						value: parseNumber(cells[11]),
 						description: 'Recurring Addresses',
 					},
-					openrankTrustedUsersCount: {
-						value: parseNumber(cells[14]),
-						description: 'OpenRank Trusted Users',
-					},
 				},
 				NetworkQuality: {
-					gasFees: {
-						value: parseNumber(cells[2]),
-						description: 'Gas Fees',
-					},
 					transactionCount: {
 						value: parseNumber(cells[3]),
 						description: 'Transactions',
@@ -166,10 +166,7 @@ export const processProjectMetricsCSV = (
 						value: parseNumber(cells[5]),
 						description: 'Trusted Transaction Share',
 					},
-					logGasFees: {
-						value: parseNumber(cells[15]),
-						description: 'Gas Fees (Log scale)',
-					},
+
 					logTransactionCount: {
 						value: parseNumber(cells[16]),
 						description: 'Transaction (Log scale)',
@@ -184,8 +181,10 @@ export const processProjectMetricsCSV = (
 						value: parseNumber(cells[6]),
 						description: 'Trusted Users Onboarded',
 					},
-				},
-				UserQuality: {
+					openrankTrustedUsersCount: {
+						value: parseNumber(cells[14]),
+						description: 'OpenRank Trusted Users',
+					},
 					trustedDailyActiveUsers: {
 						value: parseNumber(cells[8]),
 						description: 'Trusted Daily Active Users',
@@ -194,6 +193,8 @@ export const processProjectMetricsCSV = (
 						value: parseNumber(cells[10]),
 						description: 'Trusted Monthly Active Users',
 					},
+				},
+				UserQuality: {
 					trustedRecurringUsers: {
 						value: parseNumber(cells[12]),
 						description: 'Trusted Recurring Users',
