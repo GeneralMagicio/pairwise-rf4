@@ -66,7 +66,7 @@ const CategoryPage = () => {
 					</div>
 				</div>
 				<p className='mx-4 my-4 font-bold text-red-800'>
-					{`Important: You must at least choose ${minimumProjects} projects.`}
+					{`Important: You must choose at least ${minimumProjects} projects.`}
 				</p>
 				<p className='mx-4 font-bold text-gray-600'>
 					Projects ({projects?.data?.length})
