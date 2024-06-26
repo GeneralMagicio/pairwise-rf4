@@ -11,12 +11,23 @@ interface ICategoryPairwiseCardWithMetricsProps {
 const CategoryPairwiseCardWithMetrics = ({
 	project,
 }: ICategoryPairwiseCardWithMetricsProps) => {
+	const getDescription = (project: IProject) => {
+		if (project.impactDescription.length > 0)
+			return project.impactDescription;
+		if (
+			project.contributionDescription &&
+			project.contributionDescription.length > 0
+		)
+			return project.contributionDescription;
+
+		return null;
+	};
 	return (
 		<div>
 			<div className='relative mx-4 overflow-hidden rounded-2xl'>
 				<div
 					className={cn(
-						'relative h-[170px] w-[170px] rounded-2xl',
+						'relative mx-auto h-[170px] w-[170px] rounded-2xl',
 						!project.image && 'bg-gray-700',
 					)}
 					style={
@@ -38,7 +49,7 @@ const CategoryPairwiseCardWithMetrics = ({
 				<div className='pt-2 text-center'>
 					<p className=' font-bold '>{truncate(project.name, 16)}</p>
 					<p className='text-ph'>
-						{truncate(project.impactDescription, 50)}
+						{truncate(getDescription(project) || '', 80)}
 					</p>
 				</div>
 			</div>
