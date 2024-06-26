@@ -98,7 +98,7 @@ const CategoryPairwiseRankingPage = () => {
 
 	const fetchMetrics = async () => {
 		try {
-			const response = await fetch('/data/cleaned_metrics.csv');
+			const response = await fetch('/data/updated_metrics_with_ids.csv');
 			const data = await response.text();
 			const processedMap = processProjectMetricsCSV(data);
 			const formatted = compareProjects(
