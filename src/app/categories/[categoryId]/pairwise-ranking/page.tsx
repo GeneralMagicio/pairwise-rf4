@@ -42,7 +42,7 @@ const CategoryPairwiseRankingPage = () => {
 	const [formattedMetrics, setFormattedMetrics] =
 		useState<ComparisonResult>();
 
-	const { mutate, isPending: isVotingPending } = useUpdateProjectVote({
+	const { mutateAsync, isPending: isVotingPending } = useUpdateProjectVote({
 		categoryId: +selectedCategoryId,
 	});
 
@@ -78,13 +78,15 @@ const CategoryPairwiseRankingPage = () => {
 		posthog.capture('Selected Project for more Funding', {
 			selectedProject: selectedProject,
 		});
-		mutate({
+		await mutateAsync({
 			data: {
 				project1Id: firstProject.id,
 				project2Id: secondProject.id,
 				pickedId,
 			},
 		});
+		// Scroll to the top of the page after voting
+		window.scrollTo({ top: 0, behavior: 'smooth' });
 	};
 
 	const { mutateAsync: finishRankingMutation, isPending } =
@@ -173,6 +175,9 @@ const CategoryPairwiseRankingPage = () => {
 				<div className='items-top flex justify-between gap-4 pb-6'>
 					<div
 						key={firstProject.id}
+						onClick={() =>
+							!isLoading && handleVote(firstProject.id)
+						}
 						className={`${isLoading ? 'cursor-not-allowed opacity-50' : 'opacity-100'} cursor-pointer`}
 					>
 						<CategoryPairwiseCardWithMetrics
@@ -181,6 +186,9 @@ const CategoryPairwiseRankingPage = () => {
 					</div>
 					<div
 						key={secondProject.id}
+						onClick={() =>
+							!isLoading && handleVote(secondProject.id)
+						}
 						className={`${isLoading ? 'cursor-not-allowed opacity-50' : 'opacity-100'} cursor-pointer`}
 					>
 						<CategoryPairwiseCardWithMetrics
@@ -257,7 +265,7 @@ const CategoryPairwiseRankingPage = () => {
 						<div className='relative z-10 flex justify-between'>
 							<div
 								className={cn(
-									'flex w-40 items-center justify-center gap-2 rounded-lg bg-white px-4 py-2 font-semibold shadow-md',
+									'flex w-40 cursor-pointer items-center justify-center gap-2 rounded-lg bg-white px-4 py-2 font-semibold shadow-md',
 									{
 										'cursor-not-allowed opacity-50':
 											isLoading,
@@ -289,7 +297,7 @@ const CategoryPairwiseRankingPage = () => {
 							</div>
 							<div
 								className={cn(
-									'flex w-40 items-center justify-center gap-2 rounded-lg bg-white px-4 py-2 font-semibold shadow-md',
+									'flex w-40 cursor-pointer items-center justify-center gap-2 rounded-lg bg-white px-4 py-2 font-semibold shadow-md',
 									{
 										'cursor-not-allowed opacity-50':
 											isLoading,

@@ -79,6 +79,10 @@ const ProjectRankingPage = () => {
 				if (!isLastProjectInTheList) {
 					setCurrentIndex(curr => curr + 1);
 				}
+			})
+			.then(() => {
+				// Scroll to the top of the page after filtering
+				window.scrollTo({ top: 0, behavior: 'smooth' });
 			});
 	};
 
