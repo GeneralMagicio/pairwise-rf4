@@ -225,7 +225,7 @@ const CollectVotingPowerContent = ({
 						isLoading={noBadgeConnecting}
 						className='w-full bg-primary'
 					>
-						Done
+						Connect Anyway
 					</Button>
 				</div>
 			);
