@@ -46,11 +46,11 @@ const defaultMetricData: CategoryMetricData = {
 	NetworkGrowth: {
 		dailyActiveAddresses: {
 			value: 'NA',
-			description: 'Daily Active Users (DAU)',
+			description: 'Daily Active Addresses',
 		},
 		monthlyActiveAddresses: {
 			value: 'NA',
-			description: 'Monthly Active Users',
+			description: 'Monthly Active Addresses',
 		},
 		recurringAddresses: {
 			value: 'NA',
@@ -110,6 +110,9 @@ const defaultMetricData: CategoryMetricData = {
 
 // Helper function to parse a string as a float, handling commas and optional quotes
 const parseNumber = (value: string): number | 'NA' => {
+	if (!value) {
+		return 'NA';
+	}
 	const cleanedValue = value.replace(/"/g, '').replace(/,/g, '');
 	return cleanedValue ? parseFloat(cleanedValue) || 'NA' : 'NA';
 };
@@ -124,17 +127,18 @@ export const processProjectMetricsCSV = (
 
 	for (let i = 1; i < rows.length; i++) {
 		const cells = rows[i].split(',');
+		console.log('Cells:', cells);
 		if (cells.length === headers.length) {
 			const projectId = cells[0];
 			const metricData = {
 				NetworkGrowth: {
 					dailyActiveAddresses: {
 						value: parseNumber(cells[7]),
-						description: 'Daily Active Users (DAU)',
+						description: 'Daily Active Addresses',
 					},
 					monthlyActiveAddresses: {
 						value: parseNumber(cells[9]),
-						description: 'Monthly Active Users',
+						description: 'Monthly Active Addresses',
 					},
 					recurringAddresses: {
 						value: parseNumber(cells[11]),
@@ -163,15 +167,15 @@ export const processProjectMetricsCSV = (
 						description: 'Trusted Transaction Share',
 					},
 					logGasFees: {
-						value: parseNumber(cells[16]),
+						value: parseNumber(cells[15]),
 						description: 'Gas Fees (Log scale)',
 					},
 					logTransactionCount: {
-						value: parseNumber(cells[17]),
+						value: parseNumber(cells[16]),
 						description: 'Transaction (Log scale)',
 					},
 					logTrustedTransactionCount: {
-						value: parseNumber(cells[18]),
+						value: parseNumber(cells[17]),
 						description: 'Trusted transactions (Log scale)',
 					},
 				},
