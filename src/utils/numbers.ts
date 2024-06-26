@@ -1,6 +1,9 @@
-export function formatMetricsNumber(num: number) {
+export function formatMetricsNumber(num: number | 'NA') {
 	if (num === undefined || num === null) {
 		return undefined;
+	}
+	if (num === 'NA') {
+		return 'NA';
 	}
 
 	if (num >= 1000000) {

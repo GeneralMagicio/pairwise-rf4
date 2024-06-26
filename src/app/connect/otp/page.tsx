@@ -28,7 +28,7 @@ const storeIdentity = async ({
 	token: string;
 }) => {
 	return axios.post(
-		`${API_URL}user/store-identity`,
+		`${API_URL}/user/store-identity`,
 		{
 			identity,
 		},
@@ -51,7 +51,7 @@ const storeBadges = async ({
 	token: string;
 }) => {
 	const { data: badges } = await axios.post<BadgeData>(
-		`${API_URL}user/store-badges`,
+		`${API_URL}/user/store-badges`,
 		{
 			mainAddress,
 			signature,
@@ -89,9 +89,9 @@ const ConnectOTPPage = () => {
 
 	useEffect(() => {
 		const currentParams = new URLSearchParams(window.location.search);
-		const otp = currentParams.get('otp') 
-		if (otp) setOtp(otp)
-	}, [])
+		const otp = currentParams.get('otp');
+		if (otp) setOtp(otp);
+	}, []);
 
 	const handleSubmitOtp = async () => {
 		try {
@@ -123,7 +123,7 @@ const ConnectOTPPage = () => {
 		} catch (error) {
 			setOtpState(OtpState.Invalid);
 			setError(
-				'Not able to connect you to a user. Please try again later',
+				'Please try again.',
 			);
 		}
 	};
@@ -163,7 +163,7 @@ const ConnectOTPPage = () => {
 			</div>
 			<div className='border-1 mb-10 rounded-lg border border-gray-200 p-6'>
 				<p className='text-xl font-semibold'>
-					Paste the OTP from Pairwise.
+					Paste the OTP from your other device.
 				</p>
 				<div
 					className='mb-6 mt-2 flex w-fit items-center justify-start gap-1'
@@ -188,12 +188,11 @@ const ConnectOTPPage = () => {
 					className={`mt-6 w-full ${!disabled ? 'bg-primary' : 'cursor-not-allowed bg-gray-200'}`}
 					disabled={disabled}
 				>
-					Delegate
+					Connect
 				</Button>
 			</div>
 		</div>
 	);
 };
-
 
 export default ConnectOTPPage;
