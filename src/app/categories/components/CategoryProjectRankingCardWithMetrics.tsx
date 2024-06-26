@@ -20,6 +20,17 @@ interface ICategoryProjectRankingCardWithMetricsProps {
 	project: IProject;
 }
 
+const getDescription = (project: IProject) => {
+	if (project.impactDescription.length > 0) return project.impactDescription;
+	if (
+		project.contributionDescription &&
+		project.contributionDescription.length > 0
+	)
+		return project.contributionDescription;
+
+	return null;
+};
+
 const CategoryProjectRankingCardWithMetrics = ({
 	project,
 }: ICategoryProjectRankingCardWithMetricsProps) => {
@@ -33,11 +44,10 @@ const CategoryProjectRankingCardWithMetrics = ({
 		metricsMap,
 		getRandomProjectId(project.name), //sample project ID
 	);
-	console.log('projectMetrics:', projectMetrics);
 
 	const fetchMetrics = async () => {
 		try {
-			const response = await fetch('/data/cleaned_metrics.csv');
+			const response = await fetch('/data/updated_metrics_with_ids.csv');
 			const data = await response.text();
 			const processedMap = processProjectMetricsCSV(data);
 			setMetricsMap(processedMap);
@@ -87,11 +97,11 @@ const CategoryProjectRankingCardWithMetrics = ({
 					<p className='mb-4 font-bold'>{project.name}</p>
 				</div>
 				<p className='text-ph'>
-					{!learnMore
-						? truncate(project.impactDescription, 90)
-						: project.impactDescription}
+					{!learnMore || !getDescription(project)
+						? truncate(getDescription(project) || '', 90)
+						: getDescription(project)}
 				</p>
-				{!learnMore && (
+				{!learnMore && getDescription(project) && (
 					<Button
 						onClick={() => setLearnMore(true)}
 						className='mt-4 w-full border border-gray-300 text-black'

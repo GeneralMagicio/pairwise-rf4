@@ -4,7 +4,10 @@ import CategoryRankingItem from '@/app/categories/components/CategoryRankingItem
 import Button from '@/app/components/Button';
 import LoadingSpinner from '@/app/components/LoadingSpinner';
 import TopRouteIndicator from '@/app/components/TopRouteIndicator';
-import { getGroup, getMembersGroup } from '@/app/connect/anonvote/utils/bandadaApi';
+import {
+	getGroup,
+	getMembersGroup,
+} from '@/app/connect/anonvote/utils/bandadaApi';
 import supabase from '@/app/connect/anonvote/utils/supabaseClient';
 import { useCategoryRankings } from '@/app/features/categories/getCategoryRankings';
 import { activeChain } from '@/lib/third-web/constants';
@@ -21,10 +24,7 @@ import {
 import { Group } from '@semaphore-protocol/group';
 import { Identity } from '@semaphore-protocol/identity';
 import { generateProof } from '@semaphore-protocol/proof';
-import {
-	encodeBytes32String,
-	toBigInt,
-} from "ethers"
+import { encodeBytes32String, toBigInt } from 'ethers';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { useActiveWallet } from 'thirdweb/react';
@@ -243,10 +243,11 @@ const CategoryRankingComment = () => {
 
 			if (prevAttestations.length > 0) {
 				for (const id of prevAttestations) {
-					await eas.revoke({
+					const revokedTransactions = await eas.revoke({
 						schema: SCHEMA_UID,
 						data: { uid: id },
 					});
+					await revokedTransactions.wait();
 				}
 			}
 

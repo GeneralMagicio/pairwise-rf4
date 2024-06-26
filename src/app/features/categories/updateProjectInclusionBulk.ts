@@ -4,6 +4,7 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 
 type ProjectInclusionBulkData = {
 	data: {
+		collectionId: number;
 		state: InclusionState;
 		ids: number[]; //project id
 	};

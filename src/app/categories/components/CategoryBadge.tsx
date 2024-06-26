@@ -16,13 +16,13 @@ const CategoryBadge = ({
 			);
 		case 'Filtering':
 			return (
-				<div className='whitespace-nowrap rounded-full border border-gray-300 bg-gray-100 px-2 py-1 text-ph'>
+				<div className='whitespace-nowrap rounded-full border border-[#FEC84B] bg-[#FFFAEB] px-2 py-1 text-[#F79009]'>
 					Filtering
 				</div>
 			);
 		case 'Filtered':
 			return (
-				<div className='whitespace-nowrap rounded-full border border-blue-200 bg-blue-50 px-2 py-1 text-blue-700'>
+				<div className='whitespace-nowrap rounded-full border border-[#B2DDFF] bg-[#EFF8FF] px-2 py-1 text-[#175CD3]'>
 					Filtered
 				</div>
 			);
@@ -30,7 +30,7 @@ const CategoryBadge = ({
 		case 'WIP':
 		case 'Finished':
 			return (
-				<div className='whitespace-nowrap rounded-full border border-gray-300 bg-gray-100 px-2 py-1 text-ph'>
+				<div className='whitespace-nowrap rounded-full border  border-[#FEC84B] bg-[#FFFAEB] px-2 py-1 text-[#F79009]'>
 					Ranking
 				</div>
 			);
