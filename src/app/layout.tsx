@@ -10,6 +10,7 @@ import { Thirdweb5Provider } from '@/lib/third-web/provider';
 import { AuthGuard } from '@/utils/AuthGuard';
 import { ConnectProvider } from './providers/ConnectProvider';
 import ConnectDrawers from './components/ConnectDrawers';
+import Head from 'next/head';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -25,6 +26,9 @@ export default function RootLayout({
 }>) {
 	return (
 		<html lang='en'>
+			<Head>
+				<link rel='icon' href='/favicon.ico' sizes='any' />
+			</Head>
 			<body className={inter.className}>
 				<WagmiAppProvider>
 					<TanstackProvider>
