@@ -91,8 +91,6 @@ const ConnectOTPPage = () => {
 	const { data: publicBadges, isLoading: isPublicBadgesLoading } =
 		useGetPublicBadges(address || '');
 
-	console.log('publicBadgesData: ', publicBadges);
-
 	const { signMessageAsync } = useSignMessage();
 
 	const router = useRouter();
@@ -101,7 +99,6 @@ const ConnectOTPPage = () => {
 		Object.keys(publicBadges).filter(el =>
 			Object.keys(badgeTypeMapping).includes(el),
 		).length;
-	// const numOfBadgesFunc = () => 0;
 
 	useEffect(() => {
 		const currentParams = new URLSearchParams(window.location.search);
