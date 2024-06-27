@@ -17,8 +17,13 @@ import {
 } from '@/app/hooks/useCreateIdentity';
 import axios from 'axios';
 import { API_URL } from '@/app/config';
-import { BadgeData } from '@/app/badges/components/BadgeCard';
+import { BadgeData, badgeTypeMapping } from '@/app/badges/components/BadgeCard';
 import OtpIcon from 'public/images/icons/iconOTP';
+import { useGetPublicBadges } from '@/app/features/badges/getBadges';
+import { AdjacentBadges } from '@/app/badges/components/AdjacentBadges';
+import { json } from 'stream/consumers';
+import { ConnectErrorBox } from '../components/ConnectErrorBox';
+import LoadingSpinner from '@/app/components/LoadingSpinner';
 
 const storeIdentity = async ({
 	identity,
@@ -83,9 +88,20 @@ const ConnectOTPPage = () => {
 
 	const { address } = useAccount();
 
+	const { data: publicBadges, isLoading: isPublicBadgesLoading } =
+		useGetPublicBadges(address || '');
+
+	console.log('publicBadgesData: ', publicBadges);
+
 	const { signMessageAsync } = useSignMessage();
 
 	const router = useRouter();
+
+	const numOfBadgesFunc = (publicBadges: BadgeData) =>
+		Object.keys(publicBadges).filter(el =>
+			Object.keys(badgeTypeMapping).includes(el),
+		).length;
+	// const numOfBadgesFunc = () => 0;
 
 	useEffect(() => {
 		const currentParams = new URLSearchParams(window.location.search);
@@ -123,12 +139,49 @@ const ConnectOTPPage = () => {
 		} catch (error) {
 			setOtpState(OtpState.Invalid);
 			setError(
-				'Please try again.',
+				`There's no Pairwise account associated with your link. Please get back to the Mobile App and try a new link.`,
 			);
 		}
 	};
 
 	const disabled = otp.length !== 6 || isPending;
+
+	if (isPublicBadgesLoading) {
+		return <LoadingSpinner />;
+	}
+
+	if (publicBadges && numOfBadgesFunc(publicBadges) === 0) {
+		return (
+			<div className='centered-mobile-max-width px-4 py-6 text-center'>
+				<div>
+					<p className='pb-2 text-3xl font-bold'>Claim badges</p>
+					<p className='text-ph'>
+						Oh no, this address does not have any badge to claim.
+						But no worries, you can still play and vote.
+					</p>
+				</div>
+				<div className='my-2 flex flex-col items-center gap-4'>
+					<Image
+						src={'/images/characters/12.png'}
+						alt='No badges character'
+						height={160}
+						width={160}
+					/>
+					<p className='mb-4 text-primary'>No Badges found</p>
+				</div>
+				<Button
+					onClick={handleSubmitOtp}
+					className={`mt-6 w-full ${!disabled ? 'bg-primary' : 'cursor-not-allowed bg-gray-200'}`}
+					disabled={disabled}
+				>
+					Connect Anyway
+				</Button>
+				<div className='w-full pt-2'>
+					{error && <ConnectErrorBox message={error} />}
+				</div>
+			</div>
+		);
+	}
 
 	return (
 		<div className='centered-mobile-max-width'>
@@ -142,47 +195,15 @@ const ConnectOTPPage = () => {
 				/>
 			</div>
 			<div className='mt-6'>
-				<p className='text-center text-2xl font-medium'>Voting Power</p>
-			</div>
-			<div className='relative mb-10 mt-4 flex justify-center'>
-				{badgesImages.map((image, index) => (
-					<div
-						key={index}
-						className={`flex-shrink-0 ${index > 0 ? '-ml-9' : 'ml-0'} rounded-full p-2`}
-					>
-						<div className='rounded-full'>
-							<Image
-								width={86}
-								height={86}
-								src={image.src}
-								alt={image.alt}
-							/>
-						</div>
-					</div>
-				))}
-			</div>
-			<div className='border-1 mb-10 rounded-lg border border-gray-200 p-6'>
-				<p className='text-xl font-semibold'>
-					Paste the OTP from your other device.
+				<p className='text-center text-2xl font-medium'>Claim Badges</p>
+				<p className='pt-2 text-center text-ph'>
+					Claim your badges to start voting on projects.
 				</p>
-				<div
-					className='mb-6 mt-2 flex w-fit items-center justify-start gap-1'
-					title={`Go to the Pairwise WebApp and click on connect. You'll get the code. Use it here if you don't have your wallet on the other device`}
-				>
-					<p className='text-primary'>How to get OTP?</p>
-					<OtpIcon />
-				</div>
-				<div>
-					<ConnectOTPInput
-						otp={otp}
-						setOtp={setOtp}
-						onSubmit={handleSubmitOtp}
-						error={error}
-						state={otpState}
-						setState={setOtpState}
-						setError={setError}
-					/>
-				</div>
+				<p className='py-4 text-center text-ph'>
+					{publicBadges &&
+						`${numOfBadgesFunc(publicBadges)} ${numOfBadgesFunc(publicBadges) === 1 ? 'Badge' : 'Badges'} found`}
+				</p>
+				<AdjacentBadges {...publicBadges} size={86} />
 				<Button
 					onClick={handleSubmitOtp}
 					className={`mt-6 w-full ${!disabled ? 'bg-primary' : 'cursor-not-allowed bg-gray-200'}`}
@@ -190,6 +211,9 @@ const ConnectOTPPage = () => {
 				>
 					Connect
 				</Button>
+				<div className='w-full pt-2'>
+					{error && <ConnectErrorBox message={error} />}
+				</div>{' '}
 			</div>
 		</div>
 	);
