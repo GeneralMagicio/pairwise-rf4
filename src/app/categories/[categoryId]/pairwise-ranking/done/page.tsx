@@ -19,7 +19,7 @@ const CategoryRankingDone = () => {
 				</div>{' '}
 				<p className='mx-auto text-lg font-bold'>Vote submitted</p>
 				<p className='mx-auto text-ph text-center text-base	px-4 font-medium	'>
-					You have already voted in this category.If
+					You have voted in this category.If
 					 you change your mind,you can update your vote
 					by selecting &ldquo;Edit Vote&rdquo; button below.
 				</p>
