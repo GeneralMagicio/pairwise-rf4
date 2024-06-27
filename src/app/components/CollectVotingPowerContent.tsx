@@ -23,7 +23,6 @@ enum CollectVotingPowerState {
 
 interface ICollectionsVotingPowerContentProps {
 	setIsClaimDrawerOpen: (isOpen: boolean) => void;
-	setIsConnectDrawerOpen: (isOpen: boolean) => void;
 	onDisconnect?: () => void;
 }
 
@@ -49,7 +48,7 @@ export const storeBadges = async ({
 };
 
 const CollectVotingPowerContent = ({
-	setIsClaimDrawerOpen,setIsConnectDrawerOpen,onDisconnect
+	setIsClaimDrawerOpen,onDisconnect
 }: ICollectionsVotingPowerContentProps) => {
 	const { address } = useAccount();
 
