@@ -11,6 +11,7 @@ import { BadgeData, badgeTypeMapping } from '../badges/components/BadgeCard';
 import { AdjacentBadges } from '../badges/components/AdjacentBadges';
 import { useGetPublicBadges } from '../features/badges/getBadges';
 import { DotsLoader } from '../login/components/bouncing-dots/DotsLoader';
+import { useDisconnect } from 'wagmi'
 
 enum CollectVotingPowerState {
 	Not_Started,
@@ -22,6 +23,8 @@ enum CollectVotingPowerState {
 
 interface ICollectionsVotingPowerContentProps {
 	setIsClaimDrawerOpen: (isOpen: boolean) => void;
+	setIsConnectDrawerOpen: (isOpen: boolean) => void;
+	onDisconnect?: () => void;
 }
 
 export const storeIdentity = async ({ identity }: { identity: string }) => {
@@ -46,9 +49,10 @@ export const storeBadges = async ({
 };
 
 const CollectVotingPowerContent = ({
-	setIsClaimDrawerOpen,
+	setIsClaimDrawerOpen,setIsConnectDrawerOpen,onDisconnect
 }: ICollectionsVotingPowerContentProps) => {
 	const { address } = useAccount();
+
 
 	const { signMessageAsync } = useSignMessage();
 
@@ -112,6 +116,17 @@ const CollectVotingPowerContent = ({
 		}
 	};
 
+	const { disconnect } = useDisconnect()
+
+
+	
+	const handleDifferentWallet = async () => {
+		disconnect();
+		onDisconnect?.();
+	}
+
+
+	
 	const handleCollect = async () => {
 		try {
 			//Handle collect functionality here
@@ -174,6 +189,14 @@ const CollectVotingPowerContent = ({
 					>
 						Collect Voting Power
 					</Button>
+
+					<Button
+						onClick={handleDifferentWallet}
+						isLoading={noBadgeConnecting}
+						className='w-full bg-[#FBFCFE] border border-[#E0E2EB] text-[#404454] shadow-md mt-5'
+					>
+						Try a different wallet
+					</Button>
 				</div>
 			);
 		case CollectVotingPowerState.Error:
@@ -227,6 +250,13 @@ const CollectVotingPowerContent = ({
 					>
 						Connect Anyway
 					</Button>
+					<Button
+						onClick={handleDifferentWallet}
+						className='w-full bg-[#FBFCFE] border border-[##E0E2EB] text-[#404454] shadow-md mt-5'
+					>
+						Try a different wallet
+					</Button>
+					
 				</div>
 			);
 		case CollectVotingPowerState.Collecting:

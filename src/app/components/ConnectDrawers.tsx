@@ -9,6 +9,7 @@ import Drawer from './Drawer';
 const ConnectDrawers = () => {
 	const {
 		handleConnect,
+		handleDisconnect,
 		isClaimDrawerOpen,
 		setIsClaimDrawerOpen,
 		isConnectDrawerOpen,
@@ -25,6 +26,7 @@ const ConnectDrawers = () => {
 			<Drawer setIsOpen={setIsClaimDrawerOpen} isOpen={isClaimDrawerOpen}>
 				<CollectVotingPowerContent
 					setIsClaimDrawerOpen={setIsClaimDrawerOpen}
+					onDisconnect={handleDisconnect}
 				/>
 			</Drawer>
 		</div>
