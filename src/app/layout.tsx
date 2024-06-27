@@ -17,23 +17,6 @@ const inter = Inter({ subsets: ['latin'] });
 export const metadata: Metadata = {
 	title: 'Pairwise',
 	description: 'Voting APP',
-	icons: [
-		{
-			rel: 'icon',
-			url: '/favicon.ico',
-			sizes: 'any',
-		},
-		{
-			rel: 'icon',
-			url: '/favicon.svg',
-			type: 'image/svg+xml',
-		},
-		{
-			rel: 'icon',
-			url: '/favicon.png',
-			type: 'image/png',
-		},
-	],
 };
 
 export default function RootLayout({
