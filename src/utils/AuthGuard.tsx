@@ -1,6 +1,7 @@
 'use client';
 
 import LoadingSpinner from '@/app/components/LoadingSpinner';
+import { Routes } from '@/app/constants/Routes';
 import { useAuth } from '@/lib/third-web/AutoConnect';
 import { usePathname, useRouter } from 'next/navigation';
 import React, { PropsWithChildren, useEffect, useState } from 'react';
@@ -25,8 +26,8 @@ export const AuthGuard: React.FC<PropsWithChildren> = ({ children }) => {
 	const isPublicRoute = PublicRoutes.includes(currentRoute);
 
 	useEffect(() => {
-		if (!wallet && isAutoConnecting === false && !isPublicRoute) push('/login');
-	}, [wallet, isAutoConnecting, push, isPublicRoute]);
+		if (!wallet && isAutoConnecting === false && !isPublicRoute && currentRoute !== '/login') push('/login');
+	}, [wallet, isAutoConnecting, push, isPublicRoute, currentRoute]);
 
 	useEffect(() => {
 		const token = localStorage.getItem('auth');
