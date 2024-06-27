@@ -25,7 +25,7 @@ export const ConnectProvider = ({ children }: { children: ReactNode }) => {
 	const handleConnect = () => {
 		setIsConnectDrawerOpen(false);
 		setIsClaimDrawerOpen(true);
-		setIsLogOutDrawerOpen(true)
+		setIsLogOutDrawerOpen(false)
 	};
 
 	return (
