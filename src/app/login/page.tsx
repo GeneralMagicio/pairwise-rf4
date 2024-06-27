@@ -49,7 +49,6 @@ export default function Home() {
 	const router = useRouter();
 	const [strategy, setStrategy] = useState('');
 
-
 	const disconnectWallet = useDisconnect();
 	const { connect, error } = useConnect();
 	const [email, setEmail] = useState<string>('');
@@ -59,17 +58,14 @@ export default function Home() {
 		setEmail(email);
 	};
 
-	
-
 	const wallet = useActiveWallet();
 	const account = useActiveAccount();
 	useEffect(() => {
 		const CaptureEvent = async () => {
 			posthog.capture('Open Login Page');
 		};
-	
 		CaptureEvent();
-	  }, []); 
+	}, []);
 
 	const handleOtpChange = (otp: string) => {
 		setOtpError(false);
@@ -116,15 +112,15 @@ export default function Home() {
 
 	useEffect(() => {
 		if (loggedToPw === LogginToPwBackendState.LoggedIn && !isNewUser) {
-			posthog.identify(localStorage.getItem("auth")|| '')
-			posthog.capture('User Logged In',{loginType:strategy})
+			posthog.identify(localStorage.getItem('auth') || '');
+			posthog.capture('User Logged In', { loginType: strategy });
 			router.push(Routes.Categories);
 		} else if (
 			loggedToPw === LogginToPwBackendState.LoggedIn &&
 			isNewUser
 		) {
-			posthog.identify(localStorage.getItem("auth")|| '')
-			posthog.capture('User Logged In',{loginType:strategy})
+			posthog.identify(localStorage.getItem('auth') || '');
+			posthog.capture('User Logged In', { loginType: strategy });
 			router.push(Routes.Welcome);
 		}
 	}, [step, router, isNewUser, loggedToPw]);
@@ -159,6 +155,11 @@ export default function Home() {
 		setSocialLoading(false);
 		connect(() => createSmartWalletFromEOA(account));
 	};
+
+	const buttonDisabilityCondition =
+		isAutoConnecting ||
+		wallet !== undefined ||
+		loggedToPw === LogginToPwBackendState.LoggedIn;
 
 	if (step === Step.Success && isNewUser) {
 		return (
@@ -217,9 +218,7 @@ export default function Home() {
 					{isAutoConnecting && (
 						<InfoBox message='Please wait. Auto connecting...' />
 					)}
-					{socialLoading && (
-						<InfoBox message='Please wait...' />
-					)}
+					{socialLoading && <InfoBox message='Please wait...' />}
 					{socialError && (
 						<div className=''>
 							<ErrorBox message='Oops! we encountered and error. Please try again.' />
@@ -235,6 +234,7 @@ export default function Home() {
 					/>
 					<div className='mt-20 flex w-full flex-col gap-2'>
 						<button
+							disabled={buttonDisabilityCondition}
 							onClick={handleSocialConnect('google')}
 							className='border-color-fg flex w-full justify-center gap-2 rounded-lg border bg-white p-3 text-black shadow-sm'
 						>
@@ -249,6 +249,7 @@ export default function Home() {
 							</span>
 						</button>
 						<button
+							disabled={buttonDisabilityCondition}
 							onClick={handleSocialConnect('apple')}
 							className='border-color-fg flex w-full justify-center gap-2 rounded-lg border bg-white p-3 text-black shadow-sm'
 						>
@@ -263,9 +264,11 @@ export default function Home() {
 							</span>
 						</button>
 						<button
+							disabled={buttonDisabilityCondition}
 							onClick={() => {
 								setStrategy('email');
-								setStep(Step.EnterEmail)}}
+								setStep(Step.EnterEmail);
+							}}
 							className='border-color-fg flex w-full justify-center gap-2 rounded-lg border bg-white p-3 text-black shadow-sm'
 						>
 							<Image
