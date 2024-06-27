@@ -35,7 +35,7 @@ const ConnectOTPSuccessPage = () => {
 					))}
 				</div>
 				<p className='text-center text-4xl font-bold text-primary'>
-					Anonymously
+				Pseudonymously 
 				</p>
 				<p className='text-center text-lg'>
 					Secured by zk-proof technology
