@@ -2,10 +2,12 @@
 
 import Image from 'next/image';
 import { BandadaLogo } from 'public/images/icons/BandadaLogo';
-import React, { Suspense, useEffect } from 'react';
+import React, { Suspense, useEffect, useState } from 'react';
 import { useAccount } from 'wagmi';
 import { Routes } from '../constants/Routes';
 import { useRouter, useSearchParams } from 'next/navigation';
+import ConnectSplashMessage from './components/ConnectSplashMessage';
+
 
 const steps = [
 	{
@@ -35,6 +37,7 @@ const ConnectHomePage = () => {
 
 	return (
 		<div className='centered-mobile-max-width mt-7'>
+			<ConnectSplashMessage />
 			<div className='text-center'>
 				<Image
 					src={'/images/characters/31.png'}
