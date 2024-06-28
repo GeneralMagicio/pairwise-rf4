@@ -41,10 +41,10 @@ const CategoryRankingListPage = () => {
 
 	const handleSubmitSortedProjects = async () => {
 		try {
-			const filteredProjects = listProjects.filter(project => listProjectsIds.includes(project.id))
-			.map(project => ({ id: project.id, name: project.name }));
+			const filteredProjects = listProjects
+				.filter(project => listProjectsIds.includes(project.id))
+				.map(project => ({ id: project.id, name: project.name }));
 			posthog.capture('Ranked', { rankedCategories: filteredProjects });
-
 
 			await mutateAsyncUpdateSorting({
 				data: {
@@ -78,8 +78,8 @@ const CategoryRankingListPage = () => {
 				<div className='mx-4'>
 					<p className='mt-6 text-2xl font-bold'>Well done!</p>
 					<p className='mt-2 text-ph'>
-						You have finished ranking of Developer Ecosystem, now
-						you can create list or continue ranking other projects.
+						{`You have finished ranking of ${category?.data?.collection?.name}, now
+						you can create list or continue ranking other projects.`}
 					</p>
 				</div>
 				<div className='mt-6 flex justify-between bg-gray-100 p-2 text-ph'>
