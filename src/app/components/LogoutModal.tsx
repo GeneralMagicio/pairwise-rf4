@@ -8,9 +8,9 @@ interface LogoutModal {
 const LogoutModal: React.FC<LogoutModal> = ({ onClose }) => {
 
 	const router = useRouter()
-  const {disconnect}= useDisconnect()
-    const handleLogOut=()=>{    
-      disconnect();
+  const {disconnectAsync}= useDisconnect()
+    const handleLogOut=async()=>{    
+      await disconnectAsync();
       localStorage.clear();
       window.location.reload();
     }
