@@ -22,8 +22,15 @@ export const useUpdateSortingByCategoryId = ({
 	return useMutation({
 		mutationFn: updateSortingByCategoryId,
 		onSuccess: () => {
-			queryClient.refetchQueries({
-				queryKey: ['category', categoryId],
+			// Flatten the array of query keys
+			const queryKeys = [
+				['category', categoryId],
+				['projects-ranking', categoryId],
+				['projects', categoryId],
+			];
+
+			queryKeys.forEach(queryKey => {
+				queryClient.refetchQueries({ queryKey });
 			});
 		},
 	});
