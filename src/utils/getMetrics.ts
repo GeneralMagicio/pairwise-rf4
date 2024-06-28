@@ -46,11 +46,11 @@ export type CategoryMetricData = {
 // Initial default values
 const defaultMetricData: CategoryMetricData = {
 	NetworkGrowth: {
-		gasFees: { value: 'NA', description: 'Gas Fees', lowerIsBetter: true },
+		gasFees: { value: 'NA', description: 'Gas Fees', lowerIsBetter: false },
 		logGasFees: {
 			value: 'NA',
 			description: 'Gas Fees (Log scale)',
-			lowerIsBetter: true,
+			lowerIsBetter: false,
 		},
 		dailyActiveAddresses: {
 			value: 'NA',
@@ -158,12 +158,12 @@ export const processProjectMetricsCSV = (
 					gasFees: {
 						value: parseNumber(cells[2]),
 						description: 'Gas Fees',
-						lowerIsBetter: true,
+						lowerIsBetter: false,
 					},
 					logGasFees: {
 						value: parseNumber(cells[15]),
 						description: 'Gas Fees (Log scale)',
-						lowerIsBetter: true,
+						lowerIsBetter: false,
 					},
 					dailyActiveAddresses: {
 						value: parseNumber(cells[7]),
