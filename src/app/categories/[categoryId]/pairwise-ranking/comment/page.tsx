@@ -143,8 +143,8 @@ const CategoryRankingComment = () => {
 					groupId,
 					signal
 				)
-				console.log("generated proof of vote: ", proof);
 				proof = tempProof;
+				console.log("generated proof of vote: ", proof);
 
 				const { data: currentMerkleRoot, error: errorRootHistory } =
 					await supabase
