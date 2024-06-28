@@ -14,11 +14,6 @@ import Head from 'next/head';
 
 const inter = Inter({ subsets: ['latin'] });
 
-export const metadata: Metadata = {
-	title: 'Pairwise',
-	description: 'Voting APP',
-};
-
 export default function RootLayout({
 	children,
 }: Readonly<{
@@ -28,6 +23,13 @@ export default function RootLayout({
 		<html lang='en'>
 			<Head>
 				<link rel='icon' href='/favicon.ico' sizes='any' />
+				<meta property='og:title' content='Pairwise Voting App' />
+				<meta
+					property='og:description'
+					content='Pairwise Voting App is a fun pseudonymous way to signal in Retro Funding 4. Be part of the experiment ... Vote anytime, anywhere. Share feedback pseudo anonymously.'
+				/>
+				<meta property='og:image' content='/preview-image.png' />
+				<meta property='og:url' content='https://app.pairwise.vote/' />
 			</Head>
 			<body className={inter.className}>
 				<WagmiAppProvider>
