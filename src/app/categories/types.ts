@@ -26,8 +26,9 @@ export interface IProject {
 	poll_id: number;
 	url: string;
 	impactDescription: string;
+	shortDescription: string | null;
 	contributionDescription: string | null;
-	RPGF4Id: string | null;
+	RPGF4Id: string;
 	parentId: number | null;
 	image: string | null;
 	metadataUrl: string | null;

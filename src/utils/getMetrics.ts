@@ -2,6 +2,7 @@
 export type Metric = {
 	value: number | 'NA';
 	description: string;
+	lowerIsBetter: boolean; // Added field to indicate if lower values are better
 };
 
 export interface ComparisonResult {
@@ -10,6 +11,7 @@ export interface ComparisonResult {
 			description: string;
 			value1: number | 'NA';
 			value2: number | 'NA';
+			lowerIsBetter: boolean; // Added field to indicate if lower values are better
 		};
 	};
 }
@@ -44,66 +46,87 @@ export type CategoryMetricData = {
 // Initial default values
 const defaultMetricData: CategoryMetricData = {
 	NetworkGrowth: {
-		gasFees: { value: 'NA', description: 'Gas Fees' },
-		logGasFees: { value: 'NA', description: 'Gas Fees (Log scale)' },
+		gasFees: { value: 'NA', description: 'Gas Fees', lowerIsBetter: false },
+		logGasFees: {
+			value: 'NA',
+			description: 'Gas Fees (Log scale)',
+			lowerIsBetter: false,
+		},
 		dailyActiveAddresses: {
 			value: 'NA',
 			description: 'Daily Active Addresses',
+			lowerIsBetter: false,
 		},
 		monthlyActiveAddresses: {
 			value: 'NA',
 			description: 'Monthly Active Addresses',
+			lowerIsBetter: false,
 		},
 		recurringAddresses: {
 			value: 'NA',
 			description: 'Recurring Addresses',
+			lowerIsBetter: false,
 		},
 	},
 	NetworkQuality: {
-		transactionCount: { value: 'NA', description: 'Transactions' },
+		transactionCount: {
+			value: 'NA',
+			description: 'Transactions',
+			lowerIsBetter: false,
+		},
 		trustedTransactionCount: {
 			value: 'NA',
 			description: 'Trusted Transactions',
+			lowerIsBetter: false,
 		},
 		trustedTransactionShare: {
 			value: 'NA',
 			description: 'Trusted Transaction Share',
+			lowerIsBetter: false,
 		},
 		logTransactionCount: {
 			value: 'NA',
 			description: 'Transaction (Log scale)',
+			lowerIsBetter: false,
 		},
 		logTrustedTransactionCount: {
 			value: 'NA',
 			description: 'Trusted transactions (Log scale)',
+			lowerIsBetter: false,
 		},
 	},
 	UserGrowth: {
 		trustedUsersOnboarded: {
 			value: 'NA',
 			description: 'Trusted Users Onboarded',
+			lowerIsBetter: false,
 		},
 		openrankTrustedUsersCount: {
 			value: 'NA',
 			description: 'OpenRank Trusted Users',
+			lowerIsBetter: false,
 		},
 		trustedDailyActiveUsers: {
 			value: 'NA',
 			description: 'Trusted Daily Active Users',
+			lowerIsBetter: false,
 		},
 		trustedMonthlyActiveUsers: {
 			value: 'NA',
 			description: 'Trusted Monthly Active Users',
+			lowerIsBetter: false,
 		},
 	},
 	UserQuality: {
 		trustedRecurringUsers: {
 			value: 'NA',
 			description: 'Trusted Recurring Users',
+			lowerIsBetter: false,
 		},
 		powerUserAddresses: {
 			value: 'NA',
 			description: 'Power User Addresses',
+			lowerIsBetter: false,
 		},
 	},
 };
@@ -135,73 +158,89 @@ export const processProjectMetricsCSV = (
 					gasFees: {
 						value: parseNumber(cells[2]),
 						description: 'Gas Fees',
+						lowerIsBetter: false,
 					},
 					logGasFees: {
 						value: parseNumber(cells[15]),
 						description: 'Gas Fees (Log scale)',
+						lowerIsBetter: false,
 					},
 					dailyActiveAddresses: {
 						value: parseNumber(cells[7]),
 						description: 'Daily Active Addresses',
+						lowerIsBetter: false,
 					},
 					monthlyActiveAddresses: {
 						value: parseNumber(cells[9]),
 						description: 'Monthly Active Addresses',
+						lowerIsBetter: false,
 					},
 					recurringAddresses: {
 						value: parseNumber(cells[11]),
 						description: 'Recurring Addresses',
+						lowerIsBetter: false,
 					},
 				},
 				NetworkQuality: {
 					transactionCount: {
 						value: parseNumber(cells[3]),
 						description: 'Transactions',
+						lowerIsBetter: false,
 					},
 					trustedTransactionCount: {
 						value: parseNumber(cells[4]),
 						description: 'Trusted Transactions',
+						lowerIsBetter: false,
 					},
 					trustedTransactionShare: {
 						value: parseNumber(cells[5]),
 						description: 'Trusted Transaction Share',
+						lowerIsBetter: false,
 					},
 
 					logTransactionCount: {
 						value: parseNumber(cells[16]),
 						description: 'Transaction (Log scale)',
+						lowerIsBetter: false,
 					},
 					logTrustedTransactionCount: {
 						value: parseNumber(cells[17]),
 						description: 'Trusted transactions (Log scale)',
+						lowerIsBetter: false,
 					},
 				},
 				UserGrowth: {
 					trustedUsersOnboarded: {
 						value: parseNumber(cells[6]),
 						description: 'Trusted Users Onboarded',
+						lowerIsBetter: false,
 					},
 					openrankTrustedUsersCount: {
 						value: parseNumber(cells[14]),
 						description: 'OpenRank Trusted Users',
+						lowerIsBetter: false,
 					},
 					trustedDailyActiveUsers: {
 						value: parseNumber(cells[8]),
 						description: 'Trusted Daily Active Users',
+						lowerIsBetter: false,
 					},
 					trustedMonthlyActiveUsers: {
 						value: parseNumber(cells[10]),
 						description: 'Trusted Monthly Active Users',
+						lowerIsBetter: false,
 					},
 				},
 				UserQuality: {
 					trustedRecurringUsers: {
 						value: parseNumber(cells[12]),
 						description: 'Trusted Recurring Users',
+						lowerIsBetter: false,
 					},
 					powerUserAddresses: {
 						value: parseNumber(cells[13]),
 						description: 'Power User Addresses',
+						lowerIsBetter: false,
 					},
 				},
 			};
@@ -257,6 +296,7 @@ export const compareProjects = (
 						description: metricData1.description,
 						value1: metricData1.value as number,
 						value2: (metricData2?.value as number) || 0,
+						lowerIsBetter: metricData1.lowerIsBetter,
 					};
 				}
 			}
