@@ -1,6 +1,6 @@
 import { useRouter } from 'next/navigation';
 import React from 'react';
-
+import {useDisconnect} from 'wagmi'
 interface LogoutModal {
   onClose: () => void;
 }
@@ -8,20 +8,12 @@ interface LogoutModal {
 const LogoutModal: React.FC<LogoutModal> = ({ onClose }) => {
 
 	const router = useRouter()
+  const {disconnect}= useDisconnect()
     const handleLogOut=()=>{    
-       // Clear all local storage
-        localStorage.clear();
-        window.location.reload();
-
+      disconnect();
+      localStorage.clear();
+      window.location.reload();
     }
-
-    // useEffect(() => {
-        
-    //     return () => {
-    //       router.push('/login')
-    //     };
-    //   }, [router]);
-
 
     
   return (
