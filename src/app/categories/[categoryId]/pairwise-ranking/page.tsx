@@ -104,8 +104,8 @@ const CategoryPairwiseRankingPage = () => {
 			const processedMap = processProjectMetricsCSV(data);
 			const formatted = compareProjects(
 				processedMap,
-			  firstProject.RPGF4Id,
-			  secondProject.RPGF4Id,
+				firstProject.RPGF4Id,
+				secondProject.RPGF4Id,
 			);
 			setFormattedMetrics(formatted);
 			console.log('compareProjects', formatted);
@@ -224,10 +224,15 @@ const CategoryPairwiseRankingPage = () => {
 													>
 														<p
 															className={cn(
-																metric.value1 >
-																	metric.value2
-																	? 'font-semibold text-green-600'
-																	: 'text-ph',
+																metric.lowerIsBetter
+																	? metric.value1 <
+																		metric.value2
+																		? 'font-semibold text-green-600'
+																		: 'text-ph'
+																	: metric.value1 >
+																		  metric.value2
+																		? 'font-semibold text-green-600'
+																		: 'text-ph',
 															)}
 														>
 															{formatMetricsNumber(
@@ -239,10 +244,15 @@ const CategoryPairwiseRankingPage = () => {
 														</p>
 														<p
 															className={cn(
-																metric.value2 >
-																	metric.value1
-																	? 'font-semibold text-green-600'
-																	: 'text-ph',
+																metric.lowerIsBetter
+																	? metric.value2 <
+																		metric.value1
+																		? 'font-semibold text-green-600'
+																		: 'text-ph'
+																	: metric.value2 >
+																		  metric.value1
+																		? 'font-semibold text-green-600'
+																		: 'text-ph',
 															)}
 														>
 															{formatMetricsNumber(
