@@ -115,12 +115,12 @@ const CollectVotingPowerContent = ({
 		}
 	};
 
-	const { disconnect } = useDisconnect()
+	const { disconnectAsync } = useDisconnect()
 
 
 	
 	const handleDifferentWallet = async () => {
-		disconnect();
+		await disconnectAsync();
 		onDisconnect?.();
 	}
 
@@ -191,7 +191,6 @@ const CollectVotingPowerContent = ({
 
 					<Button
 						onClick={handleDifferentWallet}
-						isLoading={noBadgeConnecting}
 						className='w-full bg-[#FBFCFE] border border-[#E0E2EB] text-[#404454] shadow-md mt-5'
 					>
 						Try a different wallet
