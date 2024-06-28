@@ -192,17 +192,21 @@ const CategoryRankingListEditPage = () => {
 			<div className='sticky bottom-0 w-full border-t border-gray-200 bg-white px-6 py-6'>
 				<div className='flex justify-between gap-4'>
 					<Button
-						onClick={() =>
+						onClick={() => {
+							setMinimumModal(MinimumModalState.False);
 							router.push(
 								`${Routes.Categories}/${categoryId}/pairwise-ranking/ranking-list`,
-							)
-						}
+							);
+						}}
 						className='w-full text-black shadow-md'
 					>
 						Discard Changes
 					</Button>
 					<Button
-						onClick={handleSubmitSortedProjects}
+						onClick={() => {
+							setMinimumModal(MinimumModalState.False);
+							handleSubmitSortedProjects;
+						}}
 						className={`w-full bg-primary ${isPending || !hasChanges ? 'opacity-50' : ''}`}
 						disabled={isPending || !hasChanges}
 					>
