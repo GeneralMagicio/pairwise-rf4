@@ -27,7 +27,7 @@ export interface IProject {
 	url: string;
 	impactDescription: string;
 	contributionDescription: string | null;
-	RPGF4Id: string | null;
+	RPGF4Id: string;
 	parentId: number | null;
 	image: string | null;
 	metadataUrl: string | null;
