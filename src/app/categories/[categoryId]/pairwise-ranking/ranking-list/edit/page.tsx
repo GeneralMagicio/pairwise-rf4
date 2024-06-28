@@ -205,7 +205,7 @@ const CategoryRankingListEditPage = () => {
 					<Button
 						onClick={() => {
 							setMinimumModal(MinimumModalState.False);
-							handleSubmitSortedProjects;
+							handleSubmitSortedProjects();
 						}}
 						className={`w-full bg-primary ${isPending || !hasChanges ? 'opacity-50' : ''}`}
 						disabled={isPending || !hasChanges}
