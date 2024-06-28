@@ -22,7 +22,6 @@ import { cn } from '@/app/helpers/cn';
 import { formatMetricsNumber } from '@/utils/numbers';
 
 import { truncate } from '@/app/helpers/text-helpers';
-import { getRandomProjectId } from '@/utils/dummy-metrics';
 import posthog from 'posthog-js';
 
 interface IUserSeenRankingFinishedModal {
@@ -100,13 +99,13 @@ const CategoryPairwiseRankingPage = () => {
 
 	const fetchMetrics = async () => {
 		try {
-			const response = await fetch('/data/updated_metrics_with_ids.csv');
+			const response = await fetch('/data/metrics-628.csv');
 			const data = await response.text();
 			const processedMap = processProjectMetricsCSV(data);
 			const formatted = compareProjects(
 				processedMap,
-				getRandomProjectId(firstProject.name),
-				getRandomProjectId(secondProject.name),
+			  firstProject.RPGF4Id,
+			  secondProject.RPGF4Id,
 			);
 			setFormattedMetrics(formatted);
 			console.log('compareProjects', formatted);
