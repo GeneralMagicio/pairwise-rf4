@@ -14,7 +14,6 @@ import {
 	processProjectMetricsCSV,
 } from '@/utils/getMetrics';
 import { formatMetricsNumber } from '@/utils/numbers';
-import { getRandomProjectId } from '@/utils/dummy-metrics';
 
 interface ICategoryProjectRankingCardWithMetricsProps {
 	project: IProject;
@@ -42,12 +41,12 @@ const CategoryProjectRankingCardWithMetrics = ({
 
 	const projectMetrics = getProjectMetrics(
 		metricsMap,
-		getRandomProjectId(project.name), //sample project ID
+		project.RPGF4Id, //sample project ID
 	);
 
 	const fetchMetrics = async () => {
 		try {
-			const response = await fetch('/data/updated_metrics_with_ids.csv');
+			const response = await fetch('/data/metrics-628.csv');
 			const data = await response.text();
 			const processedMap = processProjectMetricsCSV(data);
 			setMetricsMap(processedMap);

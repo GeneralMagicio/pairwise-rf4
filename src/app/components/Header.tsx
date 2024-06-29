@@ -13,7 +13,7 @@ const Header = () => {
 	const { data: badges } = useGetBadges();
 	const { data: identity } = useGetIdentity();
 
-	const { setIsConnectDrawerOpen } = useConnect();
+	const { setIsConnectDrawerOpen,setIsLogOutDrawerOpen } = useConnect();
 
 	useEffect(() => {
 		if (!identityLsKey) {
@@ -29,7 +29,7 @@ const Header = () => {
 
 	return (
 		<header className='sticky top-0 z-10 flex items-center justify-between border-b border-gray-300 bg-white p-4'>
-			<div className='flex items-center'>
+			<div className='flex items-center cursor-pointer' onClick={() => setIsLogOutDrawerOpen(true)}>
 				<Image
 					src='/images/characters/welcome-character.png'
 					alt='Logo'

@@ -49,7 +49,7 @@ const CategoryPairwiseCardWithMetrics = ({
 				<div className='pt-2 text-center'>
 					<p className=' font-bold '>{truncate(project.name, 16)}</p>
 					<p className='text-ph'>
-						{truncate(getDescription(project) || '', 80)}
+						{project.shortDescription || truncate(getDescription(project) || '', 80)}
 					</p>
 				</div>
 			</div>

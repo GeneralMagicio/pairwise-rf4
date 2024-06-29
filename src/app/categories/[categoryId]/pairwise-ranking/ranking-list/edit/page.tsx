@@ -140,8 +140,10 @@ const CategoryRankingListEditPage = () => {
 				<div className='mx-4'>
 					<p className='mt-6 text-2xl font-bold'>Well done!</p>
 					<p className='mt-2 text-ph'>
-						You have finished ranking of Developer Ecosystem, now
-						you can create list or continue ranking other projects.
+					{`You have finished ranking ${category?.data?.collection?.name}.
+						Now, you can click on "Edit" to adjust your selections.
+						Feel free to drag and drop projects from the left corner or add or remove projects on the right.
+						Once you're satisfied, submit your vote.`}
 					</p>
 				</div>
 				<p className='mb-2 mt-6 font-semibold text-ph'>
@@ -192,17 +194,21 @@ const CategoryRankingListEditPage = () => {
 			<div className='sticky bottom-0 w-full border-t border-gray-200 bg-white px-6 py-6'>
 				<div className='flex justify-between gap-4'>
 					<Button
-						onClick={() =>
+						onClick={() => {
+							setMinimumModal(MinimumModalState.False);
 							router.push(
 								`${Routes.Categories}/${categoryId}/pairwise-ranking/ranking-list`,
-							)
-						}
+							);
+						}}
 						className='w-full text-black shadow-md'
 					>
 						Discard Changes
 					</Button>
 					<Button
-						onClick={handleSubmitSortedProjects}
+						onClick={() => {
+							setMinimumModal(MinimumModalState.False);
+							handleSubmitSortedProjects();
+						}}
 						className={`w-full bg-primary ${isPending || !hasChanges ? 'opacity-50' : ''}`}
 						disabled={isPending || !hasChanges}
 					>
