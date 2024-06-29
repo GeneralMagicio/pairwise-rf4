@@ -11,7 +11,8 @@ import { BadgeData, badgeTypeMapping } from '../badges/components/BadgeCard';
 import { AdjacentBadges } from '../badges/components/AdjacentBadges';
 import { useGetPublicBadges } from '../features/badges/getBadges';
 import { DotsLoader } from '../login/components/bouncing-dots/DotsLoader';
-import { useDisconnect } from 'wagmi'
+import { useDisconnect } from 'wagmi';
+import { useConnect } from '../providers/ConnectProvider';
 
 enum CollectVotingPowerState {
 	Not_Started,
@@ -23,7 +24,6 @@ enum CollectVotingPowerState {
 
 interface ICollectionsVotingPowerContentProps {
 	setIsClaimDrawerOpen: (isOpen: boolean) => void;
-	onDisconnect?: () => void;
 }
 
 export const storeIdentity = async ({ identity }: { identity: string }) => {
@@ -48,11 +48,10 @@ export const storeBadges = async ({
 };
 
 const CollectVotingPowerContent = ({
-	setIsClaimDrawerOpen,onDisconnect
+	setIsClaimDrawerOpen,
 }: ICollectionsVotingPowerContentProps) => {
 	const { address } = useAccount();
-
-
+	const { handleDisconnect } = useConnect();
 	const { signMessageAsync } = useSignMessage();
 
 	const { createIdentity } = useCreateIdentity();
@@ -115,17 +114,13 @@ const CollectVotingPowerContent = ({
 		}
 	};
 
-	const { disconnectAsync } = useDisconnect()
+	const { disconnectAsync } = useDisconnect();
 
-
-	
 	const handleDifferentWallet = async () => {
 		await disconnectAsync();
-		onDisconnect?.();
-	}
+		handleDisconnect();
+	};
 
-
-	
 	const handleCollect = async () => {
 		try {
 			//Handle collect functionality here
@@ -191,7 +186,7 @@ const CollectVotingPowerContent = ({
 
 					<Button
 						onClick={handleDifferentWallet}
-						className='w-full bg-[#FBFCFE] border border-[#E0E2EB] text-[#404454] shadow-md mt-5'
+						className='mt-5 w-full border border-[#E0E2EB] bg-[#FBFCFE] text-[#404454] shadow-md'
 					>
 						Try a different wallet
 					</Button>
@@ -250,11 +245,10 @@ const CollectVotingPowerContent = ({
 					</Button>
 					<Button
 						onClick={handleDifferentWallet}
-						className='w-full bg-[#FBFCFE] border border-[##E0E2EB] text-[#404454] shadow-md mt-5'
+						className='mt-5 w-full border border-[##E0E2EB] bg-[#FBFCFE] text-[#404454] shadow-md'
 					>
 						Try a different wallet
 					</Button>
-					
 				</div>
 			);
 		case CollectVotingPowerState.Collecting:

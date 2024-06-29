@@ -10,7 +10,6 @@ import LogoutModal from './LogoutModal';
 const ConnectDrawers = () => {
 	const {
 		handleConnect,
-		handleDisconnect,
 		isClaimDrawerOpen,
 		setIsClaimDrawerOpen,
 		isConnectDrawerOpen,
@@ -28,21 +27,16 @@ const ConnectDrawers = () => {
 					onConnect={handleConnect}
 					closeDrawer={() => setIsConnectDrawerOpen(false)}
 				/>
-				<a
-					className='text-primary underline'
-					href='https://t.me/+LWJJ9psb9tUxOTJk'
-					target='_blank'
-				>
-					Need Help?
-				</a>
+				<div className='lg:mt-2'>
+					<a
+						className='text-primary underline'
+						href='https://t.me/+LWJJ9psb9tUxOTJk'
+						target='_blank'
+					>
+						Need Help?
+					</a>
+				</div>
 			</Drawer>
-			<Drawer setIsOpen={setIsClaimDrawerOpen} isOpen={isClaimDrawerOpen}>
-				<CollectVotingPowerContent
-					setIsClaimDrawerOpen={setIsClaimDrawerOpen}
-					onDisconnect={handleDisconnect}
-				/>
-			</Drawer>
-
 			<Drawer setIsOpen={setIsClaimDrawerOpen} isOpen={isClaimDrawerOpen}>
 				<CollectVotingPowerContent
 					setIsClaimDrawerOpen={setIsClaimDrawerOpen}
