@@ -20,7 +20,17 @@ const ConnectDrawers = () => {
 				setIsOpen={setIsConnectDrawerOpen}
 				isOpen={isConnectDrawerOpen}
 			>
-				<ConnectWalletContent onConnect={handleConnect} closeDrawer={() => setIsConnectDrawerOpen(false)} />
+				<ConnectWalletContent
+					onConnect={handleConnect}
+					closeDrawer={() => setIsConnectDrawerOpen(false)}
+				/>
+				<a
+					className='text-primary underline'
+					href='https://t.me/+LWJJ9psb9tUxOTJk'
+					target='_blank'
+				>
+					Need Help?
+				</a>
 			</Drawer>
 			<Drawer setIsOpen={setIsClaimDrawerOpen} isOpen={isClaimDrawerOpen}>
 				<CollectVotingPowerContent
