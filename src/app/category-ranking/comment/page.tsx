@@ -113,7 +113,7 @@ const CategoryRankingComment = () => {
 
 			if (users && identityString !== '{}') {
 				const bandadaGroup = await getGroup(groupId);
-				var treeDepth = 16;
+				let treeDepth = 16;
 				if (bandadaGroup === null) {
 					console.log("The Bandada group does not exist:", groupId)
 				} else {
