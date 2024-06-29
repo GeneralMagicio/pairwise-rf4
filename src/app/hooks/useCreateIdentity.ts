@@ -57,6 +57,7 @@ export const useCreateIdentity = () => {
 						group.treeDepth,
 						group.members,
 					);
+					console.error('adding root to supabase: ', groupRoot.toString());
 					const { error } = await supabase
 						.from('root_history')
 						.insert([{ root: groupRoot.toString() }]);

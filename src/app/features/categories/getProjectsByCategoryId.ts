@@ -13,5 +13,6 @@ export const useProjectsByCategoryId = (id: number) => {
 	return useQuery({
 		queryKey: ['projects', id],
 		queryFn: () => getProjectsByCategoryId(id),
+		staleTime: Infinity,
 	});
 };

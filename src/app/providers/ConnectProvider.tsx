@@ -8,7 +8,10 @@ interface ConnectContextType {
 	setIsConnectDrawerOpen: (isOpen: boolean) => void;
 	isClaimDrawerOpen: boolean;
 	setIsClaimDrawerOpen: (isOpen: boolean) => void;
+	isLogOutDrawerOpen:boolean,
+	setIsLogOutDrawerOpen:(isOpen: boolean) => void;
 	handleConnect: () => void;
+	handleDisconnect:() => void;
 }
 
 // Create the context
@@ -18,11 +21,20 @@ const ConnectContext = createContext<ConnectContextType | undefined>(undefined);
 export const ConnectProvider = ({ children }: { children: ReactNode }) => {
 	const [isConnectDrawerOpen, setIsConnectDrawerOpen] = useState(false);
 	const [isClaimDrawerOpen, setIsClaimDrawerOpen] = useState(false);
+	const [isLogOutDrawerOpen, setIsLogOutDrawerOpen] = useState(false);
 
 	const handleConnect = () => {
 		setIsConnectDrawerOpen(false);
 		setIsClaimDrawerOpen(true);
+		setIsLogOutDrawerOpen(false)
 	};
+
+	const handleDisconnect = () => {
+		setIsClaimDrawerOpen(false);
+		setIsConnectDrawerOpen(true);
+		
+	};
+
 
 	return (
 		<ConnectContext.Provider
@@ -31,7 +43,10 @@ export const ConnectProvider = ({ children }: { children: ReactNode }) => {
 				setIsConnectDrawerOpen,
 				isClaimDrawerOpen,
 				setIsClaimDrawerOpen,
+				isLogOutDrawerOpen,
+				setIsLogOutDrawerOpen,
 				handleConnect,
+				handleDisconnect,
 			}}
 		>
 			{children}

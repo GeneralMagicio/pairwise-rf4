@@ -26,7 +26,7 @@ export const useUpdateProjectInclusionBulk = ({
 	return useMutation({
 		mutationFn: updateProjectInclusionBulk,
 		onSuccess: () => {
-			queryClient.invalidateQueries({
+			queryClient.refetchQueries({
 				queryKey: ['projects', categoryId],
 			});
 		},
