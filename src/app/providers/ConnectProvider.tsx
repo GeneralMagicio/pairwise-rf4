@@ -11,6 +11,7 @@ interface ConnectContextType {
 	isLogOutDrawerOpen:boolean,
 	setIsLogOutDrawerOpen:(isOpen: boolean) => void;
 	handleConnect: () => void;
+	handleDisconnect:() => void;
 }
 
 // Create the context
@@ -28,6 +29,13 @@ export const ConnectProvider = ({ children }: { children: ReactNode }) => {
 		setIsLogOutDrawerOpen(false)
 	};
 
+	const handleDisconnect = () => {
+		setIsClaimDrawerOpen(false);
+		setIsConnectDrawerOpen(true);
+		
+	};
+
+
 	return (
 		<ConnectContext.Provider
 			value={{
@@ -38,6 +46,7 @@ export const ConnectProvider = ({ children }: { children: ReactNode }) => {
 				isLogOutDrawerOpen,
 				setIsLogOutDrawerOpen,
 				handleConnect,
+				handleDisconnect,
 			}}
 		>
 			{children}

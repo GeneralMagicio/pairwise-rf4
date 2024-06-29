@@ -15,7 +15,7 @@ const ConnectDrawers = () => {
 		isConnectDrawerOpen,
 		setIsConnectDrawerOpen,
 		isLogOutDrawerOpen,
-		setIsLogOutDrawerOpen
+		setIsLogOutDrawerOpen,
 	} = useConnect();
 	return (
 		<div>
@@ -27,29 +27,28 @@ const ConnectDrawers = () => {
 					onConnect={handleConnect}
 					closeDrawer={() => setIsConnectDrawerOpen(false)}
 				/>
-				<a
-					className='text-primary underline'
-					href='https://t.me/+LWJJ9psb9tUxOTJk'
-					target='_blank'
-				>
-					Need Help?
-				</a>
+				<div className='lg:mt-2'>
+					<a
+						className='text-primary underline'
+						href='https://t.me/+LWJJ9psb9tUxOTJk'
+						target='_blank'
+					>
+						Need Help?
+					</a>
+				</div>
+			</Drawer>
+			<Drawer setIsOpen={setIsClaimDrawerOpen} isOpen={isClaimDrawerOpen}>
+				<CollectVotingPowerContent
+					setIsClaimDrawerOpen={setIsClaimDrawerOpen}
+				/>
 			</Drawer>
 
-			<Drawer 
-			setIsOpen={setIsClaimDrawerOpen} 
-			isOpen={isClaimDrawerOpen}>
-			<CollectVotingPowerContent
-				setIsClaimDrawerOpen={setIsClaimDrawerOpen}
-			/>
-			</Drawer>
-
-			<Drawer 
-			setIsOpen={setIsLogOutDrawerOpen}
-			isOpen={isLogOutDrawerOpen} 
+			<Drawer
+				setIsOpen={setIsLogOutDrawerOpen}
+				isOpen={isLogOutDrawerOpen}
 			>
-			<LogoutModal onClose={()=>setIsLogOutDrawerOpen(false)} />
-     	 </Drawer>
+				<LogoutModal onClose={() => setIsLogOutDrawerOpen(false)} />
+			</Drawer>
 		</div>
 	);
 };

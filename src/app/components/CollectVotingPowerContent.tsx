@@ -11,6 +11,8 @@ import { BadgeData, badgeTypeMapping } from '../badges/components/BadgeCard';
 import { AdjacentBadges } from '../badges/components/AdjacentBadges';
 import { useGetPublicBadges } from '../features/badges/getBadges';
 import { DotsLoader } from '../login/components/bouncing-dots/DotsLoader';
+import { useDisconnect } from 'wagmi';
+import { useConnect } from '../providers/ConnectProvider';
 
 enum CollectVotingPowerState {
 	Not_Started,
@@ -49,7 +51,7 @@ const CollectVotingPowerContent = ({
 	setIsClaimDrawerOpen,
 }: ICollectionsVotingPowerContentProps) => {
 	const { address } = useAccount();
-
+	const { handleDisconnect } = useConnect();
 	const { signMessageAsync } = useSignMessage();
 
 	const { createIdentity } = useCreateIdentity();
@@ -110,6 +112,13 @@ const CollectVotingPowerContent = ({
 		} catch (e) {
 			setCollectState(CollectVotingPowerState.Error);
 		}
+	};
+
+	const { disconnectAsync } = useDisconnect();
+
+	const handleDifferentWallet = async () => {
+		await disconnectAsync();
+		handleDisconnect();
 	};
 
 	const handleCollect = async () => {
@@ -174,6 +183,13 @@ const CollectVotingPowerContent = ({
 					>
 						Collect Voting Power
 					</Button>
+
+					<Button
+						onClick={handleDifferentWallet}
+						className='mt-5 w-full border border-[#E0E2EB] bg-[#FBFCFE] text-[#404454] shadow-md'
+					>
+						Try a different wallet
+					</Button>
 				</div>
 			);
 		case CollectVotingPowerState.Error:
@@ -226,6 +242,12 @@ const CollectVotingPowerContent = ({
 						className='w-full bg-primary'
 					>
 						Connect Anyway
+					</Button>
+					<Button
+						onClick={handleDifferentWallet}
+						className='mt-5 w-full border border-[##E0E2EB] bg-[#FBFCFE] text-[#404454] shadow-md'
+					>
+						Try a different wallet
 					</Button>
 				</div>
 			);
