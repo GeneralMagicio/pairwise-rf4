@@ -24,7 +24,7 @@ export const useUpdateCategoryMarkFiltered = ({
 	return useMutation({
 		mutationFn: updateCategoryMarkFiltered,
 		onSuccess: () => {
-			queryClient.invalidateQueries({
+			queryClient.refetchQueries({
 				queryKey: ['category', categoryId],
 			});
 		},
