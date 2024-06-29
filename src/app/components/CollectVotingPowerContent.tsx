@@ -108,6 +108,7 @@ const CollectVotingPowerContent = ({
 			setNoBadgeConnecting(false);
 			setIsClaimDrawerOpen(false);
 		} catch (e) {
+			console.error('error on creating bandada identity without badge:', e);
 			setCollectState(CollectVotingPowerState.Error);
 		}
 	};
@@ -134,6 +135,7 @@ const CollectVotingPowerContent = ({
 
 			setCollectState(CollectVotingPowerState.Collected);
 		} catch (e) {
+			console.error('error on creating bandada identity with badge(s):', e);
 			setCollectState(CollectVotingPowerState.Error);
 		}
 	};

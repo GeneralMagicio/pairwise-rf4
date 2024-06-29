@@ -112,8 +112,8 @@ const CategoryRankingComment = () => {
 			const users = await getMembersGroup(groupId);
 
 			if (users && identityString !== '{}') {
-				const merkleTreeDepth = 16;
-				const group = new Group(groupId, merkleTreeDepth, users);
+				const bandadaGroup = await getGroup(groupId);
+				const group = new Group(groupId, bandadaGroup?.treeDepth, users);
 				console.log('going to encode signalData: ');
 				console.log(signalData);
 				const signal = toBigInt(
@@ -159,6 +159,10 @@ const CategoryRankingComment = () => {
 						console.log(errorMerkleTreeRoot);
 					}
 
+
+					console.log("merkleTreeRoot: ", merkleTreeRoot);
+					console.log("dataMerkleTreeRoot: ", dataMerkleTreeRoot);
+
 					if (!dataMerkleTreeRoot) {
 						console.error('Wrong dataMerkleTreeRoot');
 					} else if (dataMerkleTreeRoot.length === 0) {
@@ -166,15 +170,14 @@ const CategoryRankingComment = () => {
 					}
 
 					console.log('dataMerkleTreeRoot', dataMerkleTreeRoot);
-					const bandadaGroup = await getGroup(groupId);
 					const merkleTreeRootDuration =
 						bandadaGroup?.fingerprintDuration ?? 0;
 
 					if (
 						dataMerkleTreeRoot &&
 						Date.now() >
-							Date.parse(dataMerkleTreeRoot[0].created_at) +
-								merkleTreeRootDuration
+						Date.parse(dataMerkleTreeRoot[0].created_at) +
+						merkleTreeRootDuration
 					) {
 						console.log('Merkle Tree Root is expired');
 					}
