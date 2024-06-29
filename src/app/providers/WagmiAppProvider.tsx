@@ -19,8 +19,6 @@ const config = createConfig({
 		walletConnect({
 			projectId,
 		}),
-		injected({ target: 'metaMask' }),
-		metaMask(),
 		coinbaseWallet({
 			appName: 'Pairwise',
 			appLogoUrl: '/images/logo.png',
