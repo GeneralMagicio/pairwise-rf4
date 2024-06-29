@@ -12,6 +12,7 @@ import { Routes } from '../constants/Routes';
 import { useContinueGuest } from '../features/badges/getBadges';
 import { walletsLogos } from '../constants/WalletIcons';
 import { SuccessBox } from '../login/components/SuccessBox';
+import { isMobile } from 'react-device-detect';
 
 interface IConnectWalletContentProps {
 	onConnect?: () => void;
@@ -25,6 +26,7 @@ const ConnectWalletContent = ({
 	const { connectors, connectAsync } = useConnect();
 	const { address, isConnected } = useAccount();
 	const router = useRouter();
+
 	const { data: OtpData, isLoading: isOtpLoading } = useGetOtp();
 	const { disconnect } = useDisconnect();
 	const [copiedText, copy] = useCopyToClipboard();
@@ -68,53 +70,58 @@ const ConnectWalletContent = ({
 			<p className='mb-4 border-b border-gray-200 py-4 text-center text-lg font-bold '>
 				Connect Wallet
 			</p>
-			<div className='h-4 w-full flex justify-center'>{copied && <SuccessBox message='Copied' />}</div>
+			<div className='flex h-4 w-full justify-center'>
+				{copied && <SuccessBox message='Copied' />}
+			</div>
 
+			{isMobile && (
+				<p className='font-bold'>
+					You can connect to your wallet using WalletConnect
+				</p>
+			)}
 			<div className='mt-4 border-b border-gray-200 py-4'>
 				{address ? (
 					<button onClick={() => disconnect()}>Disconnect</button>
 				) : (
 					<div className='flex w-full flex-col gap-2'>
-						{filteredConnectors
-							.filter(connector => connector.id !== 'metaMaskSDK')
-							.map(connector => (
-								<div
-									className='flex w-full cursor-pointer items-center gap-2 rounded-xl bg-gray-100 p-2 transition-colors duration-200 ease-in-out'
-									key={connector.id}
-									onClick={() =>
-										connectAsync({ connector }).then(() => {
-											console.log('Connected to wallet');
-											onConnect?.();
-										})
-									}
-								>
-									<div className='overflow-hidden rounded-full'>
-										{connector.icon &&
-										connector.id !== 'walletConnect' ? (
-											<Image
-												src={connector.icon}
-												width={40}
-												height={40}
-												alt={connector.name}
-												unoptimized
-											/>
-										) : (
-											<Image
-												src={
-													walletsLogos[
-														connector.id ||
-															'walletConnect'
-													]
-												}
-												width={40}
-												height={40}
-												alt={connector.name}
-											/>
-										)}
-									</div>
-									{connector.name}
+						{filteredConnectors.map(connector => (
+							<div
+								className='flex w-full cursor-pointer items-center gap-2 rounded-xl bg-gray-100 p-2 transition-colors duration-200 ease-in-out'
+								key={connector.id}
+								onClick={() =>
+									connectAsync({ connector }).then(() => {
+										console.log('Connected to wallet');
+										onConnect?.();
+									})
+								}
+							>
+								<div className='overflow-hidden rounded-full'>
+									{connector.icon &&
+									connector.id !== 'walletConnect' ? (
+										<Image
+											src={connector.icon}
+											width={40}
+											height={40}
+											alt={connector.name}
+											unoptimized
+										/>
+									) : (
+										<Image
+											src={
+												walletsLogos[
+													connector.id ||
+														'walletConnect'
+												]
+											}
+											width={40}
+											height={40}
+											alt={connector.name}
+										/>
+									)}
 								</div>
-							))}
+								{connector.name}
+							</div>
+						))}
 					</div>
 				)}
 			</div>
