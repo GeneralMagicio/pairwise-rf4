@@ -98,6 +98,15 @@ const ConnectButton = () => {
 										</div>
 									))}
 							</div>
+							<div className='mt-2'>
+								<a
+									className='text-primary underline'
+									href='https://t.me/+LWJJ9psb9tUxOTJk'
+									target='_blank'
+								>
+									Need Help?
+								</a>
+							</div>
 						</div>
 					</Drawer>
 				</div>
