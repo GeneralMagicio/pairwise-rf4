@@ -133,7 +133,13 @@ const CategoryRankingComment = () => {
 			if (users && identityString !== "{}") {
 
 				const bandadaGroup = await getGroup(groupId)
-				const group = new Group(groupId, bandadaGroup?.treeDepth, users)
+				var treeDepth = 16;
+				if (bandadaGroup === null) {
+					console.log("The Bandada group does not exist:", groupId)
+				} else {
+					treeDepth = bandadaGroup.treeDepth
+				}
+				const group = new Group(groupId, treeDepth, users);
 				console.log("going to encode signalData: ")
 				console.log(signalData)
 				const signal = toBigInt(encodeBytes32String(signalData.toString())).toString()
