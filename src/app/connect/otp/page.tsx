@@ -1,14 +1,12 @@
 'use client';
 
 import Image from 'next/image';
-import ConnectOTPInput, { OtpState } from '../components/ConnectOtpInput';
-import { Suspense, useEffect, useState } from 'react';
+import { OtpState } from '../components/ConnectOtpInput';
+import { useEffect, useState } from 'react';
 import Button from '@/app/components/Button';
-import { badgesImages } from '@/app/constants/BadgesData';
 import { useUpdateOtp } from '@/app/features/user/updateOtp';
-import { useRouter, useSearchParams } from 'next/navigation';
+import { useRouter } from 'next/navigation';
 import { Routes } from '@/app/constants/Routes';
-import { queryClient } from '@/lib/react-query';
 import { useMutation } from '@tanstack/react-query';
 import { useAccount, useSignMessage } from 'wagmi';
 import {
@@ -18,46 +16,26 @@ import {
 import axios from 'axios';
 import { API_URL } from '@/app/config';
 import { BadgeData, badgeTypeMapping } from '@/app/badges/components/BadgeCard';
-import OtpIcon from 'public/images/icons/iconOTP';
 import { useGetPublicBadges } from '@/app/features/badges/getBadges';
 import { AdjacentBadges } from '@/app/badges/components/AdjacentBadges';
-import { json } from 'stream/consumers';
 import { ConnectErrorBox } from '../components/ConnectErrorBox';
 import LoadingSpinner from '@/app/components/LoadingSpinner';
 
-const storeIdentity = async ({
+const storeIdentityAndBadges = async ({
 	identity,
-	token,
-}: {
-	identity: string;
-	token: string;
-}) => {
-	return axios.post(
-		`${API_URL}/user/store-identity`,
-		{
-			identity,
-		},
-		{
-			headers: {
-				'Content-Type': 'application/json',
-				auth: token,
-			},
-		},
-	);
-};
-
-const storeBadges = async ({
 	mainAddress,
 	signature,
 	token,
 }: {
+	identity: string;
 	mainAddress: string;
 	signature: string;
 	token: string;
 }) => {
-	const { data: badges } = await axios.post<BadgeData>(
-		`${API_URL}/user/store-badges`,
+	return axios.post(
+		`${API_URL}/user/store-badges-identity`,
 		{
+			identity,
 			mainAddress,
 			signature,
 		},
@@ -68,8 +46,6 @@ const storeBadges = async ({
 			},
 		},
 	);
-
-	return badges;
 };
 
 const ConnectOTPPage = () => {
@@ -79,11 +55,8 @@ const ConnectOTPPage = () => {
 	const [error, setError] = useState<string | false>(false);
 	const { mutateAsync, isPending } = useUpdateOtp();
 	const { createIdentity } = useCreateIdentity();
-	const { mutateAsync: storeIdentityMutation } = useMutation({
-		mutationFn: storeIdentity,
-	});
-	const { mutateAsync: storeBadgesMutation, data: badges } = useMutation({
-		mutationFn: storeBadges,
+	const { mutateAsync: storeBadgesAndIdentityMutation } = useMutation({
+		mutationFn: storeIdentityAndBadges,
 	});
 
 	const { address } = useAccount();
@@ -124,10 +97,10 @@ const ConnectOTPPage = () => {
 
 				if (!identity || !address) return;
 
-				await storeIdentityMutation({ identity, token });
-				await storeBadgesMutation({
+				await storeBadgesAndIdentityMutation({
 					mainAddress: address,
 					signature,
+					identity,
 					token,
 				});
 
