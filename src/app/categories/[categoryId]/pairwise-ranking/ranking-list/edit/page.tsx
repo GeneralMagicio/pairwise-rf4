@@ -134,7 +134,7 @@ const CategoryRankingListEditPage = () => {
 				minimum={sortingError?.response?.data.minimum || 2}
 			/>
 			<div className='flex flex-grow flex-col'>
-				<TopRouteIndicator name={category?.data?.collection.name} />
+				<TopRouteIndicator name={category?.data?.collection.name} icon={'cross'} />
 				<div className='mx-4'>
 					<p className='mt-6 text-2xl font-bold'>Well done!</p>
 					<p className='mt-2 text-ph'>
