@@ -1,5 +1,5 @@
 // signin.tsx
-import { FC, useState } from 'react';
+import { FC } from 'react';
 import { ErrorBox } from './ErrorBox';
 
 interface SignInForm {

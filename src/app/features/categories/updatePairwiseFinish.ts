@@ -1,5 +1,5 @@
 import { axios } from '@/lib/axios';
-import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { useMutation } from '@tanstack/react-query';
 
 type ProjectVoteData = {
 	data: {

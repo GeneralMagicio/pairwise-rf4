@@ -7,8 +7,6 @@ import Button from './Button';
 import { useEffect, useState } from 'react';
 import { useGetOtp } from '../features/user/getOtp';
 import useCopyToClipboard from '../hooks/useCopyToClipboard';
-import { useRouter } from 'next/navigation';
-import { Routes } from '../constants/Routes';
 import { useContinueGuest } from '../features/badges/getBadges';
 import { walletsLogos } from '../constants/WalletIcons';
 import { SuccessBox } from '../login/components/SuccessBox';
@@ -25,7 +23,6 @@ const ConnectWalletContent = ({
 }: IConnectWalletContentProps) => {
 	const { connectors, connectAsync } = useConnect();
 	const { address, isConnected } = useAccount();
-	const router = useRouter();
 
 	const { data: OtpData, isLoading: isOtpLoading } = useGetOtp();
 	const { disconnect } = useDisconnect();

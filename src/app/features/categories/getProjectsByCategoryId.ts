@@ -1,4 +1,4 @@
-import { ICategory, IProject } from '@/app/categories/types';
+import { IProject } from '@/app/categories/types';
 import { axios } from '@/lib/axios';
 import { useQuery } from '@tanstack/react-query';
 import { AxiosResponse } from 'axios';

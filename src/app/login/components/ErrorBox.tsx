@@ -1,4 +1,3 @@
-import Image from 'next/image';
 import { ErrorBoxX } from 'public/images/icons/ErrorBoxX';
 import { FC } from 'react';
 
