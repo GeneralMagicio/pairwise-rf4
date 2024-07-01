@@ -1,6 +1,3 @@
-import Image from 'next/image';
-import { ErrorBoxX } from 'public/images/icons/ErrorBoxX';
-import IconAlertCircle from 'public/images/icons/IconAlertCircle';
 import IconWarning from 'public/images/icons/IconWarning';
 import { FC } from 'react';
 

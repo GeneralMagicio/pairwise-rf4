@@ -6,8 +6,6 @@ import { http, createConfig } from 'wagmi';
 import { mainnet, sepolia } from 'wagmi/chains';
 import {
 	coinbaseWallet,
-	injected,
-	metaMask,
 	walletConnect,
 } from 'wagmi/connectors';
 

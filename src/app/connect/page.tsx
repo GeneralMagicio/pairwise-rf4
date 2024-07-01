@@ -2,10 +2,10 @@
 
 import Image from 'next/image';
 import { BandadaLogo } from 'public/images/icons/BandadaLogo';
-import React, { Suspense, useEffect, useState } from 'react';
+import React from 'react';
 import { useAccount } from 'wagmi';
 import { Routes } from '../constants/Routes';
-import { useRouter, useSearchParams } from 'next/navigation';
+import { useRouter } from 'next/navigation';
 import ConnectSplashMessage from './components/ConnectSplashMessage';
 
 
