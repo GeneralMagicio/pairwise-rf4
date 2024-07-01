@@ -1,6 +1,4 @@
 import {
-	CollectionProgressStatus,
-	ICategory,
 	IProject,
 } from '@/app/categories/types';
 import { axios } from '@/lib/axios';

@@ -1,9 +1,7 @@
 'use client';
 
-import IconMove from 'public/images/icons/IconMove';
 import { IProject } from '../types';
 import Image from 'next/image';
-import { Reorder, useDragControls } from 'framer-motion';
 import { truncate } from '@/app/helpers/text-helpers';
 
 interface ICategoryRankingBasicListItemProps {

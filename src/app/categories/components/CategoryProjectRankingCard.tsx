@@ -1,6 +1,5 @@
 import Image from 'next/image';
 import { IProject } from '../types';
-import IconAlertCircle from 'public/images/icons/IconAlertCircle';
 import { truncate } from '@/app/helpers/text-helpers';
 import { useState } from 'react';
 import Drawer from '@/app/components/Drawer';

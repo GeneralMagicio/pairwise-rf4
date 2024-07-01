@@ -1,7 +1,6 @@
 import { IProject } from '../types';
 import { truncate } from '@/app/helpers/text-helpers';
 
-import { AnimatePresence, motion } from 'framer-motion';
 import { cn } from '@/app/helpers/cn';
 
 interface ICategoryPairwiseCardWithMetricsProps {

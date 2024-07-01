@@ -1,14 +1,12 @@
 'use client';
 
 import Image from 'next/image';
-import ConnectOTPInput, { OtpState } from '../components/ConnectOtpInput';
-import { Suspense, useEffect, useState } from 'react';
+import { OtpState } from '../components/ConnectOtpInput';
+import { useEffect, useState } from 'react';
 import Button from '@/app/components/Button';
-import { badgesImages } from '@/app/constants/BadgesData';
 import { useUpdateOtp } from '@/app/features/user/updateOtp';
-import { useRouter, useSearchParams } from 'next/navigation';
+import { useRouter } from 'next/navigation';
 import { Routes } from '@/app/constants/Routes';
-import { queryClient } from '@/lib/react-query';
 import { useMutation } from '@tanstack/react-query';
 import { useAccount, useSignMessage } from 'wagmi';
 import {
@@ -18,10 +16,8 @@ import {
 import axios from 'axios';
 import { API_URL } from '@/app/config';
 import { BadgeData, badgeTypeMapping } from '@/app/badges/components/BadgeCard';
-import OtpIcon from 'public/images/icons/iconOTP';
 import { useGetPublicBadges } from '@/app/features/badges/getBadges';
 import { AdjacentBadges } from '@/app/badges/components/AdjacentBadges';
-import { json } from 'stream/consumers';
 import { ConnectErrorBox } from '../components/ConnectErrorBox';
 import LoadingSpinner from '@/app/components/LoadingSpinner';
 
