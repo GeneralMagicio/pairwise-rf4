@@ -314,7 +314,7 @@ const CategoryRankingComment = () => {
 	return (
 		<div className='relative flex min-h-[calc(100dvh)] flex-col '>
 			<div className='flex flex-grow flex-col'>
-				<TopRouteIndicator name={category?.data.collection?.name} />
+				<TopRouteIndicator name={category?.data.collection?.name} icon='arrow' />
 				<div className='pb-8 pt-6'>
 					<CategoryItem
 						category={category?.data.collection!}
