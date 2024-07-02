@@ -73,7 +73,7 @@ const CategoryItem = ({ category, progress, imageNumber }: ICategoryProps) => {
 
 	return (
 		<div
-			className='flex cursor-pointer items-center justify-between gap-2 border-b border-b-gray-300 py-3'
+			className='flex cursor-pointer items-center justify-between gap-2 border-b border-b-gray-300 py-3 px-3'
 			onClick={checkConnectionThenRedirect}
 		>
 			<div className='relative'>
