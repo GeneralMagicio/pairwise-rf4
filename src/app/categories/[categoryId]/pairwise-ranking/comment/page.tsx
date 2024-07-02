@@ -23,7 +23,7 @@ import { useState } from 'react';
 import { axios } from '@/lib/axios';
 import { Identity } from '@semaphore-protocol/identity';
 import { Group } from '@semaphore-protocol/group';
-import { generateProof, verifyProof } from '@semaphore-protocol/proof';
+import { generateProof } from '@semaphore-protocol/proof';
 import {
 	encodeBytes32String,
 	toBigInt,

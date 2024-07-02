@@ -26,25 +26,20 @@ interface ICollectionsVotingPowerContentProps {
 	setIsClaimDrawerOpen: (isOpen: boolean) => void;
 }
 
-export const storeIdentity = async ({ identity }: { identity: string }) => {
-	return axios.post('/user/store-identity', {
-		identity,
-	});
-};
-
-export const storeBadges = async ({
+export const storeIdentityAndBadges = async ({
+	identity,
 	mainAddress,
 	signature,
 }: {
+	identity: string;
 	mainAddress: string;
 	signature: string;
 }) => {
-	const { data: badges } = await axios.post<BadgeData>('/user/store-badges', {
+	return axios.post('/user/store-badges-identity', {
+		identity,
 		mainAddress,
 		signature,
 	});
-
-	return badges;
 };
 
 const CollectVotingPowerContent = ({
@@ -62,11 +57,8 @@ const CollectVotingPowerContent = ({
 
 	const [noBadgeConnecting, setNoBadgeConnecting] = useState(false);
 
-	const { mutateAsync: storeIdentityMutation } = useMutation({
-		mutationFn: storeIdentity,
-	});
-	const { mutateAsync: storeBadgesMutation } = useMutation({
-		mutationFn: storeBadges,
+	const { mutateAsync: storeBadgesAndIdentityMutation } = useMutation({
+		mutationFn: storeIdentityAndBadges,
 		onSuccess: () => {
 			queryClient.refetchQueries({
 				queryKey: ['badges'],
@@ -105,12 +97,14 @@ const CollectVotingPowerContent = ({
 
 			if (!identity || !address) return;
 
-			await storeIdentityMutation({ identity });
-			await storeBadgesMutation({ mainAddress: address, signature });
+			await storeBadgesAndIdentityMutation({ identity, mainAddress: address, signature });
 			setNoBadgeConnecting(false);
 			setIsClaimDrawerOpen(false);
 		} catch (e) {
-			console.error('error on creating bandada identity without badge:', e);
+			console.error(
+				'error on creating bandada identity without badge:',
+				e,
+			);
 			setCollectState(CollectVotingPowerState.Error);
 		}
 	};
@@ -139,12 +133,14 @@ const CollectVotingPowerContent = ({
 
 			if (!identity || !address) return;
 
-			await storeIdentityMutation({ identity });
-			await storeBadgesMutation({ mainAddress: address, signature });
+			await storeBadgesAndIdentityMutation({ identity, mainAddress: address, signature });
 
 			setCollectState(CollectVotingPowerState.Collected);
 		} catch (e) {
-			console.error('error on creating bandada identity with badge(s):', e);
+			console.error(
+				'error on creating bandada identity with badge(s):',
+				e,
+			);
 			setCollectState(CollectVotingPowerState.Error);
 		}
 	};

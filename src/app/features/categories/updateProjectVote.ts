@@ -1,4 +1,3 @@
-import { InclusionState } from '@/app/categories/types';
 import { axios } from '@/lib/axios';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 

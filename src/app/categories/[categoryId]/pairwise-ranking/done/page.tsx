@@ -3,7 +3,6 @@
 import React from 'react';
 import Button from '@/app/components/Button';
 import { Routes } from '@/app/constants/Routes';
-import Image from 'next/image';
 import { useParams, useRouter } from 'next/navigation';
 import IconCheck from 'public/images/icons/IconCheck';
 

@@ -1,6 +1,5 @@
 'use client';
 
-import IconMove from 'public/images/icons/IconMove';
 import { IProject } from '../types';
 import Image from 'next/image';
 

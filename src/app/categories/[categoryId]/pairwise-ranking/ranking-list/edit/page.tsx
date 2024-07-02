@@ -1,6 +1,5 @@
 'use client';
 
-import { Categories, projects } from '@/app/categories/mockData';
 import { useParams, useRouter } from 'next/navigation';
 import { Reorder } from 'framer-motion';
 import { useEffect, useState } from 'react';
@@ -13,7 +12,6 @@ import { InclusionState, IProject } from '@/app/categories/types';
 import LoadingSpinner from '@/app/components/LoadingSpinner';
 import { useCategoryById } from '@/app/features/categories/getCategoryById';
 import { useUpdateSortingByCategoryId } from '@/app/features/categories/updateSortingByCategoryId';
-import { useUpdatePairwiseFinish } from '@/app/features/categories/updatePairwiseFinish';
 import { useProjectsByCategoryId } from '@/app/features/categories/getProjectsByCategoryId';
 import CategoryRankingNotSelectedListItem from '@/app/categories/components/CategoryRankingNotSelectedListItem';
 import { MinimumIncludedProjectsModal } from '@/app/components/MinimumIncludedProjectsModal';

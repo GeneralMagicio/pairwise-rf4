@@ -2,7 +2,7 @@
 
 import TopNavigation from '@/app/components/TopNavigation';
 import { useParams, useRouter } from 'next/navigation';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { Routes } from '@/app/constants/Routes';
 import CategoryBadge from '../components/CategoryBadge';
 import CategoryProjectItem from '../components/CategoryProjectItem';

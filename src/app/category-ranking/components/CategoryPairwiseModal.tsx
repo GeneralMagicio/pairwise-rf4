@@ -1,7 +1,5 @@
 import Button from '@/app/components/Button';
 import Modal from '@/app/components/Modal';
-import { Routes } from '@/app/constants/Routes';
-import router from 'next/router';
 import React from 'react';
 
 interface Props {
