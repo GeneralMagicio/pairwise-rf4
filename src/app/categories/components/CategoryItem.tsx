@@ -90,7 +90,7 @@ const CategoryItem = ({ category, progress, imageNumber }: ICategoryProps) => {
 			</div>
 			<div className='flex flex-1 flex-col'>
 				<p className='font-bold'>{category.name}</p>
-				<p className=' text-ph self-stretch text-text-placeholder font-inter text-sm font-normal ' style={{ lineHeight: '18px', letterSpacing: '-0.011px' }}>
+				<p className=' text-ph self-stretch text-text-placeholder font-inter text-sm font-normal leading-[18px] tracking-[-0.011px]'>
 					{truncate(category.impactDescription, 70)}
 				</p>
 			</div>
