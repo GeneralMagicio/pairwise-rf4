@@ -7,7 +7,6 @@ import LoadingSpinner from '../components/LoadingSpinner';
 import { useGetCategoryPairs } from '../features/categories/getCategoryPairs';
 import { CategoryPairwiseModal } from '../category-ranking/components/CategoryPairwiseModal';
 import { useRouter } from 'next/navigation';
-import LogoutModal from '../components/LogoutModal';
 
 const CategoriesPage = () => {
 	const [isModalOpen, setModalOpen] = useState(false);
