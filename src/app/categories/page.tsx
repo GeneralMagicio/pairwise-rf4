@@ -44,17 +44,8 @@ const CategoriesPage = () => {
 					imageNumber={(index % 5) + 1}
 				/>
 			))}
-			<div className='flex  justify-end  border-gray-300 bg-white pt-4'>
-				<div></div>
-				<a target="_blank" href='https://github.com/GeneralMagicio/pairwise-RPGF4/issues/new?assignees=MoeNick&labels=bug&projects=&template=bug_report.md&title=%5BBUG%5D+'>
-				<button className='right rounded-full  bg-primary px-4 py-2 text-sm text-white mb-4'>
-				Report a Bug
-				</button>
-			</a>
-			</div>
-			<LogoutModal />
 			
-		</div>
+		</div>	
 	);
 };
 
