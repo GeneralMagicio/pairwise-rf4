@@ -3,6 +3,7 @@
 import React, { ReactNode } from 'react';
 import Header from '../components/Header'; // Adjust the path as necessary
 import { useParams } from 'next/navigation';
+import LogoutModal from '../components/LogoutModal';
 
 const CategoriesLayout = ({ children }: { children: ReactNode }) => {
 	const params = useParams();
@@ -14,6 +15,7 @@ const CategoriesLayout = ({ children }: { children: ReactNode }) => {
 		<div className='centered-mobile-max-width'>
 			{!params.categoryId && <Header />}
 			{children}
+			<LogoutModal />
 		</div>
 	);
 };
