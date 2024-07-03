@@ -288,7 +288,7 @@ const CategoryRankingComment = () => {
 	return (
 		<div className='relative flex min-h-[calc(100dvh)] flex-col '>
 			<div className='flex flex-grow flex-col'>
-				<TopRouteIndicator name={'Category Voting'} />
+				<TopRouteIndicator name={'Category Voting'} icon={'cross'}/>
 				<div className='pb-8 pt-6'>
 					{ranking?.ranking.map(cat => (
 						<CategoryRankingItem key={cat.id} category={cat} />
