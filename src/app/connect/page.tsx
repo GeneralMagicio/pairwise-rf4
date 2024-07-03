@@ -14,10 +14,6 @@ const steps = [
 		title: 'Go to Pairwise voting app',
 		description: 'Get the code from Pairwise connect modal',
 	},
-	{
-		title: 'Get the code & paste here',
-		description: 'Paste code here to verify',
-	},
 	{ title: 'Sign', description: 'Sign with your connected wallet' },
 	{
 		title: 'Connect your OP Account',
