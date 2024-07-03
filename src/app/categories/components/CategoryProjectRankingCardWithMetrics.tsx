@@ -46,7 +46,7 @@ const CategoryProjectRankingCardWithMetrics = ({
 
 	const fetchMetrics = async () => {
 		try {
-			const response = await fetch('/data/metrics-628.csv');
+			const response = await fetch('/data/metrics-703.csv');
 			const data = await response.text();
 			const processedMap = processProjectMetricsCSV(data);
 			setMetricsMap(processedMap);
