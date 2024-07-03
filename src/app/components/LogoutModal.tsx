@@ -1,13 +1,12 @@
-import { useRouter } from 'next/navigation';
 import React from 'react';
 import { useDisconnect } from 'wagmi';
 interface LogoutModal {
-	onClose: () => void;
+
 }
 
-const LogoutModal: React.FC<LogoutModal> = ({ onClose }) => {
-	const router = useRouter();
+const LogoutModal: React.FC<LogoutModal> = () => {
 	const { disconnectAsync } = useDisconnect();
+
 	const handleLogOut = async () => {
 		await disconnectAsync();
 		localStorage.clear();
@@ -15,29 +14,9 @@ const LogoutModal: React.FC<LogoutModal> = ({ onClose }) => {
 	};
 
 	return (
-		<div className='flex w-full  justify-center bg-[#FBFCFE]'>
+		<div className='flex w-full  justify-center bg-[#FBFCFE] sticky bottom-0'>
 			<div className='flex w-[393px] flex-col items-center gap-6 rounded-t-[20px] p-4 pb-10 '>
 				<div className='flex w-full items-center justify-end gap-6 self-stretch'>
-					<svg
-						onClick={onClose}
-						className='cursor-pointer'
-						width='24'
-						height='24'
-						viewBox='0 0 24 24'
-						fill='none'
-						xmlns='http://www.w3.org/2000/svg'
-					>
-						<g id='x-close'>
-							<path
-								id='Icon'
-								d='M18 6L6 18M6 6L18 18'
-								stroke='#232634'
-								stroke-width='2'
-								stroke-linecap='round'
-								stroke-linejoin='round'
-							/>
-						</g>
-					</svg>
 				</div>
 				<button
 					onClick={() => handleLogOut()}
