@@ -3,6 +3,7 @@
 import CategoryRankingItem from '@/app/categories/components/CategoryRankingItem';
 import Button from '@/app/components/Button';
 import LoadingSpinner from '@/app/components/LoadingSpinner';
+import SubmittingVoteSpinner from '@/app/components/SubmittingVoteSpinner';
 import TopRouteIndicator from '@/app/components/TopRouteIndicator';
 import {
 	getGroup,
@@ -312,10 +313,14 @@ const CategoryRankingComment = () => {
 					onClick={attest}
 					className='w-full bg-primary'
 					disabled={isLoading || attestUnderway}
-					isLoading={attestUnderway}
 				>
 					Submit Vote
 				</Button>
+				{attestUnderway ? 
+			        <SubmittingVoteSpinner />
+			
+				:<></>
+				 }
 			</div>
 		</div>
 	);
