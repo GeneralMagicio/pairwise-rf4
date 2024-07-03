@@ -140,6 +140,16 @@ const parseNumber = (value: string): number | 'NA' => {
 	return cleanedValue ? parseFloat(cleanedValue) || 'NA' : 'NA';
 };
 
+const getColumnNumber = (
+	headers: string[],
+	column: string,
+	defaultValue?: number,
+) => {
+	const index = headers.findIndex(el => el === column);
+
+	return index !== -1 ? index : defaultValue ? defaultValue : -1;
+};
+
 // Function to process CSV content and return a Map of CategoryMetricData
 export const processProjectMetricsCSV = (
 	csvContent: string,
@@ -150,95 +160,94 @@ export const processProjectMetricsCSV = (
 
 	for (let i = 1; i < rows.length; i++) {
 		const cells = rows[i].split(',');
-		console.log('Cells:', cells);
 		if (cells.length === headers.length) {
-			const projectId = cells[0];
+			const projectId = cells[getColumnNumber(headers, 'application_id')];
 			const metricData: CategoryMetricData = {
 				NetworkGrowth: {
 					gasFees: {
-						value: parseNumber(cells[2]),
+						value: parseNumber(cells[getColumnNumber(headers, "gas_fees")]),
 						description: 'Gas Fees',
 						lowerIsBetter: false,
 					},
 					logGasFees: {
-						value: parseNumber(cells[15]),
+						value: parseNumber(cells[getColumnNumber(headers, "log_gas_fees")]),
 						description: 'Gas Fees (Log scale)',
 						lowerIsBetter: false,
 					},
 					dailyActiveAddresses: {
-						value: parseNumber(cells[7]),
+						value: parseNumber(cells[getColumnNumber(headers, "daily_active_addresses")]),
 						description: 'Daily Active Addresses',
 						lowerIsBetter: false,
 					},
 					monthlyActiveAddresses: {
-						value: parseNumber(cells[9]),
+						value: parseNumber(cells[getColumnNumber(headers, "monthly_active_addresses")]),
 						description: 'Monthly Active Addresses',
 						lowerIsBetter: false,
 					},
 					recurringAddresses: {
-						value: parseNumber(cells[11]),
+						value: parseNumber(cells[getColumnNumber(headers, "recurring_addresses")]),
 						description: 'Recurring Addresses',
 						lowerIsBetter: false,
 					},
 				},
 				NetworkQuality: {
 					transactionCount: {
-						value: parseNumber(cells[3]),
+						value: parseNumber(cells[getColumnNumber(headers, "transaction_count")]),
 						description: 'Transactions',
 						lowerIsBetter: false,
 					},
 					trustedTransactionCount: {
-						value: parseNumber(cells[4]),
+						value: parseNumber(cells[getColumnNumber(headers, "trusted_transaction_count")]),
 						description: 'Trusted Transactions',
 						lowerIsBetter: false,
 					},
 					trustedTransactionShare: {
-						value: parseNumber(cells[5]),
+						value: parseNumber(cells[getColumnNumber(headers, "trusted_transaction_share")]),
 						description: 'Trusted Transaction Share',
 						lowerIsBetter: false,
 					},
 
 					logTransactionCount: {
-						value: parseNumber(cells[16]),
+						value: parseNumber(cells[getColumnNumber(headers, "log_transaction_count")]),
 						description: 'Transaction (Log scale)',
 						lowerIsBetter: false,
 					},
-					logTrustedTransactionCount: {
-						value: parseNumber(cells[17]),
+					logTrustedTransactionCount: { 
+						value: parseNumber(cells[getColumnNumber(headers, "log_trusted_transaction_count")]),
 						description: 'Trusted transactions (Log scale)',
 						lowerIsBetter: false,
 					},
 				},
 				UserGrowth: {
 					trustedUsersOnboarded: {
-						value: parseNumber(cells[6]),
+						value: parseNumber(cells[getColumnNumber(headers, "trusted_users_onboarded")]),
 						description: 'Trusted Users Onboarded',
 						lowerIsBetter: false,
 					},
 					openrankTrustedUsersCount: {
-						value: parseNumber(cells[14]),
+						value: parseNumber(cells[getColumnNumber(headers, "openrank_trusted_users_count")]),
 						description: 'OpenRank Trusted Users',
 						lowerIsBetter: false,
 					},
 					trustedDailyActiveUsers: {
-						value: parseNumber(cells[8]),
+						value: parseNumber(cells[getColumnNumber(headers, "trusted_daily_active_users")]),
 						description: 'Trusted Daily Active Users',
 						lowerIsBetter: false,
 					},
 					trustedMonthlyActiveUsers: {
-						value: parseNumber(cells[10]),
+						value: parseNumber(cells[getColumnNumber(headers, "trusted_monthly_active_users")]),
 						description: 'Trusted Monthly Active Users',
 						lowerIsBetter: false,
 					},
 				},
 				UserQuality: {
 					trustedRecurringUsers: {
-						value: parseNumber(cells[12]),
+						value: parseNumber(cells[getColumnNumber(headers, "trusted_recurring_users")]),
 						description: 'Trusted Recurring Users',
 						lowerIsBetter: false,
 					},
 					powerUserAddresses: {
-						value: parseNumber(cells[13]),
+						value: parseNumber(cells[getColumnNumber(headers, "power_user_addresses")]),
 						description: 'Power User Addresses',
 						lowerIsBetter: false,
 					},
@@ -248,7 +257,6 @@ export const processProjectMetricsCSV = (
 		}
 	}
 
-	console.log('Metrics Map:', metricsMap);
 	return metricsMap;
 };
 
