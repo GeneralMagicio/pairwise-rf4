@@ -5,7 +5,6 @@ import { useConnect } from '../providers/ConnectProvider';
 import CollectVotingPowerContent from './CollectVotingPowerContent';
 import ConnectWalletContent from './ConnectWalletContent';
 import Drawer from './Drawer';
-import LogoutModal from './LogoutModal';
 
 const ConnectDrawers = () => {
 	const {
