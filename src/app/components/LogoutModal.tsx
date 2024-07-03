@@ -5,7 +5,7 @@ import IconLogout from 'public/images/icons/IconLogout';
 interface LogoutModal {
 
 }
-
+// Logut Modal
 const LogoutModal: React.FC<LogoutModal> = () => {
 	const { disconnectAsync } = useDisconnect();
 
