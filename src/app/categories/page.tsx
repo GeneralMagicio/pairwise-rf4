@@ -7,6 +7,8 @@ import LoadingSpinner from '../components/LoadingSpinner';
 import { useGetCategoryPairs } from '../features/categories/getCategoryPairs';
 import { CategoryPairwiseModal } from '../category-ranking/components/CategoryPairwiseModal';
 import { useRouter } from 'next/navigation';
+import CategoryCardView from './components/CategoryCardView';
+import CategoryToggleButton from './components/CategoryToggleButton';
 
 const CategoriesPage = () => {
 	const [isModalOpen, setModalOpen] = useState(false);
@@ -14,6 +16,11 @@ const CategoriesPage = () => {
 	const { data: categoryPairs, isLoading: isGettingCategoryPairs } =
 		useGetCategoryPairs();
 	const router = useRouter();
+
+	const [isCardView, setIsCardView] = useState(() => {
+		const savedState = localStorage.getItem('isCardView');
+		return savedState !== null ? JSON.parse(savedState) : false;
+	});
 
 	useEffect(() => {
 		const bool = categoryPairs && categoryPairs.length > 0;
@@ -27,6 +34,11 @@ const CategoriesPage = () => {
 	if (isLoading) {
 		return <LoadingSpinner />;
 	}
+
+	const toggleView = () => {
+		localStorage.setItem('isCardView', JSON.stringify(!isCardView));
+		setIsCardView(!isCardView);
+	};
 	return (
 		<div className='px-4'>
 			<CategoryPairwiseModal
@@ -34,24 +46,44 @@ const CategoriesPage = () => {
 				close={closeModal}
 				handleSubmit={handleSubmit}
 			/>
-			<h1 className='mt-6 text-2xl font-bold'>Categories</h1>
-			<p className='mb-6 text-ph '>Select one to begin ranking</p>
-			{categories?.data?.map((category, index) => (
-				<CategoryItem
-					key={category.id}
-					category={category}
-					imageNumber={(index % 5) + 1}
-				/>
-			))}
+			<div className='flex items-center justify-between'>
+				<div>
+					<h1 className='mt-6 text-2xl font-bold'>Categories</h1>
+					<p className='mb-6 text-ph '>Select one to begin ranking</p>
+				</div>
+				<CategoryToggleButton toggleView={toggleView} />
+			</div>
+			{isCardView ? (
+				<div className='grid grid-cols-2 gap-2'>
+					{categories?.data?.map((category, index) => (
+						<CategoryCardView
+							key={category.id}
+							category={category}
+							imageNumber={(index % 5) + 1}
+						/>
+					))}
+				</div>
+			) : (
+				categories?.data?.map((category, index) => (
+					<CategoryItem
+						key={category.id}
+						category={category}
+						imageNumber={(index % 5) + 1}
+					/>
+				))
+			)}
+
 			<div className='flex  justify-end border-b border-gray-300 bg-white pt-4'>
 				<div></div>
-				<a target="_blank" href='https://github.com/GeneralMagicio/pairwise-RPGF4/issues/new?assignees=MoeNick&labels=bug&projects=&template=bug_report.md&title=%5BBUG%5D+'>
-				<button className='right rounded-full  bg-primary px-4 py-2 text-sm text-white'>
-				Report a Bug
-				</button>
-			</a>
+				<a
+					target='_blank'
+					href='https://github.com/GeneralMagicio/pairwise-RPGF4/issues/new?assignees=MoeNick&labels=bug&projects=&template=bug_report.md&title=%5BBUG%5D+'
+				>
+					<button className='right rounded-full  bg-primary px-4 py-2 text-sm text-white'>
+						Report a Bug
+					</button>
+				</a>
 			</div>
-			
 		</div>
 	);
 };
