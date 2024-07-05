@@ -75,7 +75,7 @@ const CategoryProjectRankingCardWithMetrics = ({
 			<div className='w-full select-none rounded-2xl pb-5'>
 				<div className='relative mb-4'>
 					{project.image ? (
-						<div className='mx-auto h-[360px] w-[360px]'>
+						<div className='xxs:w-[250px] xxs:h-[250px] xs:h-[360px] xs:w-[360px] mx-auto '>
 							<Image
 								src={project.image}
 								alt={project.name}
