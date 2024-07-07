@@ -152,7 +152,7 @@ const CategoryPairwiseRankingPage = () => {
 	}
 
 	return (
-		<div className='flex min-h-[calc(100dvh)] flex-col justify-between'>
+		<div className='flex min-h-[calc(100dvh)] max-w-fit flex-col justify-between'>
 			<div>
 				<TopRouteIndicator name={categoryData?.data.collection.name} />
 				<div className='mb-1 mt-6 px-8'>
