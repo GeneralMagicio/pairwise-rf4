@@ -1,9 +1,11 @@
-export function formatMetricsNumber(num: number | 'NA') {
+import { Metric } from "./getMetrics";
+
+export function formatMetricsNumber(num: Metric['value']) {
 	if (num === undefined || num === null) {
 		return undefined;
 	}
-	if (num === 'NA') {
-		return 'NA';
+	if (typeof num !== 'number') {
+		return num;
 	}
 
 	if (num >= 1000000) {
