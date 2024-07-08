@@ -78,7 +78,7 @@ const CategoryCardView = ({
 
 	return (
 		<div
-			className='mx-auto rounded-xl bg-[#FBFCFE] p-2 shadow-lg '
+			className=' mx-auto cursor-pointer rounded-xl bg-[#FBFCFE] p-2 shadow-lg '
 			onClick={checkConnectionThenRedirect}
 		>
 			<div className=' '>
