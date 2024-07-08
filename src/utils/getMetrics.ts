@@ -1,6 +1,6 @@
 // Type definitions for project metric data
 export type Metric = {
-	value: number | 'NA';
+	value: number | 'NA' | `${string}%`;
 	description: string;
 	lowerIsBetter: boolean; // Added field to indicate if lower values are better
 };
@@ -19,7 +19,6 @@ export interface ComparisonResult {
 export type CategoryMetricData = {
 	NetworkGrowth: {
 		gasFees: Metric;
-		logGasFees: Metric;
 		dailyActiveAddresses: Metric;
 		monthlyActiveAddresses: Metric;
 		recurringAddresses: Metric;
@@ -28,18 +27,16 @@ export type CategoryMetricData = {
 		transactionCount: Metric;
 		trustedTransactionCount: Metric;
 		trustedTransactionShare: Metric;
-		logTransactionCount: Metric;
-		logTrustedTransactionCount: Metric;
 	};
 	UserGrowth: {
 		trustedUsersOnboarded: Metric;
 		trustedDailyActiveUsers: Metric;
 		trustedMonthlyActiveUsers: Metric;
-		openrankTrustedUsersCount: Metric;
 	};
 	UserQuality: {
 		trustedRecurringUsers: Metric;
 		powerUserAddresses: Metric;
+		openrankTrustedUsersCount: Metric;
 	};
 };
 
@@ -47,11 +44,6 @@ export type CategoryMetricData = {
 const defaultMetricData: CategoryMetricData = {
 	NetworkGrowth: {
 		gasFees: { value: 'NA', description: 'Gas Fees', lowerIsBetter: false },
-		logGasFees: {
-			value: 'NA',
-			description: 'Gas Fees (Log scale)',
-			lowerIsBetter: false,
-		},
 		dailyActiveAddresses: {
 			value: 'NA',
 			description: 'Daily Active Addresses',
@@ -84,26 +76,11 @@ const defaultMetricData: CategoryMetricData = {
 			description: 'Trusted Transaction Share',
 			lowerIsBetter: false,
 		},
-		logTransactionCount: {
-			value: 'NA',
-			description: 'Transaction (Log scale)',
-			lowerIsBetter: false,
-		},
-		logTrustedTransactionCount: {
-			value: 'NA',
-			description: 'Trusted transactions (Log scale)',
-			lowerIsBetter: false,
-		},
 	},
 	UserGrowth: {
 		trustedUsersOnboarded: {
 			value: 'NA',
 			description: 'Trusted Users Onboarded',
-			lowerIsBetter: false,
-		},
-		openrankTrustedUsersCount: {
-			value: 'NA',
-			description: 'OpenRank Trusted Users',
 			lowerIsBetter: false,
 		},
 		trustedDailyActiveUsers: {
@@ -126,6 +103,11 @@ const defaultMetricData: CategoryMetricData = {
 		powerUserAddresses: {
 			value: 'NA',
 			description: 'Power User Addresses',
+			lowerIsBetter: false,
+		},
+		openrankTrustedUsersCount: {
+			value: 'NA',
+			description: 'OpenRank Trusted Users',
 			lowerIsBetter: false,
 		},
 	},
@@ -165,90 +147,158 @@ export const processProjectMetricsCSV = (
 			const metricData: CategoryMetricData = {
 				NetworkGrowth: {
 					gasFees: {
-						value: parseNumber(cells[getColumnNumber(headers, "gas_fees")]),
+						value: parseNumber(
+							cells[getColumnNumber(headers, 'gas_fees')],
+						),
 						description: 'Gas Fees',
 						lowerIsBetter: false,
 					},
-					logGasFees: {
-						value: parseNumber(cells[getColumnNumber(headers, "log_gas_fees")]),
-						description: 'Gas Fees (Log scale)',
-						lowerIsBetter: false,
-					},
 					dailyActiveAddresses: {
-						value: parseNumber(cells[getColumnNumber(headers, "daily_active_addresses")]),
+						value: parseNumber(
+							cells[
+								getColumnNumber(
+									headers,
+									'daily_active_addresses',
+								)
+							],
+						),
 						description: 'Daily Active Addresses',
 						lowerIsBetter: false,
 					},
 					monthlyActiveAddresses: {
-						value: parseNumber(cells[getColumnNumber(headers, "monthly_active_addresses")]),
+						value: parseNumber(
+							cells[
+								getColumnNumber(
+									headers,
+									'monthly_active_addresses',
+								)
+							],
+						),
 						description: 'Monthly Active Addresses',
 						lowerIsBetter: false,
 					},
 					recurringAddresses: {
-						value: parseNumber(cells[getColumnNumber(headers, "recurring_addresses")]),
+						value: parseNumber(
+							cells[
+								getColumnNumber(headers, 'recurring_addresses')
+							],
+						),
 						description: 'Recurring Addresses',
 						lowerIsBetter: false,
 					},
 				},
 				NetworkQuality: {
 					transactionCount: {
-						value: parseNumber(cells[getColumnNumber(headers, "transaction_count")]),
+						value: parseNumber(
+							cells[
+								getColumnNumber(headers, 'transaction_count')
+							],
+						),
 						description: 'Transactions',
 						lowerIsBetter: false,
 					},
 					trustedTransactionCount: {
-						value: parseNumber(cells[getColumnNumber(headers, "trusted_transaction_count")]),
+						value: parseNumber(
+							cells[
+								getColumnNumber(
+									headers,
+									'trusted_transaction_count',
+								)
+							],
+						),
 						description: 'Trusted Transactions',
 						lowerIsBetter: false,
 					},
-					trustedTransactionShare: {
-						value: parseNumber(cells[getColumnNumber(headers, "trusted_transaction_share")]),
-						description: 'Trusted Transaction Share',
-						lowerIsBetter: false,
-					},
+					trustedTransactionShare: (() => {
+						const value = parseNumber(
+							cells[
+								getColumnNumber(
+									headers,
+									'trusted_transaction_share',
+								)
+							],
+						);
 
-					logTransactionCount: {
-						value: parseNumber(cells[getColumnNumber(headers, "log_transaction_count")]),
-						description: 'Transaction (Log scale)',
-						lowerIsBetter: false,
-					},
-					logTrustedTransactionCount: { 
-						value: parseNumber(cells[getColumnNumber(headers, "log_trusted_transaction_count")]),
-						description: 'Trusted transactions (Log scale)',
-						lowerIsBetter: false,
-					},
+						return {
+							value:
+								typeof value === 'number'
+									? `${(value * 100).toFixed(2)}%`
+									: value,
+							description: 'Trusted Transaction Share',
+							lowerIsBetter: false,
+						};
+					})(),
 				},
 				UserGrowth: {
 					trustedUsersOnboarded: {
-						value: parseNumber(cells[getColumnNumber(headers, "trusted_users_onboarded")]),
+						value: parseNumber(
+							cells[
+								getColumnNumber(
+									headers,
+									'trusted_users_onboarded',
+								)
+							],
+						),
 						description: 'Trusted Users Onboarded',
 						lowerIsBetter: false,
 					},
-					openrankTrustedUsersCount: {
-						value: parseNumber(cells[getColumnNumber(headers, "openrank_trusted_users_count")]),
-						description: 'OpenRank Trusted Users',
-						lowerIsBetter: false,
-					},
 					trustedDailyActiveUsers: {
-						value: parseNumber(cells[getColumnNumber(headers, "trusted_daily_active_users")]),
+						value: parseNumber(
+							cells[
+								getColumnNumber(
+									headers,
+									'trusted_daily_active_users',
+								)
+							],
+						),
 						description: 'Trusted Daily Active Users',
 						lowerIsBetter: false,
 					},
 					trustedMonthlyActiveUsers: {
-						value: parseNumber(cells[getColumnNumber(headers, "trusted_monthly_active_users")]),
+						value: parseNumber(
+							cells[
+								getColumnNumber(
+									headers,
+									'trusted_monthly_active_users',
+								)
+							],
+						),
 						description: 'Trusted Monthly Active Users',
 						lowerIsBetter: false,
 					},
 				},
 				UserQuality: {
 					trustedRecurringUsers: {
-						value: parseNumber(cells[getColumnNumber(headers, "trusted_recurring_users")]),
+						value: parseNumber(
+							cells[
+								getColumnNumber(
+									headers,
+									'trusted_recurring_users',
+								)
+							],
+						),
 						description: 'Trusted Recurring Users',
 						lowerIsBetter: false,
 					},
 					powerUserAddresses: {
-						value: parseNumber(cells[getColumnNumber(headers, "power_user_addresses")]),
+						value: parseNumber(
+							cells[
+								getColumnNumber(headers, 'power_user_addresses')
+							],
+						),
 						description: 'Power User Addresses',
+						lowerIsBetter: false,
+					},
+					openrankTrustedUsersCount: {
+						value: parseNumber(
+							cells[
+								getColumnNumber(
+									headers,
+									'openrank_trusted_users_count',
+								)
+							],
+						),
+						description: 'OpenRank Trusted Users',
 						lowerIsBetter: false,
 					},
 				},
