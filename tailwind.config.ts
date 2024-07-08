@@ -24,6 +24,7 @@ const config: Config = {
 				success: '#75E0A7',
 			},
 			screens: {
+				xxs: '250px',
 				xs: '410px',
 			},
 		},
