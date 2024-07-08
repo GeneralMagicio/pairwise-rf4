@@ -99,7 +99,7 @@ const CategoryPairwiseRankingPage = () => {
 
 	const fetchMetrics = async () => {
 		try {
-			const response = await fetch('/data/metrics-628.csv');
+			const response = await fetch('/data/metrics-703.csv');
 			const data = await response.text();
 			const processedMap = processProjectMetricsCSV(data);
 			const formatted = compareProjects(
@@ -154,7 +154,7 @@ const CategoryPairwiseRankingPage = () => {
 	return (
 		<div className='flex min-h-[calc(100dvh)] flex-col justify-between'>
 			<div>
-				<TopRouteIndicator name={categoryData?.data.collection.name} />
+				<TopRouteIndicator name={categoryData?.data.collection.name} icon={'cross'} />
 				<div className='mb-1 mt-6 px-8'>
 					<ProgressBar
 						progress={

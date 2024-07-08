@@ -5,7 +5,6 @@ import { useConnect } from '../providers/ConnectProvider';
 import CollectVotingPowerContent from './CollectVotingPowerContent';
 import ConnectWalletContent from './ConnectWalletContent';
 import Drawer from './Drawer';
-import LogoutModal from './LogoutModal';
 
 const ConnectDrawers = () => {
 	const {
@@ -14,8 +13,6 @@ const ConnectDrawers = () => {
 		setIsClaimDrawerOpen,
 		isConnectDrawerOpen,
 		setIsConnectDrawerOpen,
-		isLogOutDrawerOpen,
-		setIsLogOutDrawerOpen,
 	} = useConnect();
 	return (
 		<div>
@@ -41,13 +38,6 @@ const ConnectDrawers = () => {
 				<CollectVotingPowerContent
 					setIsClaimDrawerOpen={setIsClaimDrawerOpen}
 				/>
-			</Drawer>
-
-			<Drawer
-				setIsOpen={setIsLogOutDrawerOpen}
-				isOpen={isLogOutDrawerOpen}
-			>
-				<LogoutModal onClose={() => setIsLogOutDrawerOpen(false)} />
 			</Drawer>
 		</div>
 	);

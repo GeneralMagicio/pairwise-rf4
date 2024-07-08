@@ -73,7 +73,7 @@ const CategoryItem = ({ category, progress, imageNumber }: ICategoryProps) => {
 
 	return (
 		<div
-			className='flex cursor-pointer items-center justify-between gap-2 border-b border-b-gray-300 py-3'
+			className='flex cursor-pointer items-center justify-between gap-2 border-b border-b-gray-300 py-3 px-3'
 			onClick={checkConnectionThenRedirect}
 		>
 			<div className='relative'>
@@ -90,7 +90,7 @@ const CategoryItem = ({ category, progress, imageNumber }: ICategoryProps) => {
 			</div>
 			<div className='flex flex-1 flex-col'>
 				<p className='font-bold'>{category.name}</p>
-				<p className='text-ph'>
+				<p className=' text-ph self-stretch text-text-placeholder font-inter text-sm font-normal leading-[18px] tracking-[-0.011px]'>
 					{truncate(category.impactDescription, 70)}
 				</p>
 			</div>

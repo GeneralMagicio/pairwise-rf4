@@ -74,7 +74,7 @@ const CategoryRankingListPage = () => {
 	return (
 		<div className='relative flex min-h-[calc(100dvh)] flex-col '>
 			<div className='flex flex-grow flex-col'>
-				<TopRouteIndicator name={category?.data?.collection.name} />
+				<TopRouteIndicator name={category?.data?.collection.name} icon={'cross'}/>
 				<div className='mx-4'>
 					<p className='mt-6 text-2xl font-bold'>Well done!</p>
 					<p className='mt-2 text-ph'>
