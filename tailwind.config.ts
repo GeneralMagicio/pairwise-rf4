@@ -23,6 +23,9 @@ const config: Config = {
 				bg_disabled: '#F2F4F7',
 				success: '#75E0A7',
 			},
+			screens: {
+				xs: '410px',
+			},
 		},
 	},
 	plugins: [],

@@ -21,7 +21,7 @@ const LogoutModal: React.FC<LogoutModal> = () => {
 				className='flex h-11 flex-[1_0_0] items-center justify-center gap-1.5 rounded-lg border border-[var(--Border-Border-Tertiary,#E0E2EB)] bg-[var(--Background-Neutral-2,#FBFCFE)] px-4 py-2.5 shadow-[0px_1px_3px_0px_rgba(16,24,40,0.10),0px_1px_2px_0px_rgba(16,24,40,0.06)]'
 			>
 				<IconBug />
-				<span className='font-inter text-base font-medium leading-[21px] tracking-[-0.05px] text-[#404454]'>
+				<span className='font-inter xs:text-base text-xs font-medium leading-[21px] tracking-[-0.05px] text-[#404454]'>
 					Report a Bug
 				</span>
 			</a>
