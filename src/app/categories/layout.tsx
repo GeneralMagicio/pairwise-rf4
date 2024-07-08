@@ -7,7 +7,6 @@ import LogoutModal from '../components/LogoutModal';
 
 const CategoriesLayout = ({ children }: { children: ReactNode }) => {
 	const params = useParams();
-	
 
 	console.log('params', params);
 
@@ -15,7 +14,6 @@ const CategoriesLayout = ({ children }: { children: ReactNode }) => {
 		<div className='centered-mobile-max-width'>
 			{!params.categoryId && <Header />}
 			{children}
-			<LogoutModal />
 		</div>
 	);
 };

@@ -7,6 +7,7 @@ import LoadingSpinner from '../components/LoadingSpinner';
 import { useGetCategoryPairs } from '../features/categories/getCategoryPairs';
 import { CategoryPairwiseModal } from '../category-ranking/components/CategoryPairwiseModal';
 import { useRouter } from 'next/navigation';
+import LogoutModal from '../components/LogoutModal';
 
 const CategoriesPage = () => {
 	const [isModalOpen, setModalOpen] = useState(false);
@@ -43,8 +44,8 @@ const CategoriesPage = () => {
 					imageNumber={(index % 5) + 1}
 				/>
 			))}
-			
-		</div>	
+			<LogoutModal />
+		</div>
 	);
 };
 
