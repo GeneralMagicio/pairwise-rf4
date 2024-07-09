@@ -1,13 +1,12 @@
-import { useRouter } from 'next/navigation';
 import React from 'react';
 import { useDisconnect } from 'wagmi';
-interface LogoutModal {
-	onClose: () => void;
-}
-
-const LogoutModal: React.FC<LogoutModal> = ({ onClose }) => {
-	const router = useRouter();
+import IconBug from 'public/images/icons/IconBug';
+import IconLogout from 'public/images/icons/IconLogout';
+interface LogoutModal {}
+// Logut Modal
+const LogoutModal: React.FC<LogoutModal> = () => {
 	const { disconnectAsync } = useDisconnect();
+
 	const handleLogOut = async () => {
 		await disconnectAsync();
 		localStorage.clear();
@@ -15,54 +14,30 @@ const LogoutModal: React.FC<LogoutModal> = ({ onClose }) => {
 	};
 
 	return (
-		<div className='flex w-full  justify-center bg-[#FBFCFE]'>
-			<div className='flex w-[393px] flex-col items-center gap-6 rounded-t-[20px] p-4 pb-10 '>
-				<div className='flex w-full items-center justify-end gap-6 self-stretch'>
-					<svg
-						onClick={onClose}
-						className='cursor-pointer'
-						width='24'
-						height='24'
-						viewBox='0 0 24 24'
-						fill='none'
-						xmlns='http://www.w3.org/2000/svg'
-					>
-						<g id='x-close'>
-							<path
-								id='Icon'
-								d='M18 6L6 18M6 6L18 18'
-								stroke='#232634'
-								stroke-width='2'
-								stroke-linecap='round'
-								stroke-linejoin='round'
-							/>
-						</g>
-					</svg>
-				</div>
-				<button
-					onClick={() => handleLogOut()}
-					className='flex h-[44px] w-[345px] items-center justify-center gap-1.5 rounded-md border border-[#FF99A1] bg-[#FFF] p-[10px] px-4'
-				>
-					<svg
-						xmlns='http://www.w3.org/2000/svg'
-						width='20'
-						height='20'
-						viewBox='0 0 20 20'
-						fill='none'
-					>
-						<path
-							d='M13.3333 14.1668L17.5 10.0001M17.5 10.0001L13.3333 5.83343M17.5 10.0001H7.5M10 14.1668C10 14.4131 10 14.5362 9.99085 14.6429C9.89569 15.7517 9.07905 16.6641 7.98753 16.8812C7.88252 16.902 7.76001 16.9156 7.51529 16.9428L6.66412 17.0374C5.3854 17.1795 4.74601 17.2505 4.23805 17.088C3.56078 16.8713 3.00785 16.3764 2.71765 15.7272C2.5 15.2403 2.5 14.597 2.5 13.3103V6.68984C2.5 5.40323 2.5 4.75992 2.71765 4.27303C3.00785 3.62383 3.56078 3.12893 4.23805 2.9122C4.74601 2.74965 5.38538 2.82069 6.66412 2.96277L7.51529 3.05735C7.7601 3.08455 7.8825 3.09815 7.98753 3.11903C9.07905 3.33606 9.89569 4.24846 9.99085 5.35727C10 5.46395 10 5.58711 10 5.83343'
-							stroke='#FF0420'
-							stroke-width='1.66667'
-							stroke-linecap='round'
-							stroke-linejoin='round'
-						/>
-					</svg>
-					<div className='font-inter text-[16px] font-semibold leading-[21px] tracking-[-0.05px] text-[#FF0420]'>
-						Log out
-					</div>
-				</button>
-			</div>
+		<div className='sticky bottom-0 flex items-center justify-around gap-6 bg-white px-4 py-4'>
+			<a
+				href='https://github.com/GeneralMagicio/pairwise-RPGF4/issues/new?assignees=MoeNick&labels=bug&projects=&template=bug_report.md&title=%5BBUG%5D+'
+				target='_blank'
+				className='flex h-11 flex-[1_0_0] items-center justify-center gap-1.5 rounded-lg border border-[var(--Border-Border-Tertiary,#E0E2EB)] bg-[var(--Background-Neutral-2,#FBFCFE)] px-4 py-2.5 shadow-[0px_1px_3px_0px_rgba(16,24,40,0.10),0px_1px_2px_0px_rgba(16,24,40,0.06)]'
+			>
+				<span className='xxs:hidden xs:block'>
+					<IconBug />
+				</span>
+				<span className='font-inter xxs:text-[15px] xs:text-[14px] text-xs font-medium leading-[21px] tracking-[-0.05px] text-[#404454]'>
+					Report a Bug
+				</span>
+			</a>
+
+			<button
+				onClick={() => handleLogOut()}
+				className='flex h-11 flex-[1_0_0] items-center justify-center gap-[var(--spacing-sm,6px)] rounded-lg border border-[var(--Border-Border-Secondary,#FF99A1)] bg-[var(--Component-colors-Components-Buttons-Secondary-button-secondary-bg,#FFF)] px-[var(--spacing-xl,16px)] py-2.5 shadow-[0px_1px_3px_0px_rgba(16,24,40,0.10),0px_1px_2px_0px_rgba(16,24,40,0.06)]'
+			>
+				<IconLogout />
+				<span className='font-inter text-base font-semibold leading-[21px] tracking-[-0.05px] text-[#FF0420]'>
+					{' '}
+					Logout
+				</span>
+			</button>
 		</div>
 	);
 };

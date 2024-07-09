@@ -35,6 +35,7 @@ import {
 } from '@/app/connect/anonvote/utils/bandadaApi';
 import supabase from '@/app/connect/anonvote/utils/supabaseClient';
 import { activeChain } from '@/lib/third-web/constants';
+import SubmittingVoteSpinner from '@/app/components/SubmittingVoteSpinner';
 
 const CategoryRankingComment = () => {
 	const router = useRouter();
@@ -43,7 +44,7 @@ const CategoryRankingComment = () => {
 		typeof categoryId === 'string' ? categoryId : categoryId[0];
 
 	const [comment, setComment] = useState('');
-	const [attestUnderway, setAttestUnderway] = useState(false);
+	const [attestUnderway, setAttestUnderway] = useState(false );
 
 	const onCommentChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
 		setComment(e.target.value);
@@ -313,8 +314,9 @@ const CategoryRankingComment = () => {
 
 	return (
 		<div className='relative flex min-h-[calc(100dvh)] flex-col '>
+		
 			<div className='flex flex-grow flex-col'>
-				<TopRouteIndicator name={category?.data.collection?.name} />
+				<TopRouteIndicator name={category?.data.collection?.name} icon='arrow' />
 				<div className='pb-8 pt-6'>
 					<CategoryItem
 						category={category?.data.collection!}
@@ -340,10 +342,14 @@ const CategoryRankingComment = () => {
 					onClick={attest}
 					disabled={isProjectsRankingLoading || attestUnderway}
 					className='w-full bg-primary'
-					isLoading={attestUnderway}
 				>
 					Submit Vote
 				</Button>
+				{attestUnderway ? 
+			        <SubmittingVoteSpinner />
+			
+				:<></>
+				 }
 			</div>
 		</div>
 	);

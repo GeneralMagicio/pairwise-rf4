@@ -46,7 +46,7 @@ const CategoryProjectRankingCardWithMetrics = ({
 
 	const fetchMetrics = async () => {
 		try {
-			const response = await fetch('/data/metrics-628.csv');
+			const response = await fetch('/data/metrics-703.csv');
 			const data = await response.text();
 			const processedMap = processProjectMetricsCSV(data);
 			setMetricsMap(processedMap);
@@ -75,7 +75,7 @@ const CategoryProjectRankingCardWithMetrics = ({
 			<div className='w-full select-none rounded-2xl pb-5'>
 				<div className='relative mb-4'>
 					{project.image ? (
-						<div className='mx-auto h-[360px] w-[360px]'>
+						<div className='w-max[360px] h-max-[360px] mx-auto h-full w-full  '>
 							<Image
 								src={project.image}
 								alt={project.name}

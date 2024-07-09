@@ -23,6 +23,10 @@ const config: Config = {
 				bg_disabled: '#F2F4F7',
 				success: '#75E0A7',
 			},
+			screens: {
+				xxs: '250px',
+				xs: '376px',
+			},
 		},
 	},
 	plugins: [],

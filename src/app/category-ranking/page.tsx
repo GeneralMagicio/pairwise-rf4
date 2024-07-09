@@ -48,7 +48,7 @@ const CategoryPairwiseRankingPage = () => {
 	return (
 		<div className='flex min-h-[calc(100dvh)] flex-col justify-between'>
 			<div>
-				<TopRouteIndicator name={"Category Voting"} />
+				<TopRouteIndicator name={"Category Voting"} icon={'cross'} />
 				<p className='text-bold mb-4 mt-6 px-3 text-center text-base'>
 					{`Which category should receive more RetroPGF funding?`}
 				</p>

@@ -1,6 +1,6 @@
 'use client';
 
-import Image from 'next/image'; // Make sure to install 'next/image'
+import React from 'react';
 import { CollectionProgressStatus, ICategory } from '../types';
 import { useRouter } from 'next/navigation';
 import { Routes } from '@/app/constants/Routes';
@@ -16,7 +16,11 @@ export interface ICategoryProps {
 	imageNumber?: number;
 }
 
-const CategoryItem = ({ category, progress, imageNumber }: ICategoryProps) => {
+const CategoryCardView = ({
+	category,
+	progress,
+	imageNumber,
+}: ICategoryProps) => {
 	const router = useRouter();
 
 	const { data: badges } = useGetBadges();
@@ -27,6 +31,7 @@ const CategoryItem = ({ category, progress, imageNumber }: ICategoryProps) => {
 
 	const imgNumber = imageNumber || (category.id % 5) + 1;
 	const imgSrc = `/images/defaults/category/category-${imgNumber}.png`;
+
 	const onCategoryClick = () => {
 		if (progress) return null;
 		switch (category.progress) {
@@ -73,30 +78,36 @@ const CategoryItem = ({ category, progress, imageNumber }: ICategoryProps) => {
 
 	return (
 		<div
-			className='flex cursor-pointer items-center justify-between gap-2 border-b border-b-gray-300 py-3 px-3'
+			className=' mx-auto cursor-pointer rounded-xl bg-[#FBFCFE] p-2 shadow-lg '
 			onClick={checkConnectionThenRedirect}
 		>
-			<div className='relative'>
-				<Image
-					className='rounded-full'
-					src={imgSrc}
-					alt='Logo'
-					width={40}
-					height={40}
-				/>
-				<p className='absolute inset-0 flex items-center justify-center px-1 text-center text-[4px] text-white'>
-					{category.name}
-				</p>
+			<div className=' '>
+				<div className='flex flex-col items-center gap-2  rounded-xl '>
+					<div className='relative'>
+						<img
+							className='object-fill'
+							src={imgSrc}
+							alt='Logo'
+						></img>
+						<p className='absolute inset-0 flex items-center justify-center px-1 text-center text-sm font-bold text-white'>
+							{category.name}
+						</p>
+					</div>
+					<div className='flex w-full justify-start'>
+						<CategoryBadge
+							progress={category.progress || progress}
+						/>
+					</div>{' '}
+					<p className='flex w-full justify-start font-bold'>
+						{category.name}
+					</p>
+					<p className='text-left text-ph'>
+						{truncate(category.impactDescription, 50)}
+					</p>
+				</div>
 			</div>
-			<div className='flex flex-1 flex-col'>
-				<p className='font-bold'>{category.name}</p>
-				<p className=' text-ph self-stretch text-text-placeholder font-inter text-sm font-normal leading-[18px] tracking-[-0.011px]'>
-					{truncate(category.impactDescription, 70)}
-				</p>
-			</div>
-			<CategoryBadge progress={category.progress || progress} />
 		</div>
 	);
 };
 
-export default CategoryItem;
+export default CategoryCardView;

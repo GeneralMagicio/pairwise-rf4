@@ -6,7 +6,6 @@ import { useParams } from 'next/navigation';
 
 const CategoriesLayout = ({ children }: { children: ReactNode }) => {
 	const params = useParams();
-	
 
 	console.log('params', params);
 

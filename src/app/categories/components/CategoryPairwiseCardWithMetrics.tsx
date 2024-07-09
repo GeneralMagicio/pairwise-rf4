@@ -26,7 +26,7 @@ const CategoryPairwiseCardWithMetrics = ({
 			<div className='relative mx-4 overflow-hidden rounded-2xl'>
 				<div
 					className={cn(
-						'relative mx-auto h-[170px] w-[170px] rounded-2xl',
+						'relative mx-auto h-[140px] w-[140px] rounded-2xl sm:h-[170px] sm:w-[170px]',
 						!project.image && 'bg-gray-700',
 					)}
 					style={
@@ -48,7 +48,8 @@ const CategoryPairwiseCardWithMetrics = ({
 				<div className='pt-2 text-center'>
 					<p className=' font-bold '>{truncate(project.name, 16)}</p>
 					<p className='text-ph'>
-						{project.shortDescription || truncate(getDescription(project) || '', 80)}
+						{project.shortDescription ||
+							truncate(getDescription(project) || '', 80)}
 					</p>
 				</div>
 			</div>
