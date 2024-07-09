@@ -14,14 +14,16 @@ const LogoutModal: React.FC<LogoutModal> = () => {
 	};
 
 	return (
-		<div className='sticky bottom-0 flex items-center justify-around gap-6 bg-white px-4 py-6 pb-10'>
+		<div className='sticky bottom-0 flex items-center justify-around gap-6 bg-white px-4 py-4'>
 			<a
 				href='https://github.com/GeneralMagicio/pairwise-RPGF4/issues/new?assignees=MoeNick&labels=bug&projects=&template=bug_report.md&title=%5BBUG%5D+'
 				target='_blank'
 				className='flex h-11 flex-[1_0_0] items-center justify-center gap-1.5 rounded-lg border border-[var(--Border-Border-Tertiary,#E0E2EB)] bg-[var(--Background-Neutral-2,#FBFCFE)] px-4 py-2.5 shadow-[0px_1px_3px_0px_rgba(16,24,40,0.10),0px_1px_2px_0px_rgba(16,24,40,0.06)]'
 			>
-				<IconBug />
-				<span className='font-inter xs:text-base text-xs font-medium leading-[21px] tracking-[-0.05px] text-[#404454]'>
+				<span className='xxs:hidden xs:block'>
+					<IconBug />
+				</span>
+				<span className='font-inter xxs:text-[15px] xs:text-[14px] text-xs font-medium leading-[21px] tracking-[-0.05px] text-[#404454]'>
 					Report a Bug
 				</span>
 			</a>
