@@ -31,7 +31,12 @@ function getTimeDifference(): {
 	const mins = Math.floor((diffMs % hourMs) / minMs);
 	const secs = Math.floor((diffMs % minMs) / 1000);
 
-	return { days, hours, mins, secs };
+	return {
+		days: Math.max(days, 0),
+		hours: Math.max(hours, 0),
+		mins: Math.max(mins, 0),
+		secs: Math.max(secs, 0),
+	};
 }
 
 interface Time {
