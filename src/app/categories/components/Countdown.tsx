@@ -61,7 +61,7 @@ export const Countdown: React.FC = () => {
 	const { days, hours, mins } = time;
 
 	return (
-		<div className='mt-4 flex h-16 w-full items-center justify-between bg-[#180207] p-4 text-white'>
+		<div className='mt-4 flex h-16 w-full items-center justify-between bg-primary p-4 text-white'>
 			<p> Time left for voting </p>
 			<p className='text-xl font-bold'>
 				{`${days}d: ${hours}h: ${mins}min`}
