@@ -13,8 +13,8 @@ function getTimeDifference(): {
 		Date.UTC(
 			now.getFullYear(),
 			6,
-			16,
-			18 /* 20:00 CET adjusted to UTC */,
+			17,
+			10 /* 12:00 CET adjusted to UTC */,
 			0,
 			0,
 		),
