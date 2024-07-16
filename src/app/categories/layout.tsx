@@ -3,6 +3,7 @@
 import React, { ReactNode } from 'react';
 import Header from '../components/Header'; // Adjust the path as necessary
 import { useParams } from 'next/navigation';
+import { Countdown } from './components/Countdown';
 
 const CategoriesLayout = ({ children }: { children: ReactNode }) => {
 	const params = useParams();
@@ -12,6 +13,7 @@ const CategoriesLayout = ({ children }: { children: ReactNode }) => {
 	return (
 		<div className='centered-mobile-max-width'>
 			{!params.categoryId && <Header />}
+			<Countdown/>
 			{children}
 		</div>
 	);
