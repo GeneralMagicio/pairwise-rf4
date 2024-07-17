@@ -14,8 +14,8 @@ function getTimeDifference(): {
 			now.getFullYear(),
 			6,
 			17,
-			10 /* 12:00 CET adjusted to UTC */,
-			0,
+			13 /* 15:55 CET adjusted to UTC */,
+			55,
 			0,
 		),
 	);
