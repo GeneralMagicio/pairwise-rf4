@@ -11,6 +11,7 @@ import {
 } from '@/app/connect/anonvote/utils/bandadaApi';
 import supabase from '@/app/connect/anonvote/utils/supabaseClient';
 import { useCategoryRankings } from '@/app/features/categories/getCategoryRankings';
+import { rephrase } from '@/app/helpers/rephraseComment';
 import { activeChain } from '@/lib/third-web/constants';
 import {
 	convertRankingToAttestationFormat,
@@ -40,6 +41,18 @@ const CategoryRankingComment = () => {
 
 	const onCommentChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
 		setComment(e.target.value);
+	};
+
+	const rephraseComment = () => {
+		rephrase(comment)
+			.then(response => {
+				const message = response.choices[0].message;
+				console.log(message.content);
+				setComment(message.content);
+			})
+			.catch(error => {
+				console.error('Error:', error);
+			});
 	};
 
 	const wallet = useActiveWallet();
@@ -286,7 +299,7 @@ const CategoryRankingComment = () => {
 	}
 
 	return (
-		<div className='relative flex min-h-[calc(100dvh)] flex-col '>
+		<div className='relative flex min-h-[calc(100dvh)] flex-col'>
 			<div className='flex flex-grow flex-col'>
 				<TopRouteIndicator name={'Category Voting'} icon={'cross'} />
 				<div className='pb-8 pt-6'>
@@ -304,6 +317,7 @@ const CategoryRankingComment = () => {
 						placeholder='Add comments to describe reason for your voting and ranking.'
 						className={`mt-1 block h-[100px] w-full resize-none rounded-md border border-gray-300 px-3 py-2 shadow-sm`}
 					></textarea>
+					<button onClick={rephraseComment}>rephrase</button>
 				</div>
 			</div>
 

@@ -6,6 +6,7 @@ import LoadingSpinner from '@/app/components/LoadingSpinner';
 import TopRouteIndicator from '@/app/components/TopRouteIndicator';
 import { Routes } from '@/app/constants/Routes';
 import { useCategoryById } from '@/app/features/categories/getCategoryById';
+import { rephrase } from '@/app/helpers/rephraseComment';
 import {
 	convertRankingToAttestationFormat,
 	getPrevAttestationIds,
@@ -45,6 +46,18 @@ const CategoryRankingComment = () => {
 
 	const onCommentChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
 		setComment(e.target.value);
+	};
+
+	const rephraseComment = () => {
+		rephrase(comment)
+			.then(response => {
+				const message = response.choices[0].message;
+				console.log(message.content);
+				setComment(message.content);
+			})
+			.catch(error => {
+				console.error('Error:', error);
+			});
 	};
 	const wallet = useActiveWallet();
 	const signer = useSigner();
@@ -330,6 +343,7 @@ const CategoryRankingComment = () => {
 						placeholder='Add comments to describe reason for your voting and ranking.'
 						className={`mt-1 block h-[100px] w-full resize-none rounded-md border border-gray-300 px-3 py-2 shadow-sm`}
 					></textarea>
+					<button onClick={rephraseComment}>rephrase</button>
 				</div>
 			</div>
 
