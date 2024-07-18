@@ -2,7 +2,7 @@
 
 import TopNavigation from '@/app/components/TopNavigation';
 import { useParams, useRouter } from 'next/navigation';
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Routes } from '@/app/constants/Routes';
 import CategoryBadge from '../components/CategoryBadge';
 import CategoryProjectItem from '../components/CategoryProjectItem';
@@ -12,10 +12,12 @@ import LoadingSpinner from '@/app/components/LoadingSpinner';
 import { useCategoryById } from '@/app/features/categories/getCategoryById';
 import { truncate } from '@/app/helpers/text-helpers';
 import posthog from 'posthog-js';
+import { IProject } from '../types';
 
 const CategoryPage = () => {
 	const router = useRouter();
 	const { categoryId } = useParams();
+	const [sortedProjects, setSortedProjects] = useState<IProject[]>();
 
 	const selectedCategoryId =
 		typeof categoryId === 'string' ? categoryId : categoryId[0];
@@ -27,6 +29,15 @@ const CategoryPage = () => {
 
 	const selectedCategory = data?.data?.collection;
 	const selectedCategoryProgress = data?.data.progress;
+
+	useEffect(() => {
+		if (projects?.data) {
+			const sorted = projects.data
+				.slice()
+				.sort((a, b) => a.name.localeCompare(b.name));
+			setSortedProjects(sorted);
+		}
+	}, [projects]);
 
 	useEffect(() => {
 		posthog.capture('User goes to the Categories page', {
@@ -72,7 +83,7 @@ const CategoryPage = () => {
 					Projects ({projects?.data?.length})
 				</p>
 				<div className='mt-2'>
-					{projects?.data?.map(project => (
+					{sortedProjects?.map(project => (
 						<div key={project.id}>
 							<CategoryProjectItem project={project} />
 						</div>
