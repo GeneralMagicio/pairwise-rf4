@@ -1,14 +1,29 @@
 'use client';
 
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import Image from 'next/image'; // Make sure to install 'next/image'
 import { useRouter } from 'next/navigation';
 import { AdjacentBadges } from '../badges/components/AdjacentBadges';
 import { useGetBadges, useGetIdentity } from '../features/badges/getBadges';
 import { identityLsKey } from '../hooks/useCreateIdentity';
 import { useConnect } from '../providers/ConnectProvider';
-
+import { isLoggedIn } from '@/utils/auth';
 const Header = () => {
+	const [opImage, setOpImage] = useState<Number>(
+		Number(localStorage.getItem('OPcharacter')),
+	);
+
+	useEffect(() => {
+		if (opImage === 0) {
+			const getOpImage = async () => {
+				const validToken = await isLoggedIn();
+				const n: Number = (Number(validToken) % 30) + 2;
+				setOpImage(n);
+				localStorage.setItem('OPcharacter', n.toString());
+			};
+			getOpImage();
+		}
+	}, []);
 	const router = useRouter();
 	const { data: badges } = useGetBadges();
 	const { data: identity } = useGetIdentity();
@@ -31,7 +46,7 @@ const Header = () => {
 		<header className='sticky top-0 z-10 flex items-center justify-between border-b border-gray-300 bg-white p-4'>
 			<div className='flex cursor-pointer items-center'>
 				<Image
-					src='/images/characters/welcome-character.png'
+					src={`/images/characters/${opImage}.png`}
 					alt='Logo'
 					width={40}
 					height={40}
