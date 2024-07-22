@@ -13,6 +13,7 @@ import { useGetPublicBadges } from '../features/badges/getBadges';
 import { DotsLoader } from '../login/components/bouncing-dots/DotsLoader';
 import { useDisconnect } from 'wagmi';
 import { useConnect } from '../providers/ConnectProvider';
+import { AdjacentBadgesCard } from '../badges/components/AdjacentBadgesCard';
 
 enum CollectVotingPowerState {
 	Not_Started,
@@ -174,7 +175,7 @@ const CollectVotingPowerContent = ({
 						<p className='text-lg font-semibold'>
 							{formatAddress(address!)}
 						</p>
-						<AdjacentBadges {...publicBadges} size={40} />
+
 						<p className='text-ph'>
 							{publicBadges ? (
 								`${numOfBadgesFunc(publicBadges)} badges found`
@@ -182,6 +183,7 @@ const CollectVotingPowerContent = ({
 								<DotsLoader />
 							)}
 						</p>
+						<AdjacentBadgesCard {...publicBadges} size={40} />
 					</div>
 					<Button
 						onClick={handleCollect}
