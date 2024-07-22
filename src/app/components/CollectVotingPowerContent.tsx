@@ -183,7 +183,7 @@ const CollectVotingPowerContent = ({
 								<DotsLoader />
 							)}
 						</p>
-						<AdjacentBadgesCard {...publicBadges} size={40} />
+						<AdjacentBadgesCard {...publicBadges} />
 					</div>
 					<Button
 						onClick={handleCollect}

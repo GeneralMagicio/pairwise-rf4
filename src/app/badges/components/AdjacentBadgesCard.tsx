@@ -1,31 +1,17 @@
 import Image from 'next/image';
 import { BadgeData } from './BadgeCard';
 
-interface Props extends BadgeData {
-	size: number;
-}
-const holderType: { [key: number]: string } = {
-	100: 'Whale',
-	50: 'Diamond',
-	25: 'Platinum',
-	15: 'Gold',
-	5: 'Silver',
-	3: 'Bronze',
-};
+interface Props extends BadgeData {}
 
-const delegateType: { [key: number]: string } = {
-	8: 'Diamond',
-	5: 'Platinum',
-	3: 'Gold',
-	2: 'Silver',
-	1: 'Bronze',
-};
 export const AdjacentBadgesCard: React.FC<Props> = ({
 	badgeholderPoints,
 	delegatePoints,
 	holderPoints,
 	recipientsPoints,
-	size,
+	holderAmount,
+	delegateAmount,
+	holderType,
+	delegateType,
 }) => {
 	const getBadgeImages = () => {
 		const badgesImages = [];
@@ -34,14 +20,18 @@ export const AdjacentBadgesCard: React.FC<Props> = ({
 				src: '/images/badges/1.png',
 				alt: 'holder badge',
 				badge: 'Holder',
-				type: holderType[holderPoints],
+				type: holderType,
+				amount: holderAmount,
+				weight: holderPoints,
 			});
 		if (delegatePoints && delegatePoints > 0)
 			badgesImages.push({
 				src: '/images/badges/2.png',
 				alt: 'delegate badge',
 				badge: 'Delegate',
-				type: delegateType[delegatePoints],
+				type: delegateType,
+				amount: delegateAmount,
+				weight: delegatePoints,
 			});
 		if (badgeholderPoints === 1)
 			badgesImages.push({
@@ -57,6 +47,10 @@ export const AdjacentBadgesCard: React.FC<Props> = ({
 			});
 
 		return badgesImages;
+	};
+	const formatAmount = (amount: number | undefined) => {
+		if (amount === undefined) return '';
+		return amount >= 1000000 ? `${amount / 1000000}M` : amount.toString();
 	};
 	return (
 		<div className='flex w-full overflow-x-scroll'>
@@ -101,9 +95,34 @@ export const AdjacentBadgesCard: React.FC<Props> = ({
 						<p className='font-sans text-[10px] font-semibold uppercase leading-4 text-black'>
 							BADGE INFO
 						</p>
-						<p className='text-xs font-normal leading-4'>
-							Recipient in Round 4
-						</p>
+						{image.type ? (
+							<div>
+								<div className='flex items-center gap-2'>
+									<Image
+										src='/images/tokens/op.png'
+										width={16}
+										height={16}
+										alt='token'
+										className='h-4 w-4'
+									/>
+									<p className='text-xs font-normal leading-4'>
+										{formatAmount(image.amount)}
+									</p>
+								</div>
+
+								<span className='text-xs font-normal leading-4'>
+									Weight :{' '}
+									<span className='text-primary'>
+										{image.weight}
+									</span>
+								</span>
+							</div>
+						) : (
+							<p className='text-xs font-normal leading-4'>
+								1 Address
+								<span className='text-primary'> 1 Vote</span>
+							</p>
+						)}
 					</div>
 				</div>
 			))}
