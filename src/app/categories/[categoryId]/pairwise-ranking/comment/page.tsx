@@ -321,7 +321,7 @@ const CategoryRankingComment = () => {
 
 	return (
 		<div className='relative flex min-h-[calc(100dvh)] flex-col '>
-			<div className='flex flex-grow flex-col'>
+			<div className='flex flex-grow flex-col gap-2'>
 				<TopRouteIndicator
 					name={category?.data.collection?.name}
 					icon='arrow'
@@ -343,7 +343,22 @@ const CategoryRankingComment = () => {
 						placeholder='Add comments to describe reason for your voting and ranking.'
 						className={`mt-1 block h-[100px] w-full resize-none rounded-md border border-gray-300 px-3 py-2 shadow-sm`}
 					></textarea>
-					<button onClick={rephraseComment}>rephrase</button>
+					<Button
+						onClick={rephraseComment}
+						className=' mt-4 w-full border border-primary '
+					>
+						<div className='flex items-center justify-center'>
+							<img
+								src={`/images/characters/${31}.png`}
+								alt='Logo'
+								width={25}
+								height={25}
+							/>
+							<span className='font-sans text-base font-bold leading-5 text-primary'>
+								Mask my writing style with AI
+							</span>
+						</div>
+					</Button>
 				</div>
 			</div>
 
