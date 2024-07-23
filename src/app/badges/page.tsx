@@ -7,9 +7,15 @@ import BadgeCard, { BadgeData, badgeTypeMapping } from './components/BadgeCard';
 import LoadingSpinner from '../components/LoadingSpinner';
 import { useGetBadges } from '../features/badges/getBadges';
 
-type BadgeCardEntryType = [key: keyof typeof badgeTypeMapping, value: number];
+export type BadgeCardEntryType = [
+	key: keyof typeof badgeTypeMapping,
+	value: number,
+];
 
-const getBadgeAmount = (key: BadgeCardEntryType['0'], badges: BadgeData) => {
+export const getBadgeAmount = (
+	key: BadgeCardEntryType['0'],
+	badges: BadgeData,
+) => {
 	return key === 'holderPoints'
 		? badges.holderAmount
 		: key === 'delegatePoints'
@@ -17,7 +23,10 @@ const getBadgeAmount = (key: BadgeCardEntryType['0'], badges: BadgeData) => {
 			: undefined;
 };
 
-const getBadgeMedal = (key: BadgeCardEntryType['0'], badges: BadgeData) => {
+export const getBadgeMedal = (
+	key: BadgeCardEntryType['0'],
+	badges: BadgeData,
+) => {
 	return key === 'holderPoints'
 		? badges.holderType
 		: key === 'delegatePoints'
