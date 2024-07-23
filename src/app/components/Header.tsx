@@ -18,10 +18,10 @@ const Header = () => {
 	useEffect(() => {
 		const updateOpImage = async () => {
 			if (opImage === 0) {
-				const validToken = await isLoggedIn();
-				const n = (Number(validToken) % 30) + 2;
-				setOpImage(n);
-				localStorage.setItem('OPcharacter', n.toString());
+				const userId = await isLoggedIn();
+				const opImageNumber = (Number(userId) % 30) + 2;
+				setOpImage(opImageNumber);
+				localStorage.setItem('OPcharacter', opImageNumber.toString());
 			}
 		};
 
