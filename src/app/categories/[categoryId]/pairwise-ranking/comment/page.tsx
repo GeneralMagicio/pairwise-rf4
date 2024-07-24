@@ -47,16 +47,28 @@ const CategoryRankingComment = () => {
 	const onCommentChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
 		setComment(e.target.value);
 	};
+	const params = {
+		comment: comment, // Replace 'paramName' and 'paramValue' with your actual parameter name and value
+	};
 
 	const rephraseComment = () => {
 		rephrase(comment)
 			.then(response => {
 				const message = response.choices[0].message;
-				console.log(message.content);
+				// console.log(message.content);
 				setComment(message.content);
 			})
 			.catch(error => {
 				console.error('Error:', error);
+			});
+
+		axios
+			.get('http://localhost:3000/api/rephrase/', { params })
+			.then(response => {
+				console.log('LOVEL', response.data);
+			})
+			.catch(error => {
+				console.error('Error making GET request:', error);
 			});
 	};
 	const wallet = useActiveWallet();
