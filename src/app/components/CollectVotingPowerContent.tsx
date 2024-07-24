@@ -16,11 +16,8 @@ import { useGetPublicBadges } from '../features/badges/getBadges';
 import { DotsLoader } from '../login/components/bouncing-dots/DotsLoader';
 import { useDisconnect } from 'wagmi';
 import { useConnect } from '../providers/ConnectProvider';
-import {
-	BadgeCardEntryType,
-	getBadgeAmount,
-	getBadgeMedal,
-} from '../badges/page';
+import { BadgeCardEntryType } from '../badges/page';
+import { getBadgeAmount, getBadgeMedal } from '@/utils/badgeUtils';
 
 enum CollectVotingPowerState {
 	Not_Started,

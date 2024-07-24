@@ -134,11 +134,14 @@ const CategoryRankingListEditPage = () => {
 				minimum={sortingError?.response?.data.minimum || 2}
 			/>
 			<div className='flex flex-grow flex-col'>
-				<TopRouteIndicator name={category?.data?.collection.name} icon={'cross'} />
+				<TopRouteIndicator
+					name={category?.data?.collection.name}
+					icon={'cross'}
+				/>
 				<div className='mx-4'>
 					<p className='mt-6 text-2xl font-bold'>Well done!</p>
 					<p className='mt-2 text-ph'>
-					{`You have finished ranking ${category?.data?.collection?.name}.
+						{`You have finished ranking ${category?.data?.collection?.name}.
 						Now, you can click on "Edit" to adjust your selections.
 						Feel free to drag and drop projects from the left corner or add or remove projects on the right.
 						Once you're satisfied, submit your vote.`}

@@ -38,9 +38,7 @@ export const AdjacentBadges: React.FC<Props> = ({
 		return badgesImages;
 	};
 	return (
-		<div
-			className='relative flex cursor-pointer justify-center'
-		>
+		<div className='relative flex cursor-pointer justify-center'>
 			{getBadgeImages().map((image, index) => (
 				<div
 					key={index}
