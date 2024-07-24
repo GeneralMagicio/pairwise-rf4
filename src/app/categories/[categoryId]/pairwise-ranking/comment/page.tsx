@@ -24,10 +24,7 @@ import { axios } from '@/lib/axios';
 import { Identity } from '@semaphore-protocol/identity';
 import { Group } from '@semaphore-protocol/group';
 import { generateProof } from '@semaphore-protocol/proof';
-import {
-	encodeBytes32String,
-	toBigInt,
-} from "ethers"
+import { encodeBytes32String, toBigInt } from 'ethers';
 import posthog from 'posthog-js';
 import {
 	getMembersGroup,
@@ -44,7 +41,7 @@ const CategoryRankingComment = () => {
 		typeof categoryId === 'string' ? categoryId : categoryId[0];
 
 	const [comment, setComment] = useState('');
-	const [attestUnderway, setAttestUnderway] = useState(false );
+	const [attestUnderway, setAttestUnderway] = useState(false);
 
 	const onCommentChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
 		setComment(e.target.value);
@@ -61,18 +58,14 @@ const CategoryRankingComment = () => {
 	const ranking = rankingRes?.data;
 
 	const attest = async () => {
-
-
-		const localStorageTag = process.env.NEXT_PUBLIC_LOCAL_STORAGE_TAG!
-		const identityString = localStorage.getItem(localStorageTag)
-
+		const localStorageTag = process.env.NEXT_PUBLIC_LOCAL_STORAGE_TAG!;
+		const identityString = localStorage.getItem(localStorageTag);
 
 		if (!identityString) {
-			console.error("Identity string is missing!")
-			router.push("/")
-			return
+			console.error('Identity string is missing!');
+			router.push('/');
+			return;
 		}
-
 
 		const identity = new Identity(identityString);
 
@@ -122,8 +115,7 @@ const CategoryRankingComment = () => {
 				},
 			];
 
-			const signalData =
-			{
+			const signalData = {
 				category: item.listName,
 				value: item.listMetadataPtr,
 			};
@@ -131,27 +123,27 @@ const CategoryRankingComment = () => {
 			// generate proof of vote
 			const groupId = process.env.NEXT_PUBLIC_BANDADA_GROUP_ID!;
 			const users = await getMembersGroup(groupId);
-			if (users && identityString !== "{}") {
-
-				const bandadaGroup = await getGroup(groupId)
+			if (users && identityString !== '{}') {
+				const bandadaGroup = await getGroup(groupId);
 				let treeDepth = 16;
 				if (bandadaGroup === null) {
-					console.log("The Bandada group does not exist:", groupId)
+					console.log('The Bandada group does not exist:', groupId);
 				} else {
-					treeDepth = bandadaGroup.treeDepth
+					treeDepth = bandadaGroup.treeDepth;
 				}
 				const group = new Group(groupId, treeDepth, users);
-				console.log("going to encode signalData: ")
-				console.log(signalData)
-				const signal = toBigInt(encodeBytes32String(signalData.toString())).toString()
-				const { proof: tempProof, merkleTreeRoot, nullifierHash } = await generateProof(
-					identity,
-					group,
-					groupId,
-					signal
-				)
+				console.log('going to encode signalData: ');
+				console.log(signalData);
+				const signal = toBigInt(
+					encodeBytes32String(signalData.toString()),
+				).toString();
+				const {
+					proof: tempProof,
+					merkleTreeRoot,
+					nullifierHash,
+				} = await generateProof(identity, group, groupId, signal);
 				proof = tempProof;
-				console.log("generated proof of vote: ", proof);
+				console.log('generated proof of vote: ', proof);
 
 				const { data: currentMerkleRoot, error: errorRootHistory } =
 					await supabase
@@ -185,9 +177,8 @@ const CategoryRankingComment = () => {
 						console.log(errorMerkleTreeRoot);
 					}
 
-
-					console.log("merkleTreeRoot: ", merkleTreeRoot);
-					console.log("dataMerkleTreeRoot: ", dataMerkleTreeRoot);
+					console.log('merkleTreeRoot: ', merkleTreeRoot);
+					console.log('dataMerkleTreeRoot: ', dataMerkleTreeRoot);
 
 					if (!dataMerkleTreeRoot) {
 						console.error('Wrong dataMerkleTreeRoot');
@@ -195,14 +186,15 @@ const CategoryRankingComment = () => {
 						console.log('Merkle Root is not part of the group');
 					}
 
-					console.log("dataMerkleTreeRoot", dataMerkleTreeRoot)
-					const merkleTreeRootDuration = bandadaGroup?.fingerprintDuration ?? 0
+					console.log('dataMerkleTreeRoot', dataMerkleTreeRoot);
+					const merkleTreeRootDuration =
+						bandadaGroup?.fingerprintDuration ?? 0;
 
 					if (
 						dataMerkleTreeRoot &&
 						Date.now() >
-						Date.parse(dataMerkleTreeRoot[0].created_at) +
-						merkleTreeRootDuration
+							Date.parse(dataMerkleTreeRoot[0].created_at) +
+								merkleTreeRootDuration
 					) {
 						console.log('Merkle Tree Root is expired');
 					}
@@ -290,7 +282,9 @@ const CategoryRankingComment = () => {
 
 			const newAttestationUID = await tx.wait();
 
-			posthog.capture("Attested", { attestedCategory: category?.data.collection?.name })
+			posthog.capture('Attested', {
+				attestedCategory: category?.data.collection?.name,
+			});
 
 			console.log('attestaion id', newAttestationUID);
 			// await finishCollections(collectionId);
@@ -314,9 +308,11 @@ const CategoryRankingComment = () => {
 
 	return (
 		<div className='relative flex min-h-[calc(100dvh)] flex-col '>
-		
 			<div className='flex flex-grow flex-col'>
-				<TopRouteIndicator name={category?.data.collection?.name} icon='arrow' />
+				<TopRouteIndicator
+					name={category?.data.collection?.name}
+					icon='arrow'
+				/>
 				<div className='pb-8 pt-6'>
 					<CategoryItem
 						category={category?.data.collection!}
@@ -345,11 +341,7 @@ const CategoryRankingComment = () => {
 				>
 					Submit Vote
 				</Button>
-				{attestUnderway ? 
-			        <SubmittingVoteSpinner />
-			
-				:<></>
-				 }
+				{attestUnderway ? <SubmittingVoteSpinner /> : <></>}
 			</div>
 		</div>
 	);

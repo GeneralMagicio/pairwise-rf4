@@ -1,7 +1,7 @@
 export interface User {
-  id: number;
-  address: string;
-  isBadgeholder: boolean;
+	id: number;
+	address: string;
+	isBadgeholder: boolean;
 }
 
 export enum MinimumModalState {

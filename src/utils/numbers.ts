@@ -1,4 +1,4 @@
-import { Metric } from "./getMetrics";
+import { Metric } from './getMetrics';
 
 export function formatMetricsNumber(num: Metric['value']) {
 	if (num === undefined || num === null) {

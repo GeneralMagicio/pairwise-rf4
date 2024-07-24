@@ -174,7 +174,7 @@ const CategoryPairwiseRankingPage = () => {
 				<p className='text-bold mb-4 mt-6 px-3 text-center text-base'>
 					{`Which project should receive more RetroPGF funding in ${categoryData?.data.collection.name}?`}
 				</p>
-				<div className='items-top xxs:flex-col xs:flex-row flex justify-between gap-4 pb-6'>
+				<div className='items-top flex justify-between gap-4 pb-6 xxs:flex-col xs:flex-row'>
 					<div
 						key={firstProject.id}
 						onClick={() =>
@@ -274,7 +274,7 @@ const CategoryPairwiseRankingPage = () => {
 					<div className='sticky bottom-5 z-0 px-6 py-6'>
 						<div className='absolute inset-0 bg-white bg-opacity-50'></div>{' '}
 						{/* Faux background layer */}
-						<div className='xxs:flex-col xs:flex-row relative z-10 flex justify-between gap-3'>
+						<div className='relative z-10 flex justify-between gap-3 xxs:flex-col xs:flex-row'>
 							<div
 								className={cn(
 									'flex w-40 cursor-pointer items-center justify-center gap-2 rounded-lg bg-white px-4 py-2 font-semibold shadow-md',

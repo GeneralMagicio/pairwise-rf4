@@ -23,7 +23,7 @@ const LogoutModal: React.FC<LogoutModal> = () => {
 				<span className='xxs:hidden xs:block'>
 					<IconBug />
 				</span>
-				<span className='font-inter xxs:text-[15px] xs:text-[14px] text-xs font-medium leading-[21px] tracking-[-0.05px] text-[#404454]'>
+				<span className='font-inter text-xs font-medium leading-[21px] tracking-[-0.05px] text-[#404454] xxs:text-[15px] xs:text-[14px]'>
 					Report a Bug
 				</span>
 			</a>

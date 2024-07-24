@@ -17,7 +17,6 @@ export const convertRankingToAttestationFormat = async (
 	collectionName: string,
 	collectionDescription: string,
 ) => {
-
 	const obj = {
 		listDescription: `${collectionDescription}`,
 		impactEvaluationLink: 'https://pairwise.vote',

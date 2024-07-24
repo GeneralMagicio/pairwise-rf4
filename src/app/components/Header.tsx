@@ -29,7 +29,7 @@ const Header = () => {
 
 	return (
 		<header className='sticky top-0 z-10 flex items-center justify-between border-b border-gray-300 bg-white p-4'>
-			<div className='flex items-center cursor-pointer'>
+			<div className='flex cursor-pointer items-center'>
 				<Image
 					src='/images/characters/welcome-character.png'
 					alt='Logo'

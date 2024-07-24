@@ -1,6 +1,12 @@
 import Image from 'next/image';
 
-export type MedalTypes = "Bronze" | "Diamond" | "Platnium" | "Gold" | "Silver" | "WHALE"
+export type MedalTypes =
+	| 'Bronze'
+	| 'Diamond'
+	| 'Platnium'
+	| 'Gold'
+	| 'Silver'
+	| 'WHALE';
 
 export type BadgeData = {
 	holderPoints?: number;
@@ -107,7 +113,9 @@ const BadgeCard: React.FC<BadgeCardProps> = ({
 					{(type === 'holderPoints' || type === 'delegatePoints') && (
 						<div className='flex justify-between'>
 							<p className='mt-2 text-center font-bold'>TYPE</p>
-							<p className='mt-2 text-center text-gray-700'>{medal}</p>
+							<p className='mt-2 text-center text-gray-700'>
+								{medal}
+							</p>
 						</div>
 					)}
 				</div>

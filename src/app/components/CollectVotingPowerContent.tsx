@@ -97,7 +97,11 @@ const CollectVotingPowerContent = ({
 
 			if (!identity || !address) return;
 
-			await storeBadgesAndIdentityMutation({ identity, mainAddress: address, signature });
+			await storeBadgesAndIdentityMutation({
+				identity,
+				mainAddress: address,
+				signature,
+			});
 			setNoBadgeConnecting(false);
 			setIsClaimDrawerOpen(false);
 		} catch (e) {
@@ -133,7 +137,11 @@ const CollectVotingPowerContent = ({
 
 			if (!identity || !address) return;
 
-			await storeBadgesAndIdentityMutation({ identity, mainAddress: address, signature });
+			await storeBadgesAndIdentityMutation({
+				identity,
+				mainAddress: address,
+				signature,
+			});
 
 			setCollectState(CollectVotingPowerState.Collected);
 		} catch (e) {
