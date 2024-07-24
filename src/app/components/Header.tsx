@@ -1,14 +1,33 @@
 'use client';
 
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import Image from 'next/image'; // Make sure to install 'next/image'
 import { useRouter } from 'next/navigation';
 import { AdjacentBadges } from '../badges/components/AdjacentBadges';
 import { useGetBadges, useGetIdentity } from '../features/badges/getBadges';
 import { identityLsKey } from '../hooks/useCreateIdentity';
 import { useConnect } from '../providers/ConnectProvider';
-
+import { isLoggedIn } from '@/utils/auth';
+import { ButtonLoadingSpinner } from './LoadingSpinner';
 const Header = () => {
+	const [opImage, setOpImage] = useState(() => {
+		const storedValue = localStorage.getItem('OPcharacter');
+		return storedValue !== null ? Number(storedValue) : 0;
+	});
+
+	useEffect(() => {
+		const updateOpImage = async () => {
+			if (opImage === 0) {
+				const userId = await isLoggedIn();
+				const opImageNumber = (Number(userId) % 30) + 2;
+				setOpImage(opImageNumber);
+				localStorage.setItem('OPcharacter', opImageNumber.toString());
+			}
+		};
+
+		updateOpImage();
+	}, [opImage]);
+
 	const router = useRouter();
 	const { data: badges } = useGetBadges();
 	const { data: identity } = useGetIdentity();
@@ -30,12 +49,16 @@ const Header = () => {
 	return (
 		<header className='sticky top-0 z-10 flex items-center justify-between border-b border-gray-300 bg-white p-4'>
 			<div className='flex cursor-pointer items-center'>
-				<Image
-					src='/images/characters/welcome-character.png'
-					alt='Logo'
-					width={40}
-					height={40}
-				/>
+				{opImage === 0 ? (
+					<ButtonLoadingSpinner />
+				) : (
+					<Image
+						src={`/images/characters/${opImage}.png`}
+						alt='Logo'
+						width={40}
+						height={40}
+					/>
+				)}
 			</div>
 			{hasConnected ? (
 				<div onClick={() => router.push('/badges')}>

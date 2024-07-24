@@ -1,5 +1,4 @@
 import { axios } from '@/lib/axios';
-import { User } from './types';
 import { Account } from 'thirdweb/wallets';
 
 axios.interceptors.response.use(
@@ -17,7 +16,7 @@ axios.interceptors.response.use(
 export const isLoggedIn = async () => {
 	if (!localStorage.getItem('auth')) return false;
 	try {
-		const { data } = await axios.get<User>('/auth/isloggedin');
+		const { data } = await axios.get<Number>('/auth/isloggedin');
 		return data;
 	} catch (err) {
 		return false;
