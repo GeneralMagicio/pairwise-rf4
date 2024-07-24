@@ -10,7 +10,7 @@ import { useRouter } from 'next/navigation';
 import LogoutModal from '../components/LogoutModal';
 import CategoryCardView from './components/CategoryCardView';
 import CategoryToggleButton from './components/CategoryToggleButton';
-import { Countdown } from './components/Countdown';
+import CategoryRewaredBanner from './components/CategoryRewardBanner';
 
 const CategoriesPage = () => {
 	const [isModalOpen, setModalOpen] = useState(false);
@@ -43,7 +43,7 @@ const CategoriesPage = () => {
 	};
 	return (
 		<div className='px-4'>
-			<Countdown />
+			<CategoryRewaredBanner />
 			<CategoryPairwiseModal
 				isOpen={isModalOpen}
 				close={closeModal}
