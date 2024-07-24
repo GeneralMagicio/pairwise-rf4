@@ -44,7 +44,6 @@ const CategoriesPage = () => {
 	};
 	return (
 		<div className='px-4'>
-			<Countdown />
 			<CategoryRewaredBanner />
 			<CategoryPairwiseModal
 				isOpen={isModalOpen}
