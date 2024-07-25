@@ -273,11 +273,9 @@ const CategoryRankingComment = () => {
 
 			console.log('attestaion id', newAttestationUID);
 
-			router.push(`/category-ranking/done`);
+			router.push(`/category-ranking/vote-submitted`);
 		} catch (e) {
 			console.error('error on sending tx:', e);
-		} finally {
-			setAttestUnderway(false);
 		}
 	};
 
