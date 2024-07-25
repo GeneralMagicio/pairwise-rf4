@@ -293,12 +293,10 @@ const CategoryRankingComment = () => {
 			});
 
 			router.push(
-				`${Routes.Categories}/${category?.data.collection?.id}/pairwise-ranking/done`,
+				`${Routes.Categories}/${category?.data.collection?.id}/pairwise-ranking/vote-submitted`,
 			);
 		} catch (e) {
 			console.error('error on sending tx:', e);
-		} finally {
-			setAttestUnderway(false);
 		}
 	};
 
