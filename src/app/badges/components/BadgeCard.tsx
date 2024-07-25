@@ -43,7 +43,9 @@ const BadgeCard: React.FC<BadgeCardProps> = ({
 }) => {
 	const formatAmount = (amount: number | undefined) => {
 		if (amount === undefined) return '';
-		return amount >= 1000000 ? `${amount / 1000000}M` : amount.toString();
+		return amount >= 1000000
+			? `${(amount / 1000000).toFixed(2)}M`
+			: amount.toString();
 	};
 	const handleBadgesImage = () => {
 		switch (type) {
