@@ -103,7 +103,7 @@ const ProjectRankingPage = () => {
 	useEffect(() => {
 		if (backendCurrentIndex === -1) {
 			router.push(
-				`${Routes.Categories}/${categoryId}/project-ranking/done`,
+				`${Routes.Categories}/${categoryId}/project-ranking/summary`,
 			);
 		}
 	}, [backendCurrentIndex, router, categoryId]);

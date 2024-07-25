@@ -13,7 +13,7 @@ const TopNavigation = ({ link = '/', text }: ITopNavigationProps) => {
 				<Link href={link}>
 					<IconArrowLeft />
 				</Link>
-				<p>{text}</p>
+				<p className='font-bold'>{text}</p>
 			</div>
 		</div>
 	);
