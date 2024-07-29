@@ -45,11 +45,27 @@ const CategoryPairwiseCardWithMetrics = ({
 						</p>
 					)}
 				</div>
-				<div className='pt-2 text-center '>
-					<p className=' font-bold '>
-						{truncate(project.name, 16)}
-						<span>(i)</span>
-					</p>
+				<div className=' items-center pt-2 text-center '>
+					<div className='flex  justify-center gap-2 '>
+						<p className=' font-bold '>
+							{truncate(project.name, 16)}
+						</p>
+						<svg
+							xmlns='http://www.w3.org/2000/svg'
+							width='25'
+							height='24'
+							viewBox='0 0 25 24'
+							fill='none'
+						>
+							<path
+								d='M12.25 16V12M12.25 8H12.26M22.25 12C22.25 17.5228 17.7728 22 12.25 22C6.72715 22 2.25 17.5228 2.25 12C2.25 6.47715 6.72715 2 12.25 2C17.7728 2 22.25 6.47715 22.25 12Z'
+								stroke='#636779'
+								stroke-width='2'
+								stroke-linecap='round'
+								stroke-linejoin='round'
+							/>
+						</svg>
+					</div>
 
 					<p className='text-ph'>
 						{project.shortDescription ||
