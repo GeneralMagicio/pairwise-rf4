@@ -23,6 +23,9 @@ import { formatMetricsNumber } from '@/utils/numbers';
 
 import { truncate } from '@/app/helpers/text-helpers';
 import posthog from 'posthog-js';
+import Drawer from '@/app/components/Drawer';
+import { IProject } from '../../types';
+import { DrawerContent } from '../../components/DrawerContent';
 
 interface IUserSeenRankingFinishedModal {
 	value: string;
@@ -37,6 +40,13 @@ const CategoryPairwiseRankingPage = () => {
 		typeof categoryId === 'string' ? categoryId : categoryId[0];
 
 	const [customLoading, setCustomLoading] = useState(false);
+	const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+	const [drawerProject, setDrawerProject] = useState<IProject>();
+
+	const toggleDrawer = (project: IProject) => {
+		setIsDrawerOpen(prev => !prev);
+		setDrawerProject(project);
+	};
 
 	const [formattedMetrics, setFormattedMetrics] =
 		useState<ComparisonResult>();
@@ -92,18 +102,12 @@ const CategoryPairwiseRankingPage = () => {
 		console.log('draw');
 		await mutateAsync({
 			data: {
-				project1Id: firstProject.id,
-				project2Id: secondProject.id,
-				pickedId: firstID,
+				project1Id: firstID,
+				project2Id: secondID,
+				pickedId: null,
 			},
 		});
-		await mutateAsync({
-			data: {
-				project1Id: firstProject.id,
-				project2Id: secondProject.id,
-				pickedId: secondID,
-			},
-		});
+
 		window.scrollTo({ top: 0, behavior: 'smooth' });
 	};
 	const handleUndo = async () => {
@@ -199,31 +203,37 @@ const CategoryPairwiseRankingPage = () => {
 				<div className='items-top flex justify-between gap-4 pb-6 xxs:flex-col xs:flex-row'>
 					<div
 						key={firstProject.id}
-						onClick={() =>
-							!isLoading && handleVote(firstProject.id)
-						}
 						className={`${isLoading ? 'cursor-not-allowed opacity-50' : 'opacity-100'} cursor-pointer`}
 					>
 						<CategoryPairwiseCardWithMetrics
 							project={firstProject}
+							onClick={() =>
+								!isLoading && handleVote(firstProject.id)
+							}
+							onInfoClick={() => toggleDrawer(firstProject)}
 						/>
 					</div>
 					<div
 						key={secondProject.id}
-						onClick={() =>
-							!isLoading && handleVote(secondProject.id)
-						}
 						className={`${isLoading ? 'cursor-not-allowed opacity-50' : 'opacity-100'} cursor-pointer`}
 					>
 						<CategoryPairwiseCardWithMetrics
 							project={secondProject}
+							onClick={() =>
+								!isLoading && handleVote(secondProject.id)
+							}
+							onInfoClick={() => toggleDrawer(secondProject)}
 						/>
 					</div>
 				</div>
+
+				<Drawer setIsOpen={setIsDrawerOpen} isOpen={isDrawerOpen}>
+					<DrawerContent project={drawerProject} />
+				</Drawer>
 				<div>
 					<div className='sticky bottom-5 z-0 px-6 py-6'>
 						<div className='absolute inset-0 bg-white bg-opacity-50'></div>{' '}
-						<div className='relative z-10 flex justify-center gap-5 xxs:flex-col xs:flex-row'>
+						<div className='relative z-10 flex justify-center  gap-10 xs:flex-row'>
 							<div
 								className={cn(
 									'flex h-20 w-20  cursor-pointer items-center justify-center gap-2 rounded-full border bg-[#FEDF89] px-4 py-2 font-semibold shadow-md',

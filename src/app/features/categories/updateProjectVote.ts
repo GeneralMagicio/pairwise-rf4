@@ -5,7 +5,7 @@ type ProjectVoteData = {
 	data: {
 		project1Id: number;
 		project2Id: number;
-		pickedId: number;
+		pickedId: number | null;
 	};
 };
 
