@@ -2,7 +2,9 @@
 
 import CategoryRankingItem from '@/app/categories/components/CategoryRankingItem';
 import Button from '@/app/components/Button';
-import LoadingSpinner from '@/app/components/LoadingSpinner';
+import LoadingSpinner, {
+	ButtonLoadingSpinner,
+} from '@/app/components/LoadingSpinner';
 import SubmittingVoteSpinner from '@/app/components/SubmittingVoteSpinner';
 import TopRouteIndicator from '@/app/components/TopRouteIndicator';
 import {
@@ -11,7 +13,6 @@ import {
 } from '@/app/connect/anonvote/utils/bandadaApi';
 import supabase from '@/app/connect/anonvote/utils/supabaseClient';
 import { useCategoryRankings } from '@/app/features/categories/getCategoryRankings';
-import { rephrase } from '@/app/helpers/rephraseComment';
 import { activeChain } from '@/lib/third-web/constants';
 import {
 	convertRankingToAttestationFormat,
@@ -26,6 +27,7 @@ import {
 import { Group } from '@semaphore-protocol/group';
 import { Identity } from '@semaphore-protocol/identity';
 import { generateProof } from '@semaphore-protocol/proof';
+import axios from 'axios';
 import { encodeBytes32String, toBigInt } from 'ethers';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
@@ -37,22 +39,25 @@ const CategoryRankingComment = () => {
 	const { data: ranking, isLoading } = useCategoryRankings();
 
 	const [comment, setComment] = useState('');
+	const [commentIsLoading, setCommentIsLoading] = useState(false);
 	const [attestUnderway, setAttestUnderway] = useState(false);
 
 	const onCommentChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
 		setComment(e.target.value);
 	};
 
-	const rephraseComment = () => {
-		rephrase(comment)
-			.then(response => {
-				const message = response.choices[0].message;
-				console.log(message.content);
-				setComment(message.content);
-			})
-			.catch(error => {
-				console.error('Error:', error);
+	const rephraseComment = async () => {
+		setCommentIsLoading(true);
+		try {
+			const response = await axios.get('/api/rephrase/', {
+				params: { comment },
 			});
+			setComment(response.data.rephrasedText);
+		} catch (error) {
+			console.error('Error making GET request:', error);
+		} finally {
+			setCommentIsLoading(false);
+		}
 	};
 
 	const wallet = useActiveWallet();
@@ -321,17 +326,26 @@ const CategoryRankingComment = () => {
 						onClick={rephraseComment}
 						className=' mt-4 w-full border border-primary '
 					>
-						<div className='flex items-center justify-center'>
-							<img
-								src={`/images/characters/${31}.png`}
-								alt='Logo'
-								width={25}
-								height={25}
-							/>
-							<span className='font-sans text-base font-bold leading-5 text-primary'>
-								Mask my writing style with AI
-							</span>
-						</div>
+						{commentIsLoading ? (
+							<div className='flex items-center justify-center'>
+								<ButtonLoadingSpinner />
+								<span className='font-sans text-base font-bold leading-5 text-primary'>
+									Masking please wait...
+								</span>
+							</div>
+						) : (
+							<div className='flex items-center justify-center'>
+								<img
+									src={`/images/characters/${31}.png`}
+									alt='Logo'
+									width={25}
+									height={25}
+								/>
+								<span className='font-sans text-base font-bold leading-5 text-primary'>
+									Mask my writing style with AI
+								</span>
+							</div>
+						)}
 					</Button>
 				</div>
 			</div>

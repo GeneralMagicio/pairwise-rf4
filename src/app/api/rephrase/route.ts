@@ -34,7 +34,6 @@ export async function GET(request: Request) {
 
 		const rephrasedText = response.data.choices[0].message.content;
 		return NextResponse.json({ rephrasedText });
-		return rephrasedText;
 	} catch (error) {
 		console.error('Error rephrasing text:', error);
 		return null;
