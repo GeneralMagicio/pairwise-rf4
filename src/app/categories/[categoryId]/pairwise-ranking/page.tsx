@@ -88,6 +88,28 @@ const CategoryPairwiseRankingPage = () => {
 		window.scrollTo({ top: 0, behavior: 'smooth' });
 	};
 
+	const handleDraw = async (firstID: number, secondID: number) => {
+		console.log('draw');
+		await mutateAsync({
+			data: {
+				project1Id: firstProject.id,
+				project2Id: secondProject.id,
+				pickedId: firstID,
+			},
+		});
+		await mutateAsync({
+			data: {
+				project1Id: firstProject.id,
+				project2Id: secondProject.id,
+				pickedId: secondID,
+			},
+		});
+		window.scrollTo({ top: 0, behavior: 'smooth' });
+	};
+	const handleUndo = async () => {
+		window.scrollTo({ top: 0, behavior: 'smooth' });
+	};
+
 	const { mutateAsync: finishRankingMutation, isPending } =
 		useUpdatePairwiseFinish();
 
@@ -171,7 +193,7 @@ const CategoryPairwiseRankingPage = () => {
 						% of 100% Projects ranked
 					</p>
 				</div>
-				<p className='text-bold mb-4 mt-6 px-3 text-center text-base'>
+				<p className='text-bold mb-4 mt-6 px-3 text-center text-base font-bold'>
 					{`Which project should receive more RetroPGF funding in ${categoryData?.data.collection.name}?`}
 				</p>
 				<div className='items-top flex justify-between gap-4 pb-6 xxs:flex-col xs:flex-row'>
@@ -199,144 +221,74 @@ const CategoryPairwiseRankingPage = () => {
 					</div>
 				</div>
 				<div>
-					{formattedMetrics && (
-						<div>
-							{Object.keys(formattedMetrics).map(categoryKey => {
-								const categoryMetrics =
-									formattedMetrics[
-										categoryKey as keyof typeof formattedMetrics
-									];
-								return (
-									<div
-										className='my-2 flex flex-col p-3'
-										key={categoryKey}
-									>
-										<h3 className='pb-2 text-center font-bold'>
-											{categoryKey}
-										</h3>
-										{Object.keys(categoryMetrics).map(
-											metricKey => {
-												const metric =
-													categoryMetrics[
-														metricKey as keyof typeof categoryMetrics
-													];
-												return (
-													<div
-														key={metricKey}
-														className='flex justify-between gap-2 border-b-2 border-gray-200 py-2 last:border-b-0'
-													>
-														<p
-															className={cn(
-																metric.lowerIsBetter
-																	? metric.value1 <
-																		metric.value2
-																		? 'font-semibold text-green-600'
-																		: 'text-ph'
-																	: metric.value1 >
-																		  metric.value2
-																		? 'font-semibold text-green-600'
-																		: 'text-ph',
-															)}
-														>
-															{formatMetricsNumber(
-																metric.value1,
-															) ?? '--'}
-														</p>
-														<p className='flex-grow text-center text-ph'>
-															{metric.description}
-														</p>
-														<p
-															className={cn(
-																metric.lowerIsBetter
-																	? metric.value2 <
-																		metric.value1
-																		? 'font-semibold text-green-600'
-																		: 'text-ph'
-																	: metric.value2 >
-																		  metric.value1
-																		? 'font-semibold text-green-600'
-																		: 'text-ph',
-															)}
-														>
-															{formatMetricsNumber(
-																metric.value2,
-															) ?? '--'}
-														</p>
-													</div>
-												);
-											},
-										)}
-									</div>
-								);
-							})}
-						</div>
-					)}
 					<div className='sticky bottom-5 z-0 px-6 py-6'>
 						<div className='absolute inset-0 bg-white bg-opacity-50'></div>{' '}
-						{/* Faux background layer */}
-						<div className='relative z-10 flex justify-between gap-3 xxs:flex-col xs:flex-row'>
+						<div className='relative z-10 flex justify-center gap-5 xxs:flex-col xs:flex-row'>
 							<div
 								className={cn(
-									'flex w-40 cursor-pointer items-center justify-center gap-2 rounded-lg bg-white px-4 py-2 font-semibold shadow-md',
+									'flex h-20 w-20  cursor-pointer items-center justify-center gap-2 rounded-full border bg-[#FEDF89] px-4 py-2 font-semibold shadow-md',
 									{
 										'cursor-not-allowed opacity-50':
 											isLoading,
 									},
 								)}
 								onClick={() => {
-									console.log('Clicking on First', isLoading);
-									!isLoading && handleVote(firstProject.id);
+									!isLoading && handleUndo();
 								}}
 							>
-								<div>
-									{firstProject.image ? (
-										<Image
-											className='rounded-full'
-											src={firstProject.image}
-											alt='Logo'
-											width={32}
-											height={32}
+								<div className='flex flex-col items-center'>
+									<svg
+										xmlns='http://www.w3.org/2000/svg'
+										width='25'
+										height='24'
+										viewBox='0 0 25 24'
+										fill='none'
+									>
+										<path
+											d='M2.5 10C2.5 10 4.50498 7.26822 6.13384 5.63824C7.76269 4.00827 10.0136 3 12.5 3C17.4706 3 21.5 7.02944 21.5 12C21.5 16.9706 17.4706 21 12.5 21C8.39691 21 4.93511 18.2543 3.85177 14.5M2.5 10V4M2.5 10H8.5'
+											stroke='#DC6803'
+											stroke-width='2'
+											stroke-linecap='round'
+											stroke-linejoin='round'
 										/>
-									) : (
-										<div className='relative h-[32px] w-[32px] rounded-full bg-gray-700'>
-											<p className='absolute inset-0 flex items-center justify-center overflow-hidden px-1 text-center text-[4px] text-white'>
-												{firstProject.name}
-											</p>
-										</div>
-									)}
+									</svg>
+									<p className='text-xs'>Undo</p>
 								</div>
-								<div>{truncate(firstProject.name, 6)}</div>
 							</div>
 							<div
 								className={cn(
-									'flex w-40 cursor-pointer items-center justify-center gap-2 rounded-lg bg-white px-4 py-2 font-semibold shadow-md',
+									'flex h-20 w-20  cursor-pointer items-center justify-center gap-2 rounded-full border bg-[#DDD6FE] px-4 py-2 font-semibold shadow-md',
 									{
 										'cursor-not-allowed opacity-50':
 											isLoading,
 									},
 								)}
-								onClick={() =>
-									!isLoading && handleVote(secondProject.id)
-								}
+								onClick={() => {
+									!isLoading &&
+										handleDraw(
+											firstProject.id,
+											secondProject.id,
+										);
+								}}
 							>
-								<div>
-									{secondProject.image ? (
-										<Image
-											className='rounded-full'
-											src={secondProject.image}
-											alt='Logo'
-											width={32}
-											height={32}
+								<div className='flex flex-col items-center'>
+									<svg
+										xmlns='http://www.w3.org/2000/svg'
+										width='25'
+										height='24'
+										viewBox='0 0 25 24'
+										fill='none'
+									>
+										<path
+											d='M9.5 7L4.5 12L9.5 17M15.5 7L20.5 12L15.5 17'
+											stroke='#7839EE'
+											stroke-width='2'
+											stroke-linecap='round'
+											stroke-linejoin='round'
 										/>
-									) : (
-										<div className='relative h-[32px] w-[32px] rounded-full bg-gray-700'>
-											<p className='absolute inset-0 flex items-center justify-center overflow-hidden px-1 text-center text-[4px] text-white'>
-												{secondProject.name}
-											</p>
-										</div>
-									)}
+									</svg>
+									<p className='text-xs'>Draw</p>
 								</div>
-								{truncate(secondProject.name, 6)}
 							</div>
 						</div>
 					</div>

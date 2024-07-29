@@ -45,8 +45,12 @@ const CategoryPairwiseCardWithMetrics = ({
 						</p>
 					)}
 				</div>
-				<div className='pt-2 text-center'>
-					<p className=' font-bold '>{truncate(project.name, 16)}</p>
+				<div className='pt-2 text-center '>
+					<p className=' font-bold '>
+						{truncate(project.name, 16)}
+						<span>(i)</span>
+					</p>
+
 					<p className='text-ph'>
 						{project.shortDescription ||
 							truncate(getDescription(project) || '', 80)}
