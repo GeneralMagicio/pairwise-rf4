@@ -36,6 +36,6 @@ export async function GET(request: Request) {
 		return NextResponse.json({ rephrasedText });
 	} catch (error) {
 		console.error('Error rephrasing text:', error);
-		return null;
+		return NextResponse.json({ error });
 	}
 }
