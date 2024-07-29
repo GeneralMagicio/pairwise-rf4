@@ -8,7 +8,6 @@ import { Routes } from '../constants/Routes';
 import { useRouter } from 'next/navigation';
 import ConnectSplashMessage from './components/ConnectSplashMessage';
 
-
 const steps = [
 	{
 		title: 'Go to Pairwise voting app',
@@ -17,7 +16,8 @@ const steps = [
 	{ title: 'Sign', description: 'Sign with your connected wallet' },
 	{
 		title: 'Connect your OP Account',
-		description: 'Success! Your OP account is now secretly connected to the account you will vote with on Pairwise',
+		description:
+			'Success! Your OP account is now secretly connected to the account you will vote with on Pairwise',
 	},
 ];
 
@@ -84,6 +84,5 @@ const ConnectHomePage = () => {
 		</div>
 	);
 };
-
 
 export default ConnectHomePage;

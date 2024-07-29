@@ -17,19 +17,20 @@ const CategoryRankingDone = () => {
 					<IconCheck color='red' />
 				</div>{' '}
 				<p className='mx-auto text-lg font-bold'>Vote submitted</p>
-				<p className='mx-auto text-ph text-center text-base	px-4 font-medium	'>
-					You have voted in this category.If
-					 you change your mind,you can update your vote
-					by selecting &ldquo;Edit Vote&rdquo; button below.
+				<p className='mx-auto px-4 text-center text-base	font-medium text-ph	'>
+					You have voted in this category.If you change your mind,you
+					can update your vote by selecting &ldquo;Edit Vote&rdquo;
+					button below.
 				</p>
 			</div>
 			<div className='border-t border-t-gray-300 px-6 py-6'>
-			<Button
+				<Button
 					onClick={() =>
-						router.push(`${Routes.Categories}/${categoryId}/pairwise-ranking/ranking-list/edit`,)
-
+						router.push(
+							`${Routes.Categories}/${categoryId}/pairwise-ranking/ranking-list/edit`,
+						)
 					}
-					className='w-full font-semibold	leading-5 bg-[#FBFCFE] border border-[#E0E2EB] mb-5 text-black'
+					className='mb-5 w-full	border border-[#E0E2EB] bg-[#FBFCFE] font-semibold leading-5 text-black'
 				>
 					Edit Vote
 				</Button>

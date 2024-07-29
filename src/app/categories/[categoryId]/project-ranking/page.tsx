@@ -54,6 +54,17 @@ const ProjectRankingPage = () => {
 
 	const projectsCount = projects?.data ? projects?.data.length : 0;
 
+	const includedProjectsCount =
+		projects?.data.reduce((count, project) => {
+			return project.inclusionState === InclusionState.Included
+				? count + 1
+				: count;
+		}, 0) ?? 0;
+
+	const minimumProjects = projectsCount ? Math.ceil(projectsCount * 0.21) : 2;
+
+	const isMinGreater: boolean = includedProjectsCount >= minimumProjects;
+
 	const backendCurrentIndex: number =
 		projects?.data.findIndex(
 			project => project.inclusionState === InclusionState.Pending,
@@ -162,10 +173,11 @@ const ProjectRankingPage = () => {
 										projectsCount) *
 									100
 								}
+								isMinGreater={isMinGreater}
 							/>
 							<p className='mt-2 text-sm'>
 								{backendCurrentIndex + 1} of {projectsCount}{' '}
-								Projects filtered
+								Projects Selected
 							</p>
 						</div>
 					</div>

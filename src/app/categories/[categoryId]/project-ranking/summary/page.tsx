@@ -36,12 +36,13 @@ const ProjectRankingSummaryPage = () => {
 		project => project.inclusionState === InclusionState.Included,
 	);
 
-	const includedProjectsEvents  = includedProjects?.map(project => {
-		return {id:project.id, name: project.name };
+	const includedProjectsEvents = includedProjects?.map(project => {
+		return { id: project.id, name: project.name };
 	});
 
-	posthog.capture('Filtered Categories', { categories: includedProjectsEvents });
-
+	posthog.capture('Filtered Categories', {
+		categories: includedProjectsEvents,
+	});
 
 	const excludedProjects = projects?.data.filter(
 		project => project.inclusionState === InclusionState.Excluded,

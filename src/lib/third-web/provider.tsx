@@ -17,9 +17,7 @@ export const client = createThirdwebClient({ clientId });
 export const Thirdweb5Provider = ({ children }: { children: ReactNode }) => {
 	return (
 		<ThirdwebProvider>
-			<AuthProvider>
-				{children}
-			</AuthProvider>
+			<AuthProvider>{children}</AuthProvider>
 		</ThirdwebProvider>
 	);
 };

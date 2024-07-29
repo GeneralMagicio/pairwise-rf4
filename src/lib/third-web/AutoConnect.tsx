@@ -16,7 +16,7 @@ import { alreadyInProgress, isLoggedIn, loginToPwBackend } from '@/utils/auth';
 export enum LogginToPwBackendState {
 	Initial,
 	Error,
-	LoggedIn
+	LoggedIn,
 }
 
 const AuthContext = React.createContext<{
@@ -36,9 +36,13 @@ const AuthContext = React.createContext<{
 });
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
-	const [isAutoConnecting, setIsAutoConnecting] = useState<boolean | null>(null);
-	const [loggedToPw, setLoggedToPw] = useState(LogginToPwBackendState.Initial);
-	const [isNewUser, setIsNewUser] = useState(false)
+	const [isAutoConnecting, setIsAutoConnecting] = useState<boolean | null>(
+		null,
+	);
+	const [loggedToPw, setLoggedToPw] = useState(
+		LogginToPwBackendState.Initial,
+	);
+	const [isNewUser, setIsNewUser] = useState(false);
 
 	return (
 		<AuthContext.Provider
@@ -57,8 +61,14 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 };
 
 export const useAuth = () => {
-	const { isAutoConnecting, setIsAutoConnecting, loggedToPw, setLoggedToPw, setIsNewUser, isNewUser } =
-		useContext(AuthContext);
+	const {
+		isAutoConnecting,
+		setIsAutoConnecting,
+		loggedToPw,
+		setLoggedToPw,
+		setIsNewUser,
+		isNewUser,
+	} = useContext(AuthContext);
 
 	const { connect } = useConnect();
 	const account = useActiveAccount();
@@ -101,7 +111,7 @@ export const useAuth = () => {
 						account.signMessage,
 					);
 					if (res.isNewUser) {
-						setIsNewUser(true)
+						setIsNewUser(true);
 					}
 					setLoggedToPw(LogginToPwBackendState.LoggedIn);
 				}
@@ -115,5 +125,12 @@ export const useAuth = () => {
 		checkLoginFlow();
 	}, [wallet, isAutoConnecting, checkLoginFlow]);
 
-	return { isAutoConnecting, setIsAutoConnecting, loggedToPw, setLoggedToPw, setIsNewUser, isNewUser };
+	return {
+		isAutoConnecting,
+		setIsAutoConnecting,
+		loggedToPw,
+		setLoggedToPw,
+		setIsNewUser,
+		isNewUser,
+	};
 };

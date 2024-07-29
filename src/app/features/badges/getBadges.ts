@@ -1,5 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import {axios} from '@/lib/axios';
+import { axios } from '@/lib/axios';
 import { BadgeData } from '@/app/badges/components/BadgeCard';
 import { Identity } from '@semaphore-protocol/identity';
 
@@ -8,12 +8,12 @@ const continueGuest = async () => {
 };
 
 /**
- * 
+ *
  * @returns badges stored in the Pairwise database for a given smart wallet addresss
  */
 export const useContinueGuest = () => {
 	const queryClient = useQueryClient();
-	
+
 	return useMutation({
 		mutationFn: continueGuest,
 		onSuccess: () => {
@@ -33,14 +33,14 @@ const getBadges = async () => {
 };
 
 /**
- * 
+ *
  * @returns badges stored in the Pairwise database for a given smart wallet addresss
  */
 export const useGetBadges = () => {
 	return useQuery({
 		queryKey: ['badges'],
 		queryFn: getBadges,
-		refetchOnWindowFocus: "always",
+		refetchOnWindowFocus: 'always',
 	});
 };
 
@@ -53,7 +53,7 @@ export const useGetIdentity = () => {
 	return useQuery({
 		queryKey: ['identity'],
 		queryFn: getIdentity,
-		refetchOnWindowFocus: "always",
+		refetchOnWindowFocus: 'always',
 	});
 };
 
@@ -68,13 +68,13 @@ const getPublicBadges = async (address: string) => {
 };
 
 /**
- * 
+ *
  * @param address wallet address
  * @returns badges associated with an address (not read from Pairwise backend servers)
  */
 export const useGetPublicBadges = (address: string) => {
-  return useQuery({
+	return useQuery({
 		queryKey: ['publicBadges', address],
 		queryFn: () => getPublicBadges(address),
 	});
-}
+};

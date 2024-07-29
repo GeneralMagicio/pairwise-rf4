@@ -5,24 +5,24 @@ import React from 'react';
 interface Props {
 	isOpen: boolean;
 	close: () => void;
-  handleSubmit: () => void;
+	handleSubmit: () => void;
 }
 
 export const CategoryPairwiseModal: React.FC<Props> = ({
 	isOpen,
 	close,
-  handleSubmit
+	handleSubmit,
 }) => {
 	return (
-		<Modal
-			isOpen={isOpen}
-			onClose={close}
-		>
+		<Modal isOpen={isOpen} onClose={close}>
 			<div className='p-5'>
-				<p className='mb-4 text-center font-bold text-large'>Category Voting</p>
+				<p className='text-large mb-4 text-center font-bold'>
+					Category Voting
+				</p>
 				<p className='mb-6 text-center text-ph'>
-				Congratulations! You&apos;ve successfully voted in at least two categories.
-				 Now, it&apos;s time to vote for the categories that overall had more impact!
+					Congratulations! You&apos;ve successfully voted in at least
+					two categories. Now, it&apos;s time to vote for the
+					categories that overall had more impact!
 				</p>
 				<Button
 					onClick={handleSubmit}

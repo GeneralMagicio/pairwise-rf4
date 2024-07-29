@@ -9,7 +9,7 @@ const TanstackProvider = ({ children }: { children: ReactNode }) => {
 
 	useEffect(() => {
 		const handleFocus = () => {
-			queryClient.invalidateQueries({queryKey: ['badges']});
+			queryClient.invalidateQueries({ queryKey: ['badges'] });
 		};
 
 		window.addEventListener('focus', handleFocus);

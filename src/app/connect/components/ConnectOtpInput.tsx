@@ -23,12 +23,7 @@ interface Props {
 
 const OtpLength = 6;
 
-const ConnectOTPInput: FC<Props> = ({
-	otp,
-	setOtp,
-	state,
-	error,
-}) => {
+const ConnectOTPInput: FC<Props> = ({ otp, setOtp, state, error }) => {
 	const handleOTPChange = (otp: string) => {
 		setOtp(otp);
 	};

@@ -10,11 +10,8 @@ interface ICategoryProps {
 }
 
 const CategoryRankingItem = ({ category }: ICategoryProps) => {
-
 	return (
-		<div
-			className='flex cursor-pointer items-center justify-between gap-2 border-b border-b-gray-300 py-3 px-2'
-		>
+		<div className='flex cursor-pointer items-center justify-between gap-2 border-b border-b-gray-300 px-2 py-3'>
 			<Image
 				className='rounded-full'
 				src={
@@ -32,7 +29,7 @@ const CategoryRankingItem = ({ category }: ICategoryProps) => {
 					{truncate(category.impactDescription, 55)}
 				</p>
 			</div>
-			<CategoryBadge progress={"Attested"} />
+			<CategoryBadge progress={'Attested'} />
 		</div>
 	);
 };
