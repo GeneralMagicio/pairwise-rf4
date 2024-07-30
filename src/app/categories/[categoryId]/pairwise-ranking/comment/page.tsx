@@ -22,8 +22,8 @@ import { useParams, useRouter } from 'next/navigation';
 import { useActiveWallet } from 'thirdweb/react';
 import { useProjectsRankingByCategoryId } from '@/app/features/categories/getProjectsRankingByCategoryId';
 import { useState } from 'react';
-import axios from 'axios';
-
+import AXIOS from 'axios';
+import { axios } from '@/lib/axios';
 import { Identity } from '@semaphore-protocol/identity';
 import { Group } from '@semaphore-protocol/group';
 import { generateProof } from '@semaphore-protocol/proof';
@@ -54,7 +54,7 @@ const CategoryRankingComment = () => {
 	const rephraseComment = async () => {
 		setCommentIsLoading(true);
 		try {
-			const response = await axios.get('/api/rephrase/', {
+			const response = await AXIOS.get('/api/rephrase/', {
 				params: { comment },
 			});
 			setComment(response.data.rephrasedText);

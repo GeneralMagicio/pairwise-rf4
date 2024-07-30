@@ -27,7 +27,8 @@ import {
 import { Group } from '@semaphore-protocol/group';
 import { Identity } from '@semaphore-protocol/identity';
 import { generateProof } from '@semaphore-protocol/proof';
-import axios from 'axios';
+import AXIOS from 'axios';
+import { axios } from '@/lib/axios';
 import { encodeBytes32String, toBigInt } from 'ethers';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
@@ -49,7 +50,7 @@ const CategoryRankingComment = () => {
 	const rephraseComment = async () => {
 		setCommentIsLoading(true);
 		try {
-			const response = await axios.get('/api/rephrase/', {
+			const response = await AXIOS.get('/api/rephrase/', {
 				params: { comment },
 			});
 			setComment(response.data.rephrasedText);
