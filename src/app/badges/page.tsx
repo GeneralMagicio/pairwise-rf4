@@ -6,24 +6,12 @@ import { Routes } from '../constants/Routes';
 import BadgeCard, { BadgeData, badgeTypeMapping } from './components/BadgeCard';
 import LoadingSpinner from '../components/LoadingSpinner';
 import { useGetBadges } from '../features/badges/getBadges';
+import { getBadgeAmount, getBadgeMedal } from '@/utils/badgeUtils';
 
-type BadgeCardEntryType = [key: keyof typeof badgeTypeMapping, value: number];
-
-const getBadgeAmount = (key: BadgeCardEntryType['0'], badges: BadgeData) => {
-	return key === 'holderPoints'
-		? badges.holderAmount
-		: key === 'delegatePoints'
-			? badges.delegateAmount
-			: undefined;
-};
-
-const getBadgeMedal = (key: BadgeCardEntryType['0'], badges: BadgeData) => {
-	return key === 'holderPoints'
-		? badges.holderType
-		: key === 'delegatePoints'
-			? badges.delegateType
-			: undefined;
-};
+export type BadgeCardEntryType = [
+	key: keyof typeof badgeTypeMapping,
+	value: number,
+];
 
 const BadgesPage = () => {
 	const { data: badges, isLoading } = useGetBadges();
