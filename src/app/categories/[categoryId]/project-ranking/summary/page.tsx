@@ -62,13 +62,18 @@ const ProjectRankingSummaryPage = () => {
 				</div>
 				<div className='mx-4'>
 					<div className='mb-4 mt-6'>
-						<p className='font text-2xl font-bold'>
+						<p className='font text-[28px] font-bold leading-[34px]'>
 							{includedProjects?.length || 0} out of{' '}
-							{projects?.data.length || 0} projects selected
+							{projects?.data.length || 0}{' '}
+							<span className='text-[#636779]'>
+								projects selected
+							</span>
 						</p>
 					</div>
-					<p className='mb-6 text-lg'>{selectedCategory?.name}</p>
-					<p className='text-lg font-semibold'>
+					<p className='mb-6 text-lg font-semibold'>
+						{selectedCategory?.name}
+					</p>
+					<p className='text-lg font-bold'>
 						Selected ({includedProjects?.length || 0})
 					</p>
 					{includedProjects?.map(project => (
@@ -110,12 +115,12 @@ const ProjectRankingSummaryPage = () => {
 								data: { cid: +selectedCategoryId },
 							});
 							router.push(
-								`${Routes.Categories}/${selectedCategory?.id}/pairwise-ranking`,
+								`${Routes.Categories}/${categoryId}/project-ranking/done`,
 							);
 						}}
 						className='w-full bg-primary'
 					>
-						Start ranking
+						Finish Filtering
 					</Button>
 				</div>
 			</div>

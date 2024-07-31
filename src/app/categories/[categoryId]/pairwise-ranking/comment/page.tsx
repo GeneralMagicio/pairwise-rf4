@@ -2,9 +2,10 @@
 
 import CategoryItem from '@/app/categories/components/CategoryItem';
 import Button from '@/app/components/Button';
-import LoadingSpinner from '@/app/components/LoadingSpinner';
+import LoadingSpinner, {
+	ButtonLoadingSpinner,
+} from '@/app/components/LoadingSpinner';
 import TopRouteIndicator from '@/app/components/TopRouteIndicator';
-import { Routes } from '@/app/constants/Routes';
 import { useCategoryById } from '@/app/features/categories/getCategoryById';
 import {
 	convertRankingToAttestationFormat,
@@ -20,6 +21,7 @@ import { useParams, useRouter } from 'next/navigation';
 import { useActiveWallet } from 'thirdweb/react';
 import { useProjectsRankingByCategoryId } from '@/app/features/categories/getProjectsRankingByCategoryId';
 import { useState } from 'react';
+import AXIOS from 'axios';
 import { axios } from '@/lib/axios';
 import { Identity } from '@semaphore-protocol/identity';
 import { Group } from '@semaphore-protocol/group';
@@ -33,18 +35,35 @@ import {
 import supabase from '@/app/connect/anonvote/utils/supabaseClient';
 import { activeChain } from '@/lib/third-web/constants';
 import SubmittingVoteSpinner from '@/app/components/SubmittingVoteSpinner';
+import VoteSubmitted from '@/app/components/VoteSubmitted';
 
 const CategoryRankingComment = () => {
 	const router = useRouter();
 	const { categoryId } = useParams();
+	const [voteSubmitted, setVoteSubmitted] = useState<boolean>(false);
 	const selectedCategoryId =
 		typeof categoryId === 'string' ? categoryId : categoryId[0];
 
 	const [comment, setComment] = useState('');
+	const [commentIsLoading, setCommentIsLoading] = useState(false);
 	const [attestUnderway, setAttestUnderway] = useState(false);
 
 	const onCommentChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
 		setComment(e.target.value);
+	};
+
+	const rephraseComment = async () => {
+		setCommentIsLoading(true);
+		try {
+			const response = await AXIOS.get('/api/rephrase/', {
+				params: { comment },
+			});
+			setComment(response.data.rephrasedText);
+		} catch (error) {
+			console.error('Error making GET request:', error);
+		} finally {
+			setCommentIsLoading(false);
+		}
 	};
 	const wallet = useActiveWallet();
 	const signer = useSigner();
@@ -292,9 +311,7 @@ const CategoryRankingComment = () => {
 				cid: ranking.id,
 			});
 
-			router.push(
-				`${Routes.Categories}/${category?.data.collection?.id}/pairwise-ranking/done`,
-			);
+			setVoteSubmitted(true);
 		} catch (e) {
 			console.error('error on sending tx:', e);
 		} finally {
@@ -305,10 +322,13 @@ const CategoryRankingComment = () => {
 	if (isCategoryLoading) {
 		return <LoadingSpinner />;
 	}
+	if (voteSubmitted) {
+		return <VoteSubmitted categoryId={category?.data.collection?.id} />;
+	}
 
 	return (
 		<div className='relative flex min-h-[calc(100dvh)] flex-col '>
-			<div className='flex flex-grow flex-col'>
+			<div className='flex flex-grow flex-col gap-2'>
 				<TopRouteIndicator
 					name={category?.data.collection?.name}
 					icon='arrow'
@@ -330,6 +350,31 @@ const CategoryRankingComment = () => {
 						placeholder='Add comments to describe reason for your voting and ranking.'
 						className={`mt-1 block h-[100px] w-full resize-none rounded-md border border-gray-300 px-3 py-2 shadow-sm`}
 					></textarea>
+					<Button
+						onClick={rephraseComment}
+						className=' mt-4 w-full border border-primary '
+					>
+						{commentIsLoading ? (
+							<div className='flex items-center justify-center'>
+								<ButtonLoadingSpinner />
+								<span className='font-sans text-base font-bold leading-5 text-primary'>
+									Masking please wait...
+								</span>
+							</div>
+						) : (
+							<div className='flex items-center justify-center'>
+								<img
+									src={`/images/characters/${31}.png`}
+									alt='Logo'
+									width={25}
+									height={25}
+								/>
+								<span className='font-sans text-base font-bold leading-5 text-primary'>
+									Mask my writing style with AI
+								</span>
+							</div>
+						)}
+					</Button>
 				</div>
 			</div>
 

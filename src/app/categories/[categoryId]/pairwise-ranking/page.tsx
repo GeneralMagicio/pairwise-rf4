@@ -189,6 +189,7 @@ const CategoryPairwiseRankingPage = () => {
 						progress={
 							progressPercentage > 100 ? 100 : progressPercentage
 						}
+						isMinGreater={true}
 					/>
 					<p className='mt-2 text-sm'>
 						{progressPercentage > 100

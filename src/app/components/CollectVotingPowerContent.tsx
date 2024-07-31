@@ -7,12 +7,17 @@ import IconCheck from 'public/images/icons/IconCheck';
 import { identityLsKey, useCreateIdentity } from '../hooks/useCreateIdentity';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { axios } from '@/lib/axios';
-import { BadgeData, badgeTypeMapping } from '../badges/components/BadgeCard';
+import BadgeCard, {
+	BadgeData,
+	badgeTypeMapping,
+} from '../badges/components/BadgeCard';
 import { AdjacentBadges } from '../badges/components/AdjacentBadges';
 import { useGetPublicBadges } from '../features/badges/getBadges';
 import { DotsLoader } from '../login/components/bouncing-dots/DotsLoader';
 import { useDisconnect } from 'wagmi';
 import { useConnect } from '../providers/ConnectProvider';
+import { BadgeCardEntryType } from '../badges/page';
+import { getBadgeAmount, getBadgeMedal } from '@/utils/badgeUtils';
 
 enum CollectVotingPowerState {
 	Not_Started,
@@ -54,6 +59,16 @@ const CollectVotingPowerContent = ({
 	const queryClient = useQueryClient();
 
 	const { data: publicBadges } = useGetPublicBadges(address || '');
+
+	const badgeCards = ({
+		delegateAmount,
+		holderAmount,
+		holderType,
+		delegateType,
+		...rest
+	}: BadgeData) => {
+		return { ...rest };
+	};
 
 	const [noBadgeConnecting, setNoBadgeConnecting] = useState(false);
 
@@ -174,7 +189,7 @@ const CollectVotingPowerContent = ({
 						<p className='text-lg font-semibold'>
 							{formatAddress(address!)}
 						</p>
-						<AdjacentBadges {...publicBadges} size={40} />
+
 						<p className='text-ph'>
 							{publicBadges ? (
 								`${numOfBadgesFunc(publicBadges)} badges found`
@@ -182,6 +197,35 @@ const CollectVotingPowerContent = ({
 								<DotsLoader />
 							)}
 						</p>
+						<div className='flex w-full overflow-x-scroll'>
+							{publicBadges ? (
+								Object.entries(badgeCards(publicBadges)).map(
+									([el1, el2]) => {
+										const [key, value] = [
+											el1,
+											el2,
+										] as BadgeCardEntryType;
+										return (
+											<BadgeCard
+												key={key}
+												points={value}
+												type={key}
+												medal={getBadgeMedal(
+													key,
+													publicBadges,
+												)}
+												amount={getBadgeAmount(
+													key,
+													publicBadges,
+												)}
+											/>
+										);
+									},
+								)
+							) : (
+								<p>No badges found for You</p>
+							)}
+						</div>
 					</div>
 					<Button
 						onClick={handleCollect}
