@@ -3,13 +3,14 @@
 import React from 'react';
 import Button from '@/app/components/Button';
 import { Routes } from '@/app/constants/Routes';
-import { useParams, useRouter } from 'next/navigation';
+import { useRouter } from 'next/navigation';
 import IconCheck from 'public/images/icons/IconCheck';
 import backgroundGif from 'public/images/confetti.gif'; // Import your GIF file
-
-const CategoryRankingDone = () => {
+interface IVoteType {
+	categoryId?: number;
+}
+const VoteSubmitted = ({ categoryId }: IVoteType) => {
 	const router = useRouter();
-	const { categoryId } = useParams();
 
 	return (
 		<div
@@ -29,11 +30,15 @@ const CategoryRankingDone = () => {
 			</div>
 			<div className='border-t border-t-gray-300 px-6 py-6'>
 				<Button
-					onClick={() =>
-						router.push(
-							`${Routes.Categories}/${categoryId}/pairwise-ranking/done`,
-						)
-					}
+					onClick={() => {
+						{
+							categoryId
+								? router.push(
+										`${Routes.Categories}/${categoryId}/pairwise-ranking/done`,
+									)
+								: router.push(`/category-ranking/done`);
+						}
+					}}
 					className='w-full bg-primary'
 				>
 					Continue
@@ -43,4 +48,4 @@ const CategoryRankingDone = () => {
 	);
 };
 
-export default CategoryRankingDone;
+export default VoteSubmitted;
