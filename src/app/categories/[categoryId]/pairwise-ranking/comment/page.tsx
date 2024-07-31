@@ -6,7 +6,6 @@ import LoadingSpinner, {
 	ButtonLoadingSpinner,
 } from '@/app/components/LoadingSpinner';
 import TopRouteIndicator from '@/app/components/TopRouteIndicator';
-import { Routes } from '@/app/constants/Routes';
 import { useCategoryById } from '@/app/features/categories/getCategoryById';
 import {
 	convertRankingToAttestationFormat,
@@ -36,10 +35,12 @@ import {
 import supabase from '@/app/connect/anonvote/utils/supabaseClient';
 import { activeChain } from '@/lib/third-web/constants';
 import SubmittingVoteSpinner from '@/app/components/SubmittingVoteSpinner';
+import VoteSubmitted from '@/app/components/VoteSubmitted';
 
 const CategoryRankingComment = () => {
 	const router = useRouter();
 	const { categoryId } = useParams();
+	const [voteSubmitted, setVoteSubmitted] = useState<boolean>(false);
 	const selectedCategoryId =
 		typeof categoryId === 'string' ? categoryId : categoryId[0];
 
@@ -310,9 +311,7 @@ const CategoryRankingComment = () => {
 				cid: ranking.id,
 			});
 
-			router.push(
-				`${Routes.Categories}/${category?.data.collection?.id}/pairwise-ranking/done`,
-			);
+			setVoteSubmitted(true);
 		} catch (e) {
 			console.error('error on sending tx:', e);
 		} finally {
@@ -322,6 +321,9 @@ const CategoryRankingComment = () => {
 
 	if (isCategoryLoading) {
 		return <LoadingSpinner />;
+	}
+	if (voteSubmitted) {
+		return <VoteSubmitted categoryId={category?.data.collection?.id} />;
 	}
 
 	return (

@@ -7,6 +7,7 @@ import LoadingSpinner, {
 } from '@/app/components/LoadingSpinner';
 import SubmittingVoteSpinner from '@/app/components/SubmittingVoteSpinner';
 import TopRouteIndicator from '@/app/components/TopRouteIndicator';
+import VoteSubmitted from '@/app/components/VoteSubmitted';
 import {
 	getGroup,
 	getMembersGroup,
@@ -39,6 +40,7 @@ const CategoryRankingComment = () => {
 	const { data: ranking, isLoading } = useCategoryRankings();
 
 	const [comment, setComment] = useState('');
+	const [voteSubmitted, setVoteSubmitted] = useState<boolean>(false);
 	const [commentIsLoading, setCommentIsLoading] = useState(false);
 	const [attestUnderway, setAttestUnderway] = useState(false);
 
@@ -291,7 +293,7 @@ const CategoryRankingComment = () => {
 
 			console.log('attestaion id', newAttestationUID);
 
-			router.push(`/category-ranking/done`);
+			setVoteSubmitted(true);
 		} catch (e) {
 			console.error('error on sending tx:', e);
 		} finally {
@@ -301,6 +303,9 @@ const CategoryRankingComment = () => {
 
 	if (isLoading) {
 		return <LoadingSpinner />;
+	}
+	if (voteSubmitted) {
+		return <VoteSubmitted />;
 	}
 
 	return (
