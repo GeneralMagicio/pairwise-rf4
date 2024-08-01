@@ -7,21 +7,16 @@ import ProgressBar from '@/app/components/ProgressBar';
 import { useGetPairwisePairs } from '@/app/features/categories/getPairwisePairs';
 import LoadingSpinner from '@/app/components/LoadingSpinner';
 import { useCategoryById } from '@/app/features/categories/getCategoryById';
-import { useUpdateProjectVote } from '@/app/features/categories/updateProjectVote';
+import {
+	useUpdateProjectUndo,
+	useUpdateProjectVote,
+} from '@/app/features/categories/updateProjectVote';
 import { Routes } from '@/app/constants/Routes';
-import Image from 'next/image';
 
 import { useUpdatePairwiseFinish } from '@/app/features/categories/updatePairwiseFinish';
 import CategoryPairwiseCardWithMetrics from '../../components/CategoryPairwiseCardWithMetrics';
-import {
-	compareProjects,
-	ComparisonResult,
-	processProjectMetricsCSV,
-} from '@/utils/getMetrics';
+import { ComparisonResult } from '@/utils/getMetrics';
 import { cn } from '@/app/helpers/cn';
-import { formatMetricsNumber } from '@/utils/numbers';
-
-import { truncate } from '@/app/helpers/text-helpers';
 import posthog from 'posthog-js';
 import Drawer from '@/app/components/Drawer';
 import { IProject } from '../../types';
@@ -51,9 +46,15 @@ const CategoryPairwiseRankingPage = () => {
 	const [formattedMetrics, setFormattedMetrics] =
 		useState<ComparisonResult>();
 
-	const { mutateAsync, isPending: isVotingPending } = useUpdateProjectVote({
-		categoryId: +selectedCategoryId,
-	});
+	const { mutateAsync: voteMutateAsync, isPending: isVotingPending } =
+		useUpdateProjectVote({
+			categoryId: +selectedCategoryId,
+		});
+
+	const { mutateAsync: undoMutateAsync, isPending: isUndoPending } =
+		useUpdateProjectUndo({
+			categoryId: +selectedCategoryId,
+		});
 
 	const { data: categoryData, isLoading: isCategoryLoading } =
 		useCategoryById(+selectedCategoryId);
@@ -87,7 +88,7 @@ const CategoryPairwiseRankingPage = () => {
 		posthog.capture('Selected Project for more Funding', {
 			selectedProject: selectedProject,
 		});
-		await mutateAsync({
+		await voteMutateAsync({
 			data: {
 				project1Id: firstProject.id,
 				project2Id: secondProject.id,
@@ -100,7 +101,7 @@ const CategoryPairwiseRankingPage = () => {
 
 	const handleDraw = async (firstID: number, secondID: number) => {
 		console.log('draw');
-		await mutateAsync({
+		await voteMutateAsync({
 			data: {
 				project1Id: firstID,
 				project2Id: secondID,
@@ -111,6 +112,7 @@ const CategoryPairwiseRankingPage = () => {
 		window.scrollTo({ top: 0, behavior: 'smooth' });
 	};
 	const handleUndo = async () => {
+		await undoMutateAsync(Number(selectedCategoryId));
 		window.scrollTo({ top: 0, behavior: 'smooth' });
 	};
 
@@ -122,27 +124,6 @@ const CategoryPairwiseRankingPage = () => {
 	};
 
 	const isLoading = isVotingPending || isFetchingPairwise;
-
-	const fetchMetrics = async () => {
-		try {
-			const response = await fetch('/data/metrics-703.csv');
-			const data = await response.text();
-			const processedMap = processProjectMetricsCSV(data);
-			const formatted = compareProjects(
-				processedMap,
-				firstProject.RPGF4Id,
-				secondProject.RPGF4Id,
-			);
-			setFormattedMetrics(formatted);
-			console.log('compareProjects', formatted);
-		} catch (error) {
-			console.error('Failed to load or process CSV', error);
-		}
-	};
-
-	useEffect(() => {
-		if (firstProject && secondProject) fetchMetrics();
-	}, [firstProject, secondProject]);
 
 	useEffect(() => {
 		const hasUserSeenRankingFinishedModal = localStorage.getItem(
@@ -237,17 +218,21 @@ const CategoryPairwiseRankingPage = () => {
 						<div className='relative z-10 flex justify-center  gap-10 xs:flex-row'>
 							<div
 								className={cn(
-									'flex h-20 w-20  cursor-pointer items-center justify-center gap-2 rounded-full border bg-[#FEDF89] px-4 py-2 font-semibold shadow-md',
+									'flex h-20 w-20  cursor-pointer items-center justify-center gap-2 rounded-full border bg-[#FEDF89] px-4 py-2 font-semibold opacity-100 shadow-md',
 									{
 										'cursor-not-allowed opacity-50':
 											isLoading,
+										' cursor-not-allowed opacity-50':
+											votedPairs == 0 ? true : false,
 									},
 								)}
 								onClick={() => {
-									!isLoading && handleUndo();
+									!isLoading && votedPairs == 0
+										? false
+										: true && handleUndo();
 								}}
 							>
-								<div className='flex flex-col items-center'>
+								<div className=' flex flex-col items-center'>
 									<svg
 										xmlns='http://www.w3.org/2000/svg'
 										width='25'
