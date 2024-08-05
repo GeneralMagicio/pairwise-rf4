@@ -2,7 +2,7 @@ import React from 'react';
 import { IProject } from '../types';
 
 interface DrawerContentProps {
-	project: IProject | undefined;
+	project: IProject;
 }
 export const DrawerContent: React.FC<DrawerContentProps> = ({ project }) => {
 	return (

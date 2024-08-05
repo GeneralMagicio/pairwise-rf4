@@ -210,7 +210,7 @@ const CategoryPairwiseRankingPage = () => {
 				</div>
 
 				<Drawer setIsOpen={setIsDrawerOpen} isOpen={isDrawerOpen}>
-					<DrawerContent project={drawerProject} />
+					<DrawerContent project={drawerProject!} />
 				</Drawer>
 				<div>
 					<div className='sticky bottom-5 z-0 px-6 py-6'>
