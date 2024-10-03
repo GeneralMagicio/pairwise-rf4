@@ -2,9 +2,10 @@
 
 import CategoryItem from '@/app/categories/components/CategoryItem';
 import Button from '@/app/components/Button';
-import LoadingSpinner from '@/app/components/LoadingSpinner';
+import LoadingSpinner, {
+	ButtonLoadingSpinner,
+} from '@/app/components/LoadingSpinner';
 import TopRouteIndicator from '@/app/components/TopRouteIndicator';
-import { Routes } from '@/app/constants/Routes';
 import { useCategoryById } from '@/app/features/categories/getCategoryById';
 import {
 	convertRankingToAttestationFormat,
@@ -20,14 +21,12 @@ import { useParams, useRouter } from 'next/navigation';
 import { useActiveWallet } from 'thirdweb/react';
 import { useProjectsRankingByCategoryId } from '@/app/features/categories/getProjectsRankingByCategoryId';
 import { useState } from 'react';
+import AXIOS from 'axios';
 import { axios } from '@/lib/axios';
 import { Identity } from '@semaphore-protocol/identity';
 import { Group } from '@semaphore-protocol/group';
 import { generateProof } from '@semaphore-protocol/proof';
-import {
-	encodeBytes32String,
-	toBigInt,
-} from "ethers"
+import { encodeBytes32String, toBigInt } from 'ethers';
 import posthog from 'posthog-js';
 import {
 	getMembersGroup,
@@ -36,18 +35,35 @@ import {
 import supabase from '@/app/connect/anonvote/utils/supabaseClient';
 import { activeChain } from '@/lib/third-web/constants';
 import SubmittingVoteSpinner from '@/app/components/SubmittingVoteSpinner';
+import VoteSubmitted from '@/app/components/VoteSubmitted';
 
 const CategoryRankingComment = () => {
 	const router = useRouter();
 	const { categoryId } = useParams();
+	const [voteSubmitted, setVoteSubmitted] = useState<boolean>(false);
 	const selectedCategoryId =
 		typeof categoryId === 'string' ? categoryId : categoryId[0];
 
 	const [comment, setComment] = useState('');
-	const [attestUnderway, setAttestUnderway] = useState(false );
+	const [commentIsLoading, setCommentIsLoading] = useState(false);
+	const [attestUnderway, setAttestUnderway] = useState(false);
 
 	const onCommentChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
 		setComment(e.target.value);
+	};
+
+	const rephraseComment = async () => {
+		setCommentIsLoading(true);
+		try {
+			const response = await AXIOS.get('/api/rephrase/', {
+				params: { comment },
+			});
+			setComment(response.data.rephrasedText);
+		} catch (error) {
+			console.error('Error making GET request:', error);
+		} finally {
+			setCommentIsLoading(false);
+		}
 	};
 	const wallet = useActiveWallet();
 	const signer = useSigner();
@@ -61,18 +77,14 @@ const CategoryRankingComment = () => {
 	const ranking = rankingRes?.data;
 
 	const attest = async () => {
-
-
-		const localStorageTag = process.env.NEXT_PUBLIC_LOCAL_STORAGE_TAG!
-		const identityString = localStorage.getItem(localStorageTag)
-
+		const localStorageTag = process.env.NEXT_PUBLIC_LOCAL_STORAGE_TAG!;
+		const identityString = localStorage.getItem(localStorageTag);
 
 		if (!identityString) {
-			console.error("Identity string is missing!")
-			router.push("/")
-			return
+			console.error('Identity string is missing!');
+			router.push('/');
+			return;
 		}
-
 
 		const identity = new Identity(identityString);
 
@@ -122,8 +134,7 @@ const CategoryRankingComment = () => {
 				},
 			];
 
-			const signalData =
-			{
+			const signalData = {
 				category: item.listName,
 				value: item.listMetadataPtr,
 			};
@@ -131,27 +142,27 @@ const CategoryRankingComment = () => {
 			// generate proof of vote
 			const groupId = process.env.NEXT_PUBLIC_BANDADA_GROUP_ID!;
 			const users = await getMembersGroup(groupId);
-			if (users && identityString !== "{}") {
-
-				const bandadaGroup = await getGroup(groupId)
+			if (users && identityString !== '{}') {
+				const bandadaGroup = await getGroup(groupId);
 				let treeDepth = 16;
 				if (bandadaGroup === null) {
-					console.log("The Bandada group does not exist:", groupId)
+					console.log('The Bandada group does not exist:', groupId);
 				} else {
-					treeDepth = bandadaGroup.treeDepth
+					treeDepth = bandadaGroup.treeDepth;
 				}
 				const group = new Group(groupId, treeDepth, users);
-				console.log("going to encode signalData: ")
-				console.log(signalData)
-				const signal = toBigInt(encodeBytes32String(signalData.toString())).toString()
-				const { proof: tempProof, merkleTreeRoot, nullifierHash } = await generateProof(
-					identity,
-					group,
-					groupId,
-					signal
-				)
+				console.log('going to encode signalData: ');
+				console.log(signalData);
+				const signal = toBigInt(
+					encodeBytes32String(signalData.toString()),
+				).toString();
+				const {
+					proof: tempProof,
+					merkleTreeRoot,
+					nullifierHash,
+				} = await generateProof(identity, group, groupId, signal);
 				proof = tempProof;
-				console.log("generated proof of vote: ", proof);
+				console.log('generated proof of vote: ', proof);
 
 				const { data: currentMerkleRoot, error: errorRootHistory } =
 					await supabase
@@ -185,9 +196,8 @@ const CategoryRankingComment = () => {
 						console.log(errorMerkleTreeRoot);
 					}
 
-
-					console.log("merkleTreeRoot: ", merkleTreeRoot);
-					console.log("dataMerkleTreeRoot: ", dataMerkleTreeRoot);
+					console.log('merkleTreeRoot: ', merkleTreeRoot);
+					console.log('dataMerkleTreeRoot: ', dataMerkleTreeRoot);
 
 					if (!dataMerkleTreeRoot) {
 						console.error('Wrong dataMerkleTreeRoot');
@@ -195,14 +205,15 @@ const CategoryRankingComment = () => {
 						console.log('Merkle Root is not part of the group');
 					}
 
-					console.log("dataMerkleTreeRoot", dataMerkleTreeRoot)
-					const merkleTreeRootDuration = bandadaGroup?.fingerprintDuration ?? 0
+					console.log('dataMerkleTreeRoot', dataMerkleTreeRoot);
+					const merkleTreeRootDuration =
+						bandadaGroup?.fingerprintDuration ?? 0;
 
 					if (
 						dataMerkleTreeRoot &&
 						Date.now() >
-						Date.parse(dataMerkleTreeRoot[0].created_at) +
-						merkleTreeRootDuration
+							Date.parse(dataMerkleTreeRoot[0].created_at) +
+								merkleTreeRootDuration
 					) {
 						console.log('Merkle Tree Root is expired');
 					}
@@ -290,7 +301,9 @@ const CategoryRankingComment = () => {
 
 			const newAttestationUID = await tx.wait();
 
-			posthog.capture("Attested", { attestedCategory: category?.data.collection?.name })
+			posthog.capture('Attested', {
+				attestedCategory: category?.data.collection?.name,
+			});
 
 			console.log('attestaion id', newAttestationUID);
 			// await finishCollections(collectionId);
@@ -298,9 +311,7 @@ const CategoryRankingComment = () => {
 				cid: ranking.id,
 			});
 
-			router.push(
-				`${Routes.Categories}/${category?.data.collection?.id}/pairwise-ranking/done`,
-			);
+			setVoteSubmitted(true);
 		} catch (e) {
 			console.error('error on sending tx:', e);
 		} finally {
@@ -311,12 +322,17 @@ const CategoryRankingComment = () => {
 	if (isCategoryLoading) {
 		return <LoadingSpinner />;
 	}
+	if (voteSubmitted) {
+		return <VoteSubmitted categoryId={category?.data.collection?.id} />;
+	}
 
 	return (
 		<div className='relative flex min-h-[calc(100dvh)] flex-col '>
-		
-			<div className='flex flex-grow flex-col'>
-				<TopRouteIndicator name={category?.data.collection?.name} icon='arrow' />
+			<div className='flex flex-grow flex-col gap-2'>
+				<TopRouteIndicator
+					name={category?.data.collection?.name}
+					icon='arrow'
+				/>
 				<div className='pb-8 pt-6'>
 					<CategoryItem
 						category={category?.data.collection!}
@@ -334,6 +350,31 @@ const CategoryRankingComment = () => {
 						placeholder='Add comments to describe reason for your voting and ranking.'
 						className={`mt-1 block h-[100px] w-full resize-none rounded-md border border-gray-300 px-3 py-2 shadow-sm`}
 					></textarea>
+					<Button
+						onClick={rephraseComment}
+						className=' mt-4 w-full border border-primary '
+					>
+						{commentIsLoading ? (
+							<div className='flex items-center justify-center'>
+								<ButtonLoadingSpinner />
+								<span className='font-sans text-base font-bold leading-5 text-primary'>
+									Masking please wait...
+								</span>
+							</div>
+						) : (
+							<div className='flex items-center justify-center'>
+								<img
+									src={`/images/characters/${31}.png`}
+									alt='Logo'
+									width={25}
+									height={25}
+								/>
+								<span className='font-sans text-base font-bold leading-5 text-primary'>
+									Mask my writing style with AI
+								</span>
+							</div>
+						)}
+					</Button>
 				</div>
 			</div>
 
@@ -345,11 +386,7 @@ const CategoryRankingComment = () => {
 				>
 					Submit Vote
 				</Button>
-				{attestUnderway ? 
-			        <SubmittingVoteSpinner />
-			
-				:<></>
-				 }
+				{attestUnderway ? <SubmittingVoteSpinner /> : <></>}
 			</div>
 		</div>
 	);

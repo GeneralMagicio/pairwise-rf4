@@ -169,7 +169,7 @@ const ProjectRankingEditPage = () => {
 							Not Selected ({excludedProjects?.length || 0})
 						</p>
 						{excludedProjects?.map(project => (
-							<div key={project.id} className='opacity-40'>
+							<div key={project.id}>
 								<CategoryEditProjectItem
 									project={project}
 									key={project.id}
@@ -190,9 +190,9 @@ const ProjectRankingEditPage = () => {
 								`${Routes.Categories}/${selectedCategory?.id}/project-ranking/summary`,
 							);
 						}}
-						className='w-full text-black shadow-md'
+						className='w-full text-black  shadow-md'
 					>
-						Discard Changes
+						Discard
 					</Button>
 					<Button
 						onClick={handleSubmit}

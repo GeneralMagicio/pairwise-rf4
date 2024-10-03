@@ -2,9 +2,12 @@
 
 import CategoryRankingItem from '@/app/categories/components/CategoryRankingItem';
 import Button from '@/app/components/Button';
-import LoadingSpinner from '@/app/components/LoadingSpinner';
+import LoadingSpinner, {
+	ButtonLoadingSpinner,
+} from '@/app/components/LoadingSpinner';
 import SubmittingVoteSpinner from '@/app/components/SubmittingVoteSpinner';
 import TopRouteIndicator from '@/app/components/TopRouteIndicator';
+import VoteSubmitted from '@/app/components/VoteSubmitted';
 import {
 	getGroup,
 	getMembersGroup,
@@ -25,6 +28,7 @@ import {
 import { Group } from '@semaphore-protocol/group';
 import { Identity } from '@semaphore-protocol/identity';
 import { generateProof } from '@semaphore-protocol/proof';
+import AXIOS from 'axios';
 import { encodeBytes32String, toBigInt } from 'ethers';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
@@ -36,10 +40,26 @@ const CategoryRankingComment = () => {
 	const { data: ranking, isLoading } = useCategoryRankings();
 
 	const [comment, setComment] = useState('');
+	const [voteSubmitted, setVoteSubmitted] = useState<boolean>(false);
+	const [commentIsLoading, setCommentIsLoading] = useState(false);
 	const [attestUnderway, setAttestUnderway] = useState(false);
 
 	const onCommentChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
 		setComment(e.target.value);
+	};
+
+	const rephraseComment = async () => {
+		setCommentIsLoading(true);
+		try {
+			const response = await AXIOS.get('/api/rephrase/', {
+				params: { comment },
+			});
+			setComment(response.data.rephrasedText);
+		} catch (error) {
+			console.error('Error making GET request:', error);
+		} finally {
+			setCommentIsLoading(false);
+		}
 	};
 
 	const wallet = useActiveWallet();
@@ -116,9 +136,9 @@ const CategoryRankingComment = () => {
 				const bandadaGroup = await getGroup(groupId);
 				let treeDepth = 16;
 				if (bandadaGroup === null) {
-					console.log("The Bandada group does not exist:", groupId)
+					console.log('The Bandada group does not exist:', groupId);
 				} else {
-					treeDepth = bandadaGroup.treeDepth
+					treeDepth = bandadaGroup.treeDepth;
 				}
 				const group = new Group(groupId, treeDepth, users);
 				console.log('going to encode signalData: ');
@@ -166,9 +186,8 @@ const CategoryRankingComment = () => {
 						console.log(errorMerkleTreeRoot);
 					}
 
-
-					console.log("merkleTreeRoot: ", merkleTreeRoot);
-					console.log("dataMerkleTreeRoot: ", dataMerkleTreeRoot);
+					console.log('merkleTreeRoot: ', merkleTreeRoot);
+					console.log('dataMerkleTreeRoot: ', dataMerkleTreeRoot);
 
 					if (!dataMerkleTreeRoot) {
 						console.error('Wrong dataMerkleTreeRoot');
@@ -183,8 +202,8 @@ const CategoryRankingComment = () => {
 					if (
 						dataMerkleTreeRoot &&
 						Date.now() >
-						Date.parse(dataMerkleTreeRoot[0].created_at) +
-						merkleTreeRootDuration
+							Date.parse(dataMerkleTreeRoot[0].created_at) +
+								merkleTreeRootDuration
 					) {
 						console.log('Merkle Tree Root is expired');
 					}
@@ -274,7 +293,7 @@ const CategoryRankingComment = () => {
 
 			console.log('attestaion id', newAttestationUID);
 
-			router.push(`/category-ranking/done`);
+			setVoteSubmitted(true);
 		} catch (e) {
 			console.error('error on sending tx:', e);
 		} finally {
@@ -285,11 +304,14 @@ const CategoryRankingComment = () => {
 	if (isLoading) {
 		return <LoadingSpinner />;
 	}
+	if (voteSubmitted) {
+		return <VoteSubmitted />;
+	}
 
 	return (
-		<div className='relative flex min-h-[calc(100dvh)] flex-col '>
+		<div className='relative flex min-h-[calc(100dvh)] flex-col'>
 			<div className='flex flex-grow flex-col'>
-				<TopRouteIndicator name={'Category Voting'} icon={'cross'}/>
+				<TopRouteIndicator name={'Category Voting'} icon={'cross'} />
 				<div className='pb-8 pt-6'>
 					{ranking?.ranking.map(cat => (
 						<CategoryRankingItem key={cat.id} category={cat} />
@@ -305,6 +327,31 @@ const CategoryRankingComment = () => {
 						placeholder='Add comments to describe reason for your voting and ranking.'
 						className={`mt-1 block h-[100px] w-full resize-none rounded-md border border-gray-300 px-3 py-2 shadow-sm`}
 					></textarea>
+					<Button
+						onClick={rephraseComment}
+						className=' mt-4 w-full border border-primary '
+					>
+						{commentIsLoading ? (
+							<div className='flex items-center justify-center'>
+								<ButtonLoadingSpinner />
+								<span className='font-sans text-base font-bold leading-5 text-primary'>
+									Masking please wait...
+								</span>
+							</div>
+						) : (
+							<div className='flex items-center justify-center'>
+								<img
+									src={`/images/characters/${31}.png`}
+									alt='Logo'
+									width={25}
+									height={25}
+								/>
+								<span className='font-sans text-base font-bold leading-5 text-primary'>
+									Mask my writing style with AI
+								</span>
+							</div>
+						)}
+					</Button>
 				</div>
 			</div>
 
@@ -316,11 +363,7 @@ const CategoryRankingComment = () => {
 				>
 					Submit Vote
 				</Button>
-				{attestUnderway ? 
-			        <SubmittingVoteSpinner />
-			
-				:<></>
-				 }
+				{attestUnderway ? <SubmittingVoteSpinner /> : <></>}
 			</div>
 		</div>
 	);

@@ -19,7 +19,6 @@ const ProjectRankingDonePage = () => {
 	const selectedCategoryProgress = data?.data?.progress;
 	console.log('Selected Category', selectedCategoryProgress);
 
-
 	if (isCategoryLoading) {
 		return <LoadingSpinner />;
 	}
@@ -33,8 +32,13 @@ const ProjectRankingDonePage = () => {
 					width={250}
 					height={250}
 				/>
-				<p className='mx-auto text-lg font-bold'>Filtering done!</p>
-				<p className='mx-auto text-ph'> Now let&apos;s find out which projects come out on top!</p>
+				<p className='mx-auto text-[28px] font-bold'>
+					Fantastic job filtering
+				</p>
+				<p className='mx-auto text-ph'>
+					{' '}
+					Now let&apos;s find out which projects come out on top!
+				</p>
 			</div>
 			<div className='border-t border-t-gray-300 px-6 py-6'>
 				<Button
@@ -50,13 +54,13 @@ const ProjectRankingDonePage = () => {
 						// 	});
 						// }
 						router.push(
-							`${Routes.Categories}/${categoryId}/project-ranking/summary`,
+							`${Routes.Categories}/${categoryId}/pairwise-ranking`,
 						);
 					}}
 					// disabled={updateCategoryMarkFiltered.isPending}
 					className='w-full bg-primary'
 				>
-					Start Pairwise Assesment
+					Start Ranking
 				</Button>
 			</div>
 		</div>

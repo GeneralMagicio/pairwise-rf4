@@ -3,8 +3,9 @@ import { useQuery } from '@tanstack/react-query';
 import { IProjectsRankingResponse } from './getProjectsRankingByCategoryId';
 import { ICategory } from '@/app/categories/types';
 
-interface ICategoryRankingResponse extends Omit<IProjectsRankingResponse, "ranking"> {
-	ranking: ICategory[]
+interface ICategoryRankingResponse
+	extends Omit<IProjectsRankingResponse, 'ranking'> {
+	ranking: ICategory[];
 }
 
 export const getCategoryRankings =

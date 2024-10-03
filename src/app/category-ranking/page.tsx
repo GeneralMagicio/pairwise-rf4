@@ -9,7 +9,7 @@ import TopRouteIndicator from '../components/TopRouteIndicator';
 import { useRouter } from 'next/navigation';
 
 const CategoryPairwiseRankingPage = () => {
-	const router = useRouter()
+	const router = useRouter();
 
 	const { mutate, isPending: isVotingPending } = useUpdateCategoryVote();
 
@@ -23,10 +23,11 @@ const CategoryPairwiseRankingPage = () => {
 	const [firstCategory, secondCategory] = pairwisePairs ?? [];
 
 	useEffect(() => {
-		if (pairwisePairs?.length === 0) router.push('/category-ranking/comment')
-	}, [pairwisePairs, router])
+		if (pairwisePairs?.length === 0)
+			router.push('/category-ranking/comment');
+	}, [pairwisePairs, router]);
 
-	const isLoading = false
+	const isLoading = false;
 	const handleVote = async (pickedId: number) => {
 		mutate({
 			data: {
@@ -37,18 +38,14 @@ const CategoryPairwiseRankingPage = () => {
 		});
 	};
 
-
-	if (
-		isPairwisePairsLoading
-		|| pairwisePairs?.length === 0
-	) {
+	if (isPairwisePairsLoading || pairwisePairs?.length === 0) {
 		return <LoadingSpinner />;
 	}
 
 	return (
 		<div className='flex min-h-[calc(100dvh)] flex-col justify-between'>
 			<div>
-				<TopRouteIndicator name={"Category Voting"} icon={'cross'} />
+				<TopRouteIndicator name={'Category Voting'} icon={'cross'} />
 				<p className='text-bold mb-4 mt-6 px-3 text-center text-base'>
 					{`Which category should receive more RetroPGF funding?`}
 				</p>

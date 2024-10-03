@@ -1,4 +1,3 @@
-
 // function getTimeDifference(): {
 // 	days: number;
 // 	hours: number;
@@ -67,9 +66,9 @@ export const Countdown: React.FC = () => {
 	// 		</p>
 	// 	</div>
 	// );
-  	return (
+	return (
 		<div className='mt-4 flex h-16 w-full items-center justify-center bg-primary p-4 text-white'>
-			<p className="text-lg"> Official Voting Has Ended. </p>
+			<p className='text-lg'> Official Voting Has Ended. </p>
 		</div>
 	);
 };

@@ -20,6 +20,8 @@ const variants = {
 const CategoryPairwiseCard = ({ project }: ICategoryPairwiseCardProps) => {
 	const [isDrawerOpen, setIsDrawerOpen] = useState(false);
 
+	const imgNumber = (project.id % 5) + 1;
+	const imgSrc = `/images/defaults/category/category-${imgNumber}.png`;
 	return (
 		<AnimatePresence mode='wait'>
 			<motion.div
@@ -36,9 +38,9 @@ const CategoryPairwiseCard = ({ project }: ICategoryPairwiseCardProps) => {
 							!project.image && 'bg-gray-700',
 						)}
 						style={
-							project.image
+							imgSrc
 								? {
-										backgroundImage: `url(${project.image})`,
+										backgroundImage: `url(${imgSrc})`,
 										backgroundSize: 'cover',
 										backgroundPosition: 'center',
 									}
