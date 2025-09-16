@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from 'react';
-import { useAccount } from 'wagmi';
+import { useAccount, useSignMessage } from 'wagmi';
 import { formatAddress } from '../helpers/text-helpers';
 import Button from './Button';
 import Image from 'next/image';
 import IconCheck from 'public/images/icons/IconCheck';
-import { useQueryClient } from '@tanstack/react-query';
-// import { axios } from '@/lib/axios';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { axios } from '@/lib/axios';
 import BadgeCard, {
 	BadgeData,
 	badgeTypeMapping,
@@ -30,22 +30,26 @@ interface ICollectionsVotingPowerContentProps {
 	setIsClaimDrawerOpen: (isOpen: boolean) => void;
 }
 
-// export const storeIdentityAndBadges = async ({
-// 	mainAddress,
-// }: {
-// 	mainAddress: string;
-// }) => {
-// 	return axios.post('/user/store-badges-identity', {
-// 		mainAddress,
-// 	});
-// };
+export const storeIdentityAndBadges = async ({
+	mainAddress,
+	signature,
+}: {
+	mainAddress: string;
+	signature: string;
+}) => {
+	return axios.post('/user/store-badges-identity', {
+		mainAddress,
+		signature,
+	});
+};
 
 const CollectVotingPowerContent = ({
 	setIsClaimDrawerOpen,
 }: ICollectionsVotingPowerContentProps) => {
 	const { address } = useAccount();
 	const { handleDisconnect } = useConnect();
-
+	const { signMessageAsync } = useSignMessage();
+	
 	const queryClient = useQueryClient();
 
 	const { data: publicBadges } = useGetPublicBadges(address || '');
@@ -62,14 +66,14 @@ const CollectVotingPowerContent = ({
 
 	const [noBadgeConnecting, setNoBadgeConnecting] = useState(false);
 
-	// const { mutateAsync: storeBadgesAndIdentityMutation } = useMutation({
-	// 	mutationFn: storeIdentityAndBadges,
-	// 	onSuccess: () => {
-	// 		queryClient.refetchQueries({
-	// 			queryKey: ['badges'],
-	// 		});
-	// 	},
-	// });
+	const { mutateAsync: storeBadgesAndIdentityMutation } = useMutation({
+		mutationFn: storeIdentityAndBadges,
+		onSuccess: () => {
+			queryClient.refetchQueries({
+				queryKey: ['badges'],
+			});
+		},
+	});
 
 	const [collectState, setCollectState] = useState(
 		CollectVotingPowerState.Not_Started,
@@ -88,9 +92,14 @@ const CollectVotingPowerContent = ({
 		try {
 			setNoBadgeConnecting(true);
 			if (!address) return;
-			// await storeBadgesAndIdentityMutation({
-			// 	mainAddress: address,
-			// });
+			const message = `Sign this message to generate your Semaphore identity.`;
+			const signature = await signMessageAsync({
+				message: message,
+			});
+			await storeBadgesAndIdentityMutation({
+				mainAddress: address,
+				signature,
+			});
 			setNoBadgeConnecting(false);
 			setIsClaimDrawerOpen(false);
 		} catch (e) {
@@ -108,12 +117,18 @@ const CollectVotingPowerContent = ({
 
 	const handleCollect = async () => {
 		try {
+			const message = `Sign this message to generate your Semaphore identity.`;
+			const signature = await signMessageAsync({
+				message: message,
+			});
+
 			//Handle collect functionality here
 			setCollectState(CollectVotingPowerState.Collecting);
 			if (!address) return;
-			// await storeBadgesAndIdentityMutation({
-			// 	mainAddress: address,
-			// });
+			await storeBadgesAndIdentityMutation({
+				mainAddress: address,
+				signature,
+			});
 
 			setCollectState(CollectVotingPowerState.Collected);
 		} catch (e) {
