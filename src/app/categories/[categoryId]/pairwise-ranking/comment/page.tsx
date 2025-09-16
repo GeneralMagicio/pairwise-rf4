@@ -23,7 +23,6 @@ import { useProjectsRankingByCategoryId } from '@/app/features/categories/getPro
 import { useState } from 'react';
 import AXIOS from 'axios';
 import { axios } from '@/lib/axios';
-import { encodeBytes32String, toBigInt } from 'ethers';
 import posthog from 'posthog-js';
 // Bandada/Semaphore removed
 import { activeChain } from '@/lib/third-web/constants';

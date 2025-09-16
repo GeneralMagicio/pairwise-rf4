@@ -25,7 +25,6 @@ import {
 // import { Identity } from '@semaphore-protocol/identity';
 // import { generateProof } from '@semaphore-protocol/proof';
 import AXIOS from 'axios';
-import { encodeBytes32String, toBigInt } from 'ethers';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { useActiveWallet } from 'thirdweb/react';
