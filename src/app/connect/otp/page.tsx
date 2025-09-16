@@ -7,46 +7,36 @@ import Button from '@/app/components/Button';
 import { useUpdateOtp } from '@/app/features/user/updateOtp';
 import { useRouter } from 'next/navigation';
 import { Routes } from '@/app/constants/Routes';
-import { useMutation } from '@tanstack/react-query';
-import { useAccount, useSignMessage } from 'wagmi';
-import {
-	identityLsKey,
-	useCreateIdentity,
-} from '@/app/hooks/useCreateIdentity';
-import axios from 'axios';
-import { API_URL } from '@/app/config';
+// import { useMutation } from '@tanstack/react-query';
+import { useAccount } from 'wagmi';
+// import axios from 'axios';
+// import { API_URL } from '@/app/config';
 import { BadgeData, badgeTypeMapping } from '@/app/badges/components/BadgeCard';
 import { useGetPublicBadges } from '@/app/features/badges/getBadges';
 import { AdjacentBadges } from '@/app/badges/components/AdjacentBadges';
 import { ConnectErrorBox } from '../components/ConnectErrorBox';
 import LoadingSpinner from '@/app/components/LoadingSpinner';
 
-const storeIdentityAndBadges = async ({
-	identity,
-	mainAddress,
-	signature,
-	token,
-}: {
-	identity: string;
-	mainAddress: string;
-	signature: string;
-	token: string;
-}) => {
-	return axios.post(
-		`${API_URL}/user/store-badges-identity`,
-		{
-			identity,
-			mainAddress,
-			signature,
-		},
-		{
-			headers: {
-				'Content-Type': 'application/json',
-				auth: token,
-			},
-		},
-	);
-};
+// const storeIdentityAndBadges = async ({
+// 	mainAddress,
+// 	token,
+// }: {
+// 	mainAddress: string;
+// 	token: string;
+// }) => {
+// 	return axios.post(
+// 		`${API_URL}/user/store-badges-identity`,
+// 		{
+// 			mainAddress,
+// 		},
+// 		{
+// 			headers: {
+// 				'Content-Type': 'application/json',
+// 				auth: token,
+// 			},
+// 		},
+// 	);
+// };
 
 const ConnectOTPPage = () => {
 	const [otp, setOtp] = useState('');
@@ -54,17 +44,14 @@ const ConnectOTPPage = () => {
 	const [otpState, setOtpState] = useState<OtpState>(OtpState.Ready);
 	const [error, setError] = useState<string | false>(false);
 	const { mutateAsync, isPending } = useUpdateOtp();
-	const { createIdentity } = useCreateIdentity();
-	const { mutateAsync: storeBadgesAndIdentityMutation } = useMutation({
-		mutationFn: storeIdentityAndBadges,
-	});
+	// const { mutateAsync: storeBadgesAndIdentityMutation } = useMutation({
+	// 	mutationFn: storeIdentityAndBadges,
+	// });
 
 	const { address } = useAccount();
 
 	const { data: publicBadges, isLoading: isPublicBadgesLoading } =
 		useGetPublicBadges(address || '');
-
-	const { signMessageAsync } = useSignMessage();
 
 	const router = useRouter();
 
@@ -85,24 +72,12 @@ const ConnectOTPPage = () => {
 				const res = await mutateAsync({ data: { otp } });
 				setOtpState(OtpState.Valid);
 
-				const token = res.data;
-				const message = `Sign this message to generate your Semaphore identity.`;
-				const signature = await signMessageAsync({
-					message: message,
-				});
-
-				await createIdentity(signature);
-
-				const identity = localStorage.getItem(identityLsKey);
-
-				if (!identity || !address) return;
-
-				await storeBadgesAndIdentityMutation({
-					mainAddress: address,
-					signature,
-					identity,
-					token,
-				});
+				// const token = res.data;
+				if (!address) return;
+				// await storeBadgesAndIdentityMutation({
+				// 	mainAddress: address,
+				// 	token,
+				// });
 
 				router.push(Routes.ConnectSuccess);
 			}

@@ -8,11 +8,7 @@ import LoadingSpinner, {
 import SubmittingVoteSpinner from '@/app/components/SubmittingVoteSpinner';
 import TopRouteIndicator from '@/app/components/TopRouteIndicator';
 import VoteSubmitted from '@/app/components/VoteSubmitted';
-import {
-	getGroup,
-	getMembersGroup,
-} from '@/app/connect/anonvote/utils/bandadaApi';
-import supabase from '@/app/connect/anonvote/utils/supabaseClient';
+// Bandada/Semaphore removed
 import { useCategoryRankings } from '@/app/features/categories/getCategoryRankings';
 import { activeChain } from '@/lib/third-web/constants';
 import {
@@ -25,9 +21,9 @@ import {
 	SchemaRegistry,
 	SchemaEncoder,
 } from '@ethereum-attestation-service/eas-sdk';
-import { Group } from '@semaphore-protocol/group';
-import { Identity } from '@semaphore-protocol/identity';
-import { generateProof } from '@semaphore-protocol/proof';
+// import { Group } from '@semaphore-protocol/group';
+// import { Identity } from '@semaphore-protocol/identity';
+// import { generateProof } from '@semaphore-protocol/proof';
 import AXIOS from 'axios';
 import { encodeBytes32String, toBigInt } from 'ethers';
 import { useRouter } from 'next/navigation';
@@ -66,16 +62,7 @@ const CategoryRankingComment = () => {
 	const signer = useSigner();
 
 	const attest = async () => {
-		const localStorageTag = process.env.NEXT_PUBLIC_LOCAL_STORAGE_TAG!;
-		const identityString = localStorage.getItem(localStorageTag);
-
-		if (!identityString) {
-			console.error('Identity string is missing!');
-			router.push('/');
-			return;
-		}
-
-		const identity = new Identity(identityString);
+		// Identity removed
 
 		if (!ranking) return;
 
@@ -128,140 +115,9 @@ const CategoryRankingComment = () => {
 				value: item.listMetadataPtr,
 			};
 
-			// generate proof of vote
-			const groupId = process.env.NEXT_PUBLIC_BANDADA_GROUP_ID!;
-			const users = await getMembersGroup(groupId);
+			// zk-proof removed
 
-			if (users && identityString !== '{}') {
-				const bandadaGroup = await getGroup(groupId);
-				let treeDepth = 16;
-				if (bandadaGroup === null) {
-					console.log('The Bandada group does not exist:', groupId);
-				} else {
-					treeDepth = bandadaGroup.treeDepth;
-				}
-				const group = new Group(groupId, treeDepth, users);
-				console.log('going to encode signalData: ');
-				console.log(signalData);
-				const signal = toBigInt(
-					encodeBytes32String(signalData.toString()),
-				).toString();
-				const {
-					proof: tempProof,
-					merkleTreeRoot,
-					nullifierHash,
-				} = await generateProof(identity, group, groupId, signal);
-				console.log('generated proof of vote: ', proof);
-				proof = tempProof;
-
-				const { data: currentMerkleRoot, error: errorRootHistory } =
-					await supabase
-						.from('root_history')
-						.select()
-						.order('created_at', { ascending: false })
-						.limit(1);
-
-				if (errorRootHistory) {
-					console.log(errorRootHistory);
-				}
-
-				if (!currentMerkleRoot) {
-					console.error('Wrong currentMerkleRoot');
-				}
-
-				if (
-					currentMerkleRoot == null ||
-					merkleTreeRoot !== currentMerkleRoot[0].root
-				) {
-					// compare merkle tree roots
-					const {
-						data: dataMerkleTreeRoot,
-						error: errorMerkleTreeRoot,
-					} = await supabase
-						.from('root_history')
-						.select()
-						.eq('root', merkleTreeRoot);
-
-					if (errorMerkleTreeRoot) {
-						console.log(errorMerkleTreeRoot);
-					}
-
-					console.log('merkleTreeRoot: ', merkleTreeRoot);
-					console.log('dataMerkleTreeRoot: ', dataMerkleTreeRoot);
-
-					if (!dataMerkleTreeRoot) {
-						console.error('Wrong dataMerkleTreeRoot');
-					} else if (dataMerkleTreeRoot.length === 0) {
-						console.log('Merkle Root is not part of the group');
-					}
-
-					console.log('dataMerkleTreeRoot', dataMerkleTreeRoot);
-					const merkleTreeRootDuration =
-						bandadaGroup?.fingerprintDuration ?? 0;
-
-					if (
-						dataMerkleTreeRoot &&
-						Date.now() >
-							Date.parse(dataMerkleTreeRoot[0].created_at) +
-								merkleTreeRootDuration
-					) {
-						console.log('Merkle Tree Root is expired');
-					}
-				}
-
-				const { data: nullifier, error: errorNullifierHash } =
-					await supabase
-						.from('nullifier_hash')
-						.select('nullifier')
-						.eq('nullifier', nullifierHash);
-
-				if (errorNullifierHash) {
-					console.log(errorNullifierHash);
-				}
-
-				if (!nullifier) {
-					console.log('Wrong nullifier');
-				} else if (nullifier.length > 0) {
-					console.log('You are using the same nullifier twice');
-				}
-
-				const { error: errorNullifier } = await supabase
-					.from('nullifier_hash')
-					.insert([{ nullifier: nullifierHash }]);
-
-				if (errorNullifier) {
-					console.error(errorNullifier);
-				}
-
-				const { data: dataFeedback, error: errorFeedback } =
-					await supabase
-						.from('feedback')
-						.insert([{ signal: schemaData }])
-						.select()
-						.order('created_at', { ascending: false });
-
-				if (errorFeedback) {
-					console.error(errorFeedback);
-				}
-
-				if (!dataFeedback) {
-					console.error('Wrong dataFeedback');
-				}
-
-				// TODO everything is good so add the proof in attestation : Mahdi
-			}
-
-			const schemaDataWithProof = [
-				...schemaData,
-				{
-					name: 'proof',
-					type: 'string[]',
-					value: proof,
-				},
-			];
-
-			console.log('sdwp', schemaDataWithProof);
-			const encodedData = schemaEncoder.encodeData(schemaDataWithProof);
+			const encodedData = schemaEncoder.encodeData(schemaData);
 
 			const prevAttestations = await getPrevAttestationIds(
 				address,

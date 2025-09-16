@@ -37,12 +37,7 @@ const ConnectOTPSuccessPage = () => {
 				<p className='text-center text-4xl font-bold text-primary'>
 					Pseudonymously
 				</p>
-				<p className='text-center text-lg'>
-					Secured by zk-proof technology
-				</p>
-				<p className='text-center text-primary'>
-					Find out how this zk-proof delegation works
-				</p>
+				{/* zk-proof messaging removed */}
 			</div>
 		</div>
 	);

@@ -4,8 +4,7 @@ import React, { useEffect, useState } from 'react';
 import Image from 'next/image'; // Make sure to install 'next/image'
 import { useRouter } from 'next/navigation';
 import { AdjacentBadges } from '../badges/components/AdjacentBadges';
-import { useGetBadges, useGetIdentity } from '../features/badges/getBadges';
-import { identityLsKey } from '../hooks/useCreateIdentity';
+import { useGetBadges } from '../features/badges/getBadges';
 import { useConnect } from '../providers/ConnectProvider';
 import { isLoggedIn } from '@/utils/auth';
 import { ButtonLoadingSpinner } from './LoadingSpinner';
@@ -30,21 +29,11 @@ const Header = () => {
 
 	const router = useRouter();
 	const { data: badges } = useGetBadges();
-	const { data: identity } = useGetIdentity();
 
 	const { setIsConnectDrawerOpen } = useConnect();
 
-	useEffect(() => {
-		if (!identityLsKey) {
-			console.error('Missing local storage tag');
-			return;
-		}
 
-		if (identity)
-			localStorage.setItem(identityLsKey, JSON.stringify(identity));
-	}, [identity]);
-
-	const hasConnected = badges && identity;
+	const hasConnected = Boolean(badges);
 
 	return (
 		<header className='sticky top-0 z-10 flex items-center justify-between border-b border-gray-300 bg-white p-4'>

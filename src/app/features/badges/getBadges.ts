@@ -1,7 +1,7 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { axios } from '@/lib/axios';
 import { BadgeData } from '@/app/badges/components/BadgeCard';
-import { Identity } from '@semaphore-protocol/identity';
+// Removed semaphore Identity
 
 const continueGuest = async () => {
 	await axios.post('/user/continue-guest');
@@ -19,9 +19,6 @@ export const useContinueGuest = () => {
 		onSuccess: () => {
 			queryClient.refetchQueries({
 				queryKey: ['badges'],
-			});
-			queryClient.refetchQueries({
-				queryKey: ['identity'],
 			});
 		},
 	});
@@ -44,18 +41,7 @@ export const useGetBadges = () => {
 	});
 };
 
-const getIdentity = async () => {
-	const { data } = await axios.get<Identity | null>('/user/identity');
-	return data;
-};
-
-export const useGetIdentity = () => {
-	return useQuery({
-		queryKey: ['identity'],
-		queryFn: getIdentity,
-		refetchOnWindowFocus: 'always',
-	});
-};
+// Identity API removed
 
 const getPublicBadges = async (address: string) => {
 	const { data } = await axios.get<BadgeData>('/user/public/badges', {

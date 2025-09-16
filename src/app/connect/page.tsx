@@ -1,7 +1,7 @@
 'use client';
 
 import Image from 'next/image';
-import { BandadaLogo } from 'public/images/icons/BandadaLogo';
+// Bandada logo removed
 import React from 'react';
 import { useAccount } from 'wagmi';
 import { Routes } from '../constants/Routes';
@@ -46,11 +46,7 @@ const ConnectHomePage = () => {
 					<p>Connect your OP Account</p>
 					<p className='text-primary'>Pseudonymously</p>
 				</div>
-				<p className='mb-6'>Secured by zk-proof technology</p>
-				<div className='flex items-center justify-center gap-2'>
-					<span className='text-sm'>Powered by</span>
-					<BandadaLogo />
-				</div>
+				{/* Bandada attribution removed */}
 				<div className='mx-auto max-w-[343px]'>
 					{steps.map((step, index) => (
 						<div
